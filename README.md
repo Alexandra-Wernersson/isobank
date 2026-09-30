@@ -2,29 +2,26 @@
 
 **Template banks from approximately isometric normalizing flows.**
 
-Placing templates on a waveform manifold is a sphere-covering problem in a
+Placing templates on a waveform manifold is a sphere covering problem in a
 curved space: distances depend on position through the waveform metric, so
 every acceptance test costs a metric evaluation. `isobank` trains a normalizing
 flow so that **Euclidean distance in its latent space approximates the proper
-distance of the waveform-match metric**. Placement then becomes ball packing
+distance of the waveform match metric**. Placement then becomes sphere packing
 with Euclidean distance checks, and nearest-template lookups become k-d tree
 queries — with no metric or waveform evaluated during placement.
 
-On a five-dimensional eccentric BNS/NSBH space the method builds a bank in
-minutes on CPUs, with coverage measured against true waveform matches.
+For the five-dimensional eccentric BNS/NSBH case, the flow trains in about 2.5 hours on 32 CPU cores, and template placement then takes a few minutes.
 
 ## Install
 
 ```bash
-git clone https://github.com/<user>/isobank.git
+git clone https://github.com/Alexandra-Wernersson/isobank.git
 cd isobank
 pip install -e .
 ```
 
 `lalsuite` supplies the waveform models; everything else is standard scientific
-Python. The pipeline is CPU-only. Set `OMP_NUM_THREADS` to the number of cores
-you actually have — the default (all cores) oversubscribes on shared nodes and
-can slow training down by an order of magnitude.
+Python. The pipeline is CPU-only. 
 
 Conda users can instead run `conda env create -f environment.yml`.
 
@@ -59,9 +56,9 @@ given `--seed`, so a bank can be reproduced exactly.
    approximation is not accurate at placement separations, so this is measured,
    not derived.
 2. **Train.** The flow is fitted to preserve distances at the scales that matter
-   for placement: a scale-invariant global term, plus metric-guided local,
+   for placement: a scale invariant global term, plus metric-guided local,
    boundary and (optionally) edge pairs, trained with a relative loss that
-   up-weights the worst-fitting pairs.
+   gives most weight to the worst fitting pairs.
 3. **Place.** Candidates are drawn, mapped through the flow, and accepted when
    their nearest existing template is farther than the placement radius.
 4. **Validate.** Coverage is always measured with true matches, never inferred
@@ -96,7 +93,7 @@ python figures/plot_match_vs_latent.py --config configs/eccentric_5d.py --out ma
 ```
 
 The last one also prints the mean match at `r_target`, which should equal the
-minimal match if calibration and flow are behaving — a useful end-to-end check.
+minimal match if calibration and flow are behaving (a useful end-to-end check).
 
 ## Adding a parameter space
 
@@ -105,29 +102,6 @@ PSD, the flow size and coupling masks, the pair counts and the output directory.
 Anything left undefined falls back to a default in the scripts. `PARAM_LABELS`
 gives the axis labels used by the figure scripts.
 
-## Tests
-
-```bash
-pip install -e ".[dev]"
-pytest -q
-```
-
-The suite checks flow invertibility, the identity initialisation, the mask
-cycles and the placement radius guarantee. Tests needing a waveform model are
-skipped when `lalsuite` is absent.
-
-## Citing
-
-If you use this code, please cite the accompanying paper:
-
-```bibtex
-@article{isobank,
-  title  = {Learning Approximate Isometric Embeddings for Efficient Template Placement},
-  author = {TODO},
-  year   = {2026},
-  note   = {TODO: arXiv identifier}
-}
-```
 
 ## License and provenance
 
