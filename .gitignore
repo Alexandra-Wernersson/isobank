@@ -1,0 +1,15 @@
+__pycache__/
+*.pyc
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.ipynb_checkpoints/
+
+# generated banks, evaluations and figures
+runs/*/bank*.npy
+runs/*/*_partial.npy
+runs/*/ff*.npy
+*.pdf
+!figures/*.py
+logs/

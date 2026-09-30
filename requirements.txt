@@ -1,0 +1,8 @@
+numpy>=1.24
+scipy>=1.10
+torch>=2.0
+matplotlib>=3.7
+tqdm>=4.65
+lalsuite>=7.0
+# optional: independent validation of the match against PyCBC
+# pycbc>=2.3

@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "isobank"
+version = "0.1.0"
+description = "Template-bank generation with approximately isometric normalizing flows"
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.9"
+keywords = ["gravitational waves", "template bank", "normalizing flows",
+            "isometric embedding", "sphere covering"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering :: Astronomy",
+]
+dependencies = [
+    "numpy>=1.24",
+    "scipy>=1.10",
+    "torch>=2.0",
+    "matplotlib>=3.10",
+    "tqdm>=4.65",
+    "lalsuite>=7.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7.0"]
+validation = ["pycbc>=2.3"]
+
+[tool.setuptools.packages.find]
+include = ["isobank*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
