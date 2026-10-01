@@ -125,7 +125,7 @@ def calibrate_r_target(metric, lo, hi, mu=0.03, n_ref=400, quantile=None,
 	q_dist = q_pass = None
 	if quantile is not None:
 			#bin on d_proper (that is what we are solving for) and track the
-			#FRACTION of pairs meeting the mismatch budget in each bin
+			#fraction of pairs meeting the mismatch budget in each bin
 		edges = np.quantile(d_proper, np.linspace(0, 1, len(fracs) + 2))
 		edges = np.unique(edges)
 		q_dist, q_pass = [], []
@@ -138,12 +138,7 @@ def calibrate_r_target(metric, lo, hi, mu=0.03, n_ref=400, quantile=None,
 				print(f"  qbin {k:2d}: n={sel.sum():4d}  d_proper={q_dist[-1]:.4f}"
 				      f"  frac(mismatch<={mu})={q_pass[-1]:.3f}")
 		q_dist, q_pass = np.array(q_dist), np.array(q_pass)
-			#Solve in DISTANCE order, not by sorting on the pass fraction:
-			#the pass fraction saturates at 1.0 (and at 0.0), so it has ties,
-			#and np.interp on a non-monotonic x silently returns nonsense —
-			#with three tied 1.0 bins a stable sort picks the SMALLEST
-			#distance and the radius comes out ~2.5x too small.
-			#Walk outwards and take the first crossing below the quantile.
+			
 		if q_pass.max() >= quantile > q_pass.min():
 			k = int(np.argmax(q_pass < quantile))      # first bin below
 			if k == 0:

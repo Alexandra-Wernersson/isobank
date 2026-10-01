@@ -9,7 +9,7 @@ proper distance of the waveform-match metric:
 	||flow(theta1) - flow(theta2)||  ~  d_proper(theta1, theta2)
 
 Also provides :func:`wrap_phi`, which wraps a periodic coordinate (e.g. a
-reference phase) to the shortest path before any proper-distance computation
+reference phase) to the shortest path before any proper distance computation
 (mbank's proper_distance does NOT wrap).
 
 """

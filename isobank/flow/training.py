@@ -13,12 +13,6 @@ recipe
 with Adam + cosine LR annealing, gradient clipping, and checkpoint selection
 on p10 (10th percentile of d_z/d_proper at placement scale).
 
-The EDGE set covers a known-hard sub-region (e.g. high eccentricity):
-boundary-scale pairs whose anchors are drawn uniformly in that sub-region.
-Without it, the tiered data mix alone under-weights the edge in the
-placement-scale losses. When an edge set is given, the checkpoint criterion
-becomes  max min(p10_monitor, p10_edge)  so the kept epoch is good on BOTH
-the bulk and the edge.
 """
 
 import sys
@@ -50,12 +44,12 @@ def train_isometric_flow(metric, r_target, variable_format,
 	Parameters
 	----------
 		long_pairs, local_pairs, bound_pairs, monitor_pairs: tuple
-			Each a tuple ``(t1, t2, d_true)`` of theta-space endpoints and
+			Each a tuple ``(t1, t2, d_true)`` of theta space endpoints and
 			proper distances (see :mod:`isobank.pairs`). ``monitor_pairs``
 			must come from held-out anchors.
 		edge_pairs: tuple
-			Optional ``(t1, t2, d_true)`` boundary-scale pairs anchored in a
-			known-hard sub-region; adds the L_edge loss term and switches the
+			Optional ``(t1, t2, d_true)`` boundary scale pairs anchored in a
+			known hard sub-region; adds the L_edge loss term and switches the
 			checkpoint criterion to max min(p10_monitor, p10_edge).
 		degen_pairs: tuple
 			Optional ``(t1, t2, d_true)`` pairs stepping along the metric's
@@ -63,9 +57,7 @@ def train_isometric_flow(metric, r_target, variable_format,
 			:func:`isobank.pairs.degenerate_direction_pairs`). Adds
 			``w_degen * L_degen`` (ratio loss) which pulls the flow to map the
 			soft directions to their small true proper distance, removing the
-			template redundancy that inflates the bank. The soft-direction
-			ratio is monitored (``degen_med``) so over-expansion (ratio > 1)
-			can be seen shrinking toward 1 during training.
+			template redundancy that inflates the bank. 
 		weights: tuple
 			(w_global, w_local, w_bound, w_edge)
 		depth: int

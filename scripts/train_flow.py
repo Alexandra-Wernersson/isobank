@@ -7,7 +7,7 @@ Step 1 calibrates r_target: the proper distance at which the mean true waveform
 mismatch equals mu (the target mismatch). It is skipped if r_target already
 exists, unless --recalibrate is given.
 
-Step 2 generates the training pairs (long-range, metric-guided local, boundary
+Step 2 generates the training pairs (long range, metric-guided local, boundary
 and, if the config defines a hard sub-region, edge pairs) and trains the flow.
 
 Outputs (paths come from the config): r_target.npy, flow_best.pt, flow_final.pt.

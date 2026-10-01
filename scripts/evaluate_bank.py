@@ -6,9 +6,9 @@ evaluate_bank.py -- measure the coverage of a bank with true waveform matches.
 
 Injections are drawn uniformly in the coordinates of the parameter space
 (respecting the config's validity mask), independently of the bank. For each
-injection the fitting factor is the maximum TRUE waveform match over the bank.
+injection the fitting factor is the maximum true waveform match over the bank.
 
-A brute-force search over every template is too expensive for large banks, so
+A brute force search over every template is too expensive for large banks, so
 exact matches are computed only against the k templates nearest to the
 injection in the flow's latent space. The latent space is used solely to
 shortlist candidates: every reported match is exact. The script prints

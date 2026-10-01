@@ -14,15 +14,7 @@ The training recipe (validated across 2D/4D/5D spaces):
 - ``L_bound`` — ratio loss on boundary pairs at [0.5, 1.5] x r_target, the
   scale template placement actually operates at; hence its large weight.
 
-The ratio losses up-weight the worst tail (top ``tail_frac`` of squared
-errors get an extra ``tail_w`` weight) so the flow is pushed on its worst
-regions, and are clamped to avoid single catastrophic pairs destabilising
-training.
 
-Checkpoint selection: keep the epoch whose **held-out monitor p10** (10th
-percentile of d_z / d_proper on unseen boundary pairs) is closest to 1.
-p10 (not the median) is what matters: templates are placed at fixed z-space
-separation, so the under-expanded tail is where coverage holes appear.
 """
 
 import numpy as np

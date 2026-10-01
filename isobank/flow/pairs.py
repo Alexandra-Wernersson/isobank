@@ -2,7 +2,7 @@
 isobank.pairs
 =============
 
-Training-pair generation for the isometric flow. Three kinds of pairs are
+Training pair generation for the isometric flow. Three kinds of pairs are
 used, all with TRUE proper distances from :meth:`cbc_metric.proper_distance`:
 
 - **long-range pairs**: random point pairs, teach the global layout
@@ -156,25 +156,7 @@ def degenerate_direction_pairs(data, g_all, n_pairs, lo, hi, seed,
                                n_soft=2, mag_range=(0.02, 0.5),
                                valid_fn=None, phi_col=None, max_iter=8_000_000):
 	"""
-	Pairs that step along the SMALLEST-eigenvalue eigenvector(s) of the local
-	metric — the near-degenerate directions.
 
-	A random-direction step (:func:`metric_guided_pairs`) almost never samples
-	these directions, because ``v @ g @ v`` for ``v ~ N(0, I)`` is dominated by
-	the stiff eigenvalues. The flow therefore never learns to collapse the soft
-	directions and over-expands them in latent space, so greedy placement keeps
-	physically near-identical templates that differ only along them. On the
-	eccentric 5D bank this was measured directly: the median nearest-neighbour
-	proper distance was 0.68 r_target (efficient packing ~1.0), a ~2x template
-	redundancy, and the redundant pairs differed mainly along a tilted
-	eigenvector in the mass plane — NOT along a soft coordinate axis, which is
-	why targeting the metric's eigenvectors (not the coordinates) is the fix.
-
-	Each pair steps a LARGE coordinate distance along a soft eigenvector but has
-	a SMALL true proper distance. Filtered to the placement band by the caller
-	(``filter_by_distance``) and trained with the ratio loss like the local /
-	boundary pairs, this teaches the flow to map the soft direction to small
-	latent extent, removing the redundancy.
 
 	Parameters
 	----------
@@ -183,23 +165,16 @@ def degenerate_direction_pairs(data, g_all, n_pairs, lo, hi, seed,
 		g_all: :class:`~numpy:numpy.ndarray`
 			shape (N, D, D) - metric at each anchor. A negative smallest
 			eigenvalue (the hessian is numerically unstable in near-degenerate
-			regions) is fine: only the eigenVECTOR is used for the direction,
+			regions) is fine: only the eigenvector is used for the direction,
 			and the TRUE proper distance is the training target.
 		n_soft: int
-			Step along one of the ``n_soft`` smallest-eigenvalue eigenvectors,
+			Step along one of the ``n_soft`` smallest eigenvalue eigenvectors,
 			chosen at random per anchor (2 covers both soft directions of the
 			eccentric 5D metric; the very smallest is typically the NS-spin
 			axis, the second the mass-plane degeneracy that drives redundancy).
 		mag_range: tuple
-			Step magnitude as a fraction of the DISTANCE-TO-BOUNDARY along the
-			chosen eigenvector (not of the box diagonal). This is essential:
-			the eigenvectors have wildly different in-box extents — the
-			mass-plane degenerate direction hits the narrow secondary-mass
-			bound almost immediately, while a fixed diagonal-fraction step
-			leaves the box and is rejected, silently starving training of the
-			very direction that drives the redundancy. Scaling by the
-			per-direction boundary distance samples every eigenvector uniformly.
-
+			Step magnitude as a fraction of the distance-to-boundary along the
+			chosen eigenvector (not of the box diagonal). 
 	Returns
 	-------
 		t1, t2: :class:`torch.Tensor`

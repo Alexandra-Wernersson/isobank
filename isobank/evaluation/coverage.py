@@ -5,11 +5,11 @@ isobank.coverage
 TRUE-match coverage validation of a template bank.
 
 For each injection drawn uniformly in the physical space, find the K nearest
-templates by z-distance (cKDTree) and compute the TRUE waveform match against
+templates by z-distance (cKDTree) and compute the true waveform match against
 each; the fitting factor is the best of the K. Coverage is the fraction of
 injections with FF >= 1 - mu.
 
-Always validate with TRUE matches: the proper-distance proxy can overstate
+Always validate with TRUE matches: the proper distance proxy can overstate
 coverage by ~10 percentage points in the worst regions.
 """
 
