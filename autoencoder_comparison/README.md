@@ -14,16 +14,32 @@ data, metric, monitoring pairs, placement and fitting-factor protocol as isobank
 
 ## First results (laptop, 3000 epochs)
 
-d_z/d_proper on the held-out monitoring pairs (isobank's flow: p10 = 0.96 in `configs/eccentric_5d.py`):
+A quick check that the latent space preserves distances, before placing any bank. It uses ~3000 held-out pairs at
+placement scale (0.5–1.5 r_target), built as isobank's monitoring pairs. For each pair,
 
-| Autoencoder | p10 | median | p90 |
-|---|---|---|---|
-| latent 5, metric loss on the encoder | 0.83 | 0.99 | 1.03 |
-| latent 5, metric loss on the decoder (Appendix B) | 0.58 | 0.97 | 2.95 |
-| latent 3, metric loss on the decoder | 0.04 | 0.18 | 1.01 |
+    ratio = latent distance / true proper distance
+
+which is 1 for a perfect map. The table gives its percentiles:
+
+- **median**: the typical pair; near 1 means distances are right on average;
+- **p10**: the most shrunk pairs; below 1 means templates too sparse there, so missed signals
+  (isobank's flow: p10 = 0.96, in `configs/eccentric_5d.py`);
+- **p90**: the most stretched pairs; above 1 means wasted templates.
+
+| Autoencoder | p10 | median | p90 | In words |
+|---|---|---|---|---|
+| latent 5, metric loss on the encoder | 0.83 | 0.99 | 1.03 | right on average; the worst 10 % shrunk by ≥ 17 % |
+| latent 5, metric loss on the decoder (Appendix B) | 0.58 | 0.97 | 2.95 | right on average; large errors both ways |
+| latent 3, metric loss on the decoder | 0.04 | 0.18 | 1.01 | fails: distances collapse |
+
+"Encoder" or "decoder" is the network the metric loss is applied to (the Appendix B example uses the decoder);
+"latent 3" compresses the 5D space, as the 10 → 2 GW example of the paper does.
 
 The metric is very anisotropic (scaled eigenvalues up to 1e7, condition number ~1e11), which the decoder loss
 handles worst. A 3D latent collapses distances: the space doesn't reduce to 3 dimensions at this spacing.
+
+This doesn't say whether the errors cost coverage: the condor run does, by placing a bank with each method and
+computing fitting factors. It also retrains isobank and scores it on the same pairs.
 
 ## Running at Nikhef
 
