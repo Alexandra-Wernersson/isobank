@@ -1,5 +1,5 @@
 # One step of comparison.dag. Edit the three lines below before submitting.
-repo      = /project/<group>/<user>/isobank
+repo      = /data/gravwav/lopezm/Projects/isobank
 conda_env = /data/gravwav/lopezm/cmb_env/miniforge3/envs/isobank
 group     = <your accounting group, from `id`>
 # placement radius in units of r_target (calibrated from the config's MU); 1.0 as scripts/generate_bank.py

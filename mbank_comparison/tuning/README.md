@@ -48,7 +48,7 @@ mamba env create -f /project/<group>/<user>/isobank/environment.yml -p /project/
 /project/<group>/<user>/conda/envs/isobank-mbank/bin/pip install --no-deps -e /project/<group>/<user>/mbank
 
 # edit the five lines at the top of mbank_comparison/tuning/step.sub (paths, accounting group), then
-mkdir -p /data/<group>/<user>/mbank_tuning/logs                 # the `work` folder of step.sub
+mkdir -p /data/gravwav/lopezm/Projects/mbank_tuning/logs                 # the `work` folder of step.sub
 cd /project/<group>/<user>/isobank/mbank_comparison/tuning && condor_submit_dag tuning.dag
 ```
 
