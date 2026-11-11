@@ -1,0 +1,13 @@
+name: isobank
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - numpy>=1.24
+  - scipy>=1.10
+  - matplotlib>=3.7
+  - tqdm>=4.65
+  - lalsuite>=7.0
+  - pytorch>=2.0
+variables:
+  OMP_NUM_THREADS: "1"  # lalsimulation 7.0.0 TaylorF2Ecc is not reproducible with more threads

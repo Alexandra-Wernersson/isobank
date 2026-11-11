@@ -1,0 +1,41 @@
+# isobank vs metric-preserving autoencoders, eccentric 5D: train, place, score, plot.
+# Submit from this folder: condor_submit_dag comparison.dag
+
+JOB train_isobank    step.sub
+JOB ae_data          step.sub
+JOB train_ae_encoder step.sub
+JOB train_ae_decoder step.sub
+JOB bank_isobank     step.sub
+JOB bank_ae_encoder  step.sub
+JOB bank_ae_decoder  step.sub
+JOB ff_isobank       step.sub
+JOB ff_ae_encoder    step.sub
+JOB ff_ae_decoder    step.sub
+JOB plots            step.sub
+
+VARS train_isobank    step="train_isobank"    category="long"   memory="8G"
+VARS ae_data          step="ae_data"          category="short"  memory="8G"
+VARS train_ae_encoder step="train_ae_encoder" category="medium" memory="8G"
+VARS train_ae_decoder step="train_ae_decoder" category="medium" memory="8G"
+VARS bank_isobank     step="bank_isobank"     category="long"   memory="16G"
+VARS bank_ae_encoder  step="bank_ae_encoder"  category="long"   memory="16G"
+VARS bank_ae_decoder  step="bank_ae_decoder"  category="long"   memory="16G"
+VARS ff_isobank       step="ff_isobank"       category="medium" memory="8G"
+VARS ff_ae_encoder    step="ff_ae_encoder"    category="medium" memory="8G"
+VARS ff_ae_decoder    step="ff_ae_decoder"    category="medium" memory="8G"
+VARS plots            step="plots"            category="express" memory="4G"
+
+PARENT ae_data CHILD train_ae_encoder train_ae_decoder
+PARENT train_isobank CHILD bank_isobank
+PARENT train_ae_encoder CHILD bank_ae_encoder
+PARENT train_ae_decoder CHILD bank_ae_decoder
+# the fitting factors use isobank's flow for the shortlist, as for the mbank bank
+PARENT bank_isobank CHILD ff_isobank
+PARENT bank_ae_encoder train_isobank CHILD ff_ae_encoder
+PARENT bank_ae_decoder train_isobank CHILD ff_ae_decoder
+PARENT ff_isobank ff_ae_encoder ff_ae_decoder CHILD plots
+
+# placement resumes from its partial bank when retried
+RETRY bank_isobank 2
+RETRY bank_ae_encoder 2
+RETRY bank_ae_decoder 2

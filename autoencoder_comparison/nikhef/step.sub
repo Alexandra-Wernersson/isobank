@@ -1,0 +1,19 @@
+# One step of comparison.dag. Edit the three lines below before submitting.
+repo   = /project/<group>/<user>/isobank
+env    = /project/<group>/<user>/conda/envs/isobank
+group  = <your accounting group, from `id`>
+# placement radius in units of r_target (calibrated from the config's MU); 1.0 as scripts/generate_bank.py
+radius = 1.0
+
+executable       = $(repo)/autoencoder_comparison/nikhef/step.sh
+arguments        = $(step) $(repo) $(env) $(radius)
+initialdir       = $(repo)
+output           = $(repo)/logs/$(step).out
+error            = $(repo)/logs/$(step).err
+log              = $(repo)/logs/condor.log
+request_cpus     = 1
+request_memory   = $(memory)
+accounting_group = $(group)
++UseOS           = "el9"
++JobCategory     = "$(category)"
+queue
