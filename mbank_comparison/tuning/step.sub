@@ -1,12 +1,12 @@
 # One step of tuning.dag. Edit the five lines below before submitting.
 isobank = /project/<group>/<user>/isobank
 mbank   = /project/<group>/<user>/mbank
-env     = /project/<group>/<user>/conda/envs/isobank-mbank
+conda_env     = /project/<group>/<user>/conda/envs/isobank-mbank
 work    = /data/<group>/<user>/mbank_tuning
 group   = <your accounting group, from `id`>
 
 executable       = $(isobank)/mbank_comparison/tuning/step.sh
-arguments        = $(step) $(name) $(isobank) $(mbank) $(env) $(work)
+arguments        = $(step) $(name) $(isobank) $(mbank) $(conda_env) $(work)
 initialdir       = $(isobank)/mbank_comparison/tuning
 output           = $(work)/logs/$(step)_$(name).out
 error            = $(work)/logs/$(step)_$(name).err

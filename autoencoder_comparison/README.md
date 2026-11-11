@@ -54,7 +54,7 @@ cd /project/<group>/<user>/isobank && mkdir -p logs
 mamba env create -f autoencoder_comparison/nikhef/environment.yml -p /project/<group>/<user>/conda/envs/isobank
 
 # 3. edit the three lines at the top of autoencoder_comparison/nikhef/step.sub:
-#    repo, env (the two paths above), group (your accounting group, from `id`)
+#    repo, conda_env (the two paths above), group (your accounting group, from `id`)
 
 # 4. submit
 cd autoencoder_comparison/nikhef && condor_submit_dag comparison.dag
