@@ -1,13 +1,16 @@
+# The versions of the Snellius runs (../../environment.yml), limited to what isobank needs.
 name: isobank
 channels:
   - conda-forge
 dependencies:
-  - python=3.11
-  - numpy>=1.24
-  - scipy>=1.10
-  - matplotlib>=3.7
-  - tqdm>=4.65
-  - lalsuite>=7.0
-  - pytorch>=2.0
+  - python=3.10
+  - pip
+  - pip:
+      - numpy==1.25.2
+      - scipy==1.9.3
+      - matplotlib==3.7.1
+      - tqdm==4.65.0
+      - lalsuite==7.13      # lalsimulation 5.0.0
+      - torch==2.5.1
 variables:
-  OMP_NUM_THREADS: "1"  # lalsimulation 7.0.0 TaylorF2Ecc is not reproducible with more threads
+  OMP_NUM_THREADS: "1"  # needed with lalsimulation 7.0.0 (TaylorF2Ecc not reproducible with more threads)
