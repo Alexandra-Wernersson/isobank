@@ -1,7 +1,6 @@
-# One step of comparison.dag. Edit the three lines below before submitting.
+# One step of comparison.dag. Check the paths below before submitting.
 repo      = /data/gravwav/lopezm/Projects/isobank
 conda_env = /data/gravwav/lopezm/cmb_env/miniforge3/envs/isobank
-group     = <your accounting group, from `id`>
 # placement radius in units of r_target (calibrated from the config's MU); 1.0 as scripts/generate_bank.py
 radius    = 1.0
 
@@ -13,7 +12,6 @@ error            = $(repo)/logs/$(step).err
 log              = $(repo)/logs/condor.log
 request_cpus     = 1
 request_memory   = $(memory)
-accounting_group = $(group)
 +UseOS           = "el9"
 +JobCategory     = "$(category)"
 queue

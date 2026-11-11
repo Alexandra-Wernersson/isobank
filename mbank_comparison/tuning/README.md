@@ -47,7 +47,7 @@ git clone git@github.com:MelissaLP/mbank.git /data/gravwav/lopezm/Projects/mbank
 mamba env create -f /data/gravwav/lopezm/Projects/isobank/environment.yml -p /data/gravwav/lopezm/cmb_env/miniforge3/envs/isobank-mbank
 /data/gravwav/lopezm/cmb_env/miniforge3/envs/isobank-mbank/bin/pip install --no-deps -e /data/gravwav/lopezm/Projects/mbank
 
-# edit the five lines at the top of mbank_comparison/tuning/step.sub (paths, accounting group), then
+# check the paths at the top of mbank_comparison/tuning/step.sub, then
 mkdir -p /data/gravwav/lopezm/Projects/mbank_tuning/logs                 # the `work` folder of step.sub
 cd /data/gravwav/lopezm/Projects/isobank/mbank_comparison/tuning && condor_submit_dag tuning.dag
 ```

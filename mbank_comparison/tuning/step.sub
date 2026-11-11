@@ -1,9 +1,8 @@
-# One step of tuning.dag. Edit the five lines below before submitting.
+# One step of tuning.dag. Check the paths below before submitting.
 isobank   = /data/gravwav/lopezm/Projects/isobank
 mbank     = /data/gravwav/lopezm/Projects/mbank
 conda_env = /data/gravwav/lopezm/cmb_env/miniforge3/envs/isobank-mbank
 work      = /data/gravwav/lopezm/Projects/mbank_tuning
-group     = <your accounting group, from `id`>
 
 executable       = $(isobank)/mbank_comparison/tuning/step.sh
 arguments        = $(step) $(name) $(isobank) $(mbank) $(conda_env) $(work)
@@ -13,7 +12,6 @@ error            = $(work)/logs/$(step)_$(name).err
 log              = $(work)/logs/condor.log
 request_cpus     = 1
 request_memory   = 8G
-accounting_group = $(group)
 +UseOS           = "el9"
 +JobCategory     = "$(category)"
 queue

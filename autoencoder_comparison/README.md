@@ -53,8 +53,7 @@ cd /data/gravwav/lopezm/Projects/isobank && mkdir -p logs
 # 2. env (miniforge, if you don't have conda: https://github.com/conda-forge/miniforge)
 mamba env create -f autoencoder_comparison/nikhef/environment.yml -p /data/gravwav/lopezm/cmb_env/miniforge3/envs/isobank
 
-# 3. edit the three lines at the top of autoencoder_comparison/nikhef/step.sub:
-#    repo, conda_env (the two paths above), group (your accounting group, from `id`)
+# 3. check the two paths at the top of autoencoder_comparison/nikhef/step.sub (repo, conda_env)
 
 # 4. submit
 cd autoencoder_comparison/nikhef && condor_submit_dag comparison.dag
