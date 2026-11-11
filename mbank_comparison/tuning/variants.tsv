@@ -1,0 +1,16 @@
+# name	dataset	flow	train options	placement options
+# dataset: d15k (as the paper) or d50k; flow: train, or the name of a variant whose flow is reused; "-" means none
+paper_a	d15k	train	-	-
+paper_b	d15k	train	-	-
+paper_c	d15k	train	-	-
+weighted_0.5	d15k	train	--loss-function weighted_ll_mse --weight-exponent 0.5	-
+weighted_1	d15k	train	--loss-function weighted_ll_mse --weight-exponent 1.0	-
+quantile_0.5	d15k	train	--constant-quantile 0.5	-
+quantile_0.99	d15k	train	--constant-quantile 0.99	-
+padding_0.001	d15k	train	--boundary-padding 0.001	-
+padding_0.05	d15k	train	--boundary-padding 0.05	-
+lr_0.0005	d15k	train	--learning-rate 0.0005	-
+batch_1000	d15k	train	--batch-size 1000	-
+data_50k	d50k	train	-	-
+is_wmax_10	d15k	paper_a	-	--importance-sampling --w-max 10
+is_no_clip	d15k	paper_a	-	--importance-sampling --w-max 1e30
