@@ -1,15 +1,31 @@
-name: isobank
+# Environment for the isobank vs mbank comparison: the isobank environment (isobank/environment-pinned.yml) plus mbank and its dependencies.
+# Versions are those of the virtual environment the runs used on Snellius (Python 3.10.4).
+#
+#   conda env create -f environment.yml
+#   conda activate isobank-mbank
+#
+# Two packages are not installed from an index; see README.md ("Environment"):
+#   * mbank: upstream commit 9df83eb plus the local changes in mbank_local_changes.patch
+#   * isobank: the local package (isobank_testing/ on Snellius), put on PYTHONPATH
+name: isobank-mbank
 channels:
   - conda-forge
 dependencies:
-  - python>=3.9
-  - numpy>=1.24
-  - scipy>=1.10
-  - pytorch>=2.0
-  - matplotlib>=3.7
-  - tqdm>=4.65
-  - lalsuite>=7.0
+  - python=3.10
   - pip
   - pip:
-      # optional: independent validation of the match against PyCBC
-      # - pycbc>=2.3
+      - numpy==1.25.2
+      - scipy==1.9.3
+      - matplotlib==3.7.1
+      - pandas==1.5.3
+      - seaborn==0.12.2
+      - scikit-learn==1.3.1
+      - h5py==3.10.0
+      - tqdm==4.65.0
+      - lalsuite==7.13            # waveforms (TaylorF2Ecc, IMRPhenomD, IMRPhenomXP) and PSD handling
+      - python-ligo-lw==1.8.3
+      - torch==2.5.1              # runs used the CUDA 12.1 build, but everything here runs on CPU
+      - nflows==0.14              # mbank's normalizing flow
+      - glasflow==0.4.1
+      - emcee==3.0.2              # mbank dependency; newer emcee needs run_mbank_cli.py
+      - ray==2.44.1               # mbank dependency (parallel injections)
