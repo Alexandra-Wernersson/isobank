@@ -43,15 +43,15 @@ computing fitting factors. It also retrains isobank and scores it on the same pa
 
 ## Running at Nikhef
 
-On an interactive node (`ssh stbc-i1`), with the code on `/project` (or `/data`):
+On an interactive node (`ssh stbc-i1`):
 
 ```bash
 # 1. code: the iclr branch with this folder
-git clone -b iclr git@github.com:Alexandra-Wernersson/isobank.git /project/<group>/<user>/isobank
-cd /project/<group>/<user>/isobank && mkdir -p logs
+git clone -b iclr git@github.com:Alexandra-Wernersson/isobank.git /data/gravwav/lopezm/Projects/isobank
+cd /data/gravwav/lopezm/Projects/isobank && mkdir -p logs
 
 # 2. env (miniforge, if you don't have conda: https://github.com/conda-forge/miniforge)
-mamba env create -f autoencoder_comparison/nikhef/environment.yml -p /project/<group>/<user>/conda/envs/isobank
+mamba env create -f autoencoder_comparison/nikhef/environment.yml -p /data/gravwav/lopezm/cmb_env/miniforge3/envs/isobank
 
 # 3. edit the three lines at the top of autoencoder_comparison/nikhef/step.sub:
 #    repo, conda_env (the two paths above), group (your accounting group, from `id`)

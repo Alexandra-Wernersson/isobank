@@ -40,16 +40,16 @@ On `stbc-i1`:
 
 ```bash
 # code: this repository (iclr) and the mbank fork
-git clone -b iclr git@github.com:Alexandra-Wernersson/isobank.git /project/<group>/<user>/isobank
-git clone git@github.com:MelissaLP/mbank.git /project/<group>/<user>/mbank
+git clone -b iclr git@github.com:Alexandra-Wernersson/isobank.git /data/gravwav/lopezm/Projects/isobank
+git clone git@github.com:MelissaLP/mbank.git /data/gravwav/lopezm/Projects/mbank
 
 # env: the versions of the Snellius runs, plus mbank from the fork
-mamba env create -f /project/<group>/<user>/isobank/environment.yml -p /project/<group>/<user>/conda/envs/isobank-mbank
-/project/<group>/<user>/conda/envs/isobank-mbank/bin/pip install --no-deps -e /project/<group>/<user>/mbank
+mamba env create -f /data/gravwav/lopezm/Projects/isobank/environment.yml -p /data/gravwav/lopezm/cmb_env/miniforge3/envs/isobank-mbank
+/data/gravwav/lopezm/cmb_env/miniforge3/envs/isobank-mbank/bin/pip install --no-deps -e /data/gravwav/lopezm/Projects/mbank
 
 # edit the five lines at the top of mbank_comparison/tuning/step.sub (paths, accounting group), then
 mkdir -p /data/gravwav/lopezm/Projects/mbank_tuning/logs                 # the `work` folder of step.sub
-cd /project/<group>/<user>/isobank/mbank_comparison/tuning && condor_submit_dag tuning.dag
+cd /data/gravwav/lopezm/Projects/isobank/mbank_comparison/tuning && condor_submit_dag tuning.dag
 ```
 
 The fitting factors use isobank's flow to shortlist templates. The `isobank_flow` step trains it, unless
