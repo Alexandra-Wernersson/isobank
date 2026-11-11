@@ -1,9 +1,9 @@
 # One step of tuning.dag. Edit the five lines below before submitting.
-isobank = /project/<group>/<user>/isobank
-mbank   = /project/<group>/<user>/mbank
-conda_env     = /project/<group>/<user>/conda/envs/isobank-mbank
-work    = /data/<group>/<user>/mbank_tuning
-group   = <your accounting group, from `id`>
+isobank   = /project/<group>/<user>/isobank
+mbank     = /project/<group>/<user>/mbank
+conda_env = /data/gravwav/lopezm/cmb_env/miniforge3/envs/isobank-mbank
+work      = /data/gravwav/lopezm/mbank_tuning
+group     = <your accounting group, from `id`>
 
 executable       = $(isobank)/mbank_comparison/tuning/step.sh
 arguments        = $(step) $(name) $(isobank) $(mbank) $(conda_env) $(work)
