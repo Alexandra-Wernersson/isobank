@@ -1,0 +1,17 @@
+# Fitting factors of one variant: n_jobs parts (mode = part) or their join (mode = join, n_jobs = 1).
+# Paths as in step.sub.
+isobank   = /data/gravwav/lopezm/Projects/isobank
+conda_env = /data/gravwav/lopezm/cmb_env/miniforge3/envs/isobank-mbank
+work      = /data/gravwav/lopezm/Projects/mbank_tuning
+
+executable       = $(isobank)/mbank_comparison/tuning/ff_step.sh
+arguments        = $(mode) $(name) $(Process) $(n_parts) $(isobank) $(conda_env) $(work)
+initialdir       = $(isobank)/mbank_comparison/tuning
+output           = $(work)/logs/ff_$(mode)_$(name)_$(Process).out
+error            = $(work)/logs/ff_$(mode)_$(name)_$(Process).err
+log              = $(work)/logs/condor.log
+request_cpus     = 1
+request_memory   = 8G
++UseOS           = "el9"
++JobCategory     = "$(category)"
+queue $(n_jobs)

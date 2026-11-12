@@ -2,14 +2,16 @@
 make_dag.py -- write tuning.dag from variants.tsv: python make_dag.py
 
 Per variant: train (or reuse another variant's flow), place, diagnose and
-score; the datasets and isobank's flow (for the fitting-factor shortlist)
-first, the plots last.
+score, the fitting factors in FF_PARTS parallel jobs and their join (ff.sub);
+the datasets and isobank's flow (for the fitting-factor shortlist) first, the
+plots last.
 """
 import os
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 CATEGORY = dict(isobank_flow='long', dataset='short', train='medium', diagnose='short',
                 place='medium', ff='medium', plots='express')
+FF_PARTS = 3          # per variant: 14 variants x 3 = 42 CPUs, about 1.5 h instead of 4 h
 
 
 def job_name(step, name):
@@ -35,9 +37,12 @@ def main():
 
     leaves = []
     for name, ds, flow, *_ in variants:
-        for step in ('train', 'place', 'diagnose', 'ff'):
+        for step in ('train', 'place', 'diagnose'):
             jobs.append(node(step, name)[1])
-        j = {step: job_name(step, name) for step in ('train', 'place', 'diagnose', 'ff')}
+        j = {step: job_name(step, name) for step in ('train', 'place', 'diagnose', 'ffparts', 'ffjoin')}
+        for step, mode, n_jobs, cat in (('ffparts', 'part', FF_PARTS, 'medium'), ('ffjoin', 'join', 1, 'express')):
+            jobs.append(f'JOB {j[step]} ff.sub\nVARS {j[step]} mode="{mode}" name="{name}" n_parts="{FF_PARTS}" '
+                        f'n_jobs="{n_jobs}" category="{cat}"\n')
         if flow == 'train':
             edges.append(f"PARENT {job_name('dataset', ds)} CHILD {j['train']}")
         elif flow in names:
@@ -45,8 +50,9 @@ def main():
         else:
             raise SystemExit(f'{name}: flow must be "train" or a variant name, not {flow!r}')
         edges += [f"PARENT {j['train']} CHILD {j['place']} {j['diagnose']}",
-                  f"PARENT {j['place']} isobank_flow CHILD {j['ff']}"]
-        leaves += [j['ff'], j['diagnose']]
+                  f"PARENT {j['place']} isobank_flow CHILD {j['ffparts']}",
+                  f"PARENT {j['ffparts']} CHILD {j['ffjoin']}"]
+        leaves += [j['ffjoin'], j['diagnose']]
     jobs.append(node('plots', None)[1])
     edges.append(f'PARENT {" ".join(leaves)} CHILD plots')
 

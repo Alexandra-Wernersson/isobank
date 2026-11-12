@@ -60,6 +60,11 @@ running, submit this one once its `train_isobank` step has finished, so the two 
 The steps run mbank's scripts from the fork's `bin/`, through `../mbank_placement/run_mbank_cli.py` as the
 paper's runs did, one CPU each with `OMP_NUM_THREADS=1`. Logs: `WORK/logs/<step>_<variant>.out` and `.err`.
 
+The fitting factors of each variant run in 3 parallel jobs (`FF_PARTS` in `make_dag.py`; `ff.sub`,
+`ff_step.sh`, `../../autoencoder_comparison/ff_parallel.py`), then a join that writes `ff.npy`. Results are
+identical to one `evaluate_bank.py` run, but take about 1.5 h instead of 4 h. The sweep uses at most 42 CPUs at
+once. Logs: `WORK/logs/ff_part_<variant>_<i>.out`, `ff_join_<variant>_0.out`.
+
 A command-line value equal to mbank's parser default is overridden by `base.ini`: e.g. `--learning-rate 0.001`
 (mbank's default) would leave the ini's 0.005 in place. Check `args_*.json` in a variant's folder for the
 values a run used.
