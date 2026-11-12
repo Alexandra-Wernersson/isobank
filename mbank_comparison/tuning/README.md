@@ -31,8 +31,9 @@ The variants need options added to mbank in the fork [MelissaLP/mbank](https://g
 `--constant-quantile`, `--boundary-padding`, `--weight-exponent`, `--importance-sampling` and `--w-max`.
 Their defaults are mbank's hard-coded values, so the paper's runs are unchanged.
 
-`../../environment.yml` says that the paper's mbank is upstream commit 9df83eb plus `mbank_local_changes.patch`.
-The fork is at 9df83eb, but the patch isn't in the repository yet: apply it to the fork when you have it.
+The paper's mbank is upstream commit 9df83eb plus `../../mbank_local_changes.patch` (`../../environment.yml`).
+The fork has the patch applied. Of its changes, two affect results: gradient clipping (max norm 5) in the
+flow training, and points outside the flow's range no longer raise an error.
 
 ## Running at Nikhef
 
