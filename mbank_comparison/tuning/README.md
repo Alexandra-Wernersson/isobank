@@ -44,9 +44,12 @@ On `stbc-i1`:
 git clone -b iclr git@github.com:Alexandra-Wernersson/isobank.git /data/gravwav/lopezm/Projects/isobank
 git clone git@github.com:MelissaLP/mbank.git /data/gravwav/lopezm/Projects/mbank
 
-# env: the versions of the Snellius runs, plus mbank from the fork
-mamba env create -f /data/gravwav/lopezm/Projects/isobank/environment.yml -p /data/gravwav/lopezm/cmb_env/miniforge3/envs/isobank-mbank
-/data/gravwav/lopezm/cmb_env/miniforge3/envs/isobank-mbank/bin/pip install --no-deps -e /data/gravwav/lopezm/Projects/mbank
+# env isobank-mbank: the pins of the isobank env plus mbank's dependencies, and mbank from the fork
+# (a separate env, so the isobank env of the autoencoder runs is left as it is)
+E=/data/gravwav/lopezm/cmb_env/miniforge3/envs/isobank-mbank
+conda env create -f /data/gravwav/lopezm/Projects/isobank/environment.yml -p $E
+$E/bin/pip install --no-deps -e /data/gravwav/lopezm/Projects/mbank
+$E/bin/python -c "import mbank, torch, lalsimulation, glasflow; print(mbank.__file__)"   # a path in Projects/mbank
 
 # check the paths at the top of mbank_comparison/tuning/step.sub, then
 mkdir -p /data/gravwav/lopezm/Projects/mbank_tuning/logs                 # the `work` folder of step.sub

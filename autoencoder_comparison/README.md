@@ -124,7 +124,7 @@ git clone -b iclr git@github.com:Alexandra-Wernersson/isobank.git /data/gravwav/
 cd /data/gravwav/lopezm/Projects/isobank && mkdir -p logs
 
 # 2. env (miniforge, if you don't have conda: https://github.com/conda-forge/miniforge)
-mamba env create -f autoencoder_comparison/nikhef/environment.yml -p /data/gravwav/lopezm/cmb_env/miniforge3/envs/isobank
+conda env create -f autoencoder_comparison/nikhef/environment.yml -p /data/gravwav/lopezm/cmb_env/miniforge3/envs/isobank
 
 # 3. check the two paths at the top of autoencoder_comparison/nikhef/step.sub (repo, conda_env)
 
