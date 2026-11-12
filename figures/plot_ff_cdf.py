@@ -16,7 +16,7 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
-PALETTE = ['#0284c7', '#d97706', '#059669', '#7c3aed', '#dc2626']
+PALETTE = ['#0284c7', '#d97706', '#059669', '#7c3aed', '#dc2626', '#db2777']
 
 
 def main():

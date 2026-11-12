@@ -1,0 +1,94 @@
+# The sub-bank test with 20 sub-banks instead of 10: 20 autoencoders per latent size, then the bank sizes and
+# the plot again with every model trained so far (one bank, 10 and 20 sub-banks). Needs the data step of
+# svd_ae.dag (done); independent of svd_ae_subbanks.dag. Submit from this folder:
+#   condor_submit_dag svd_ae_subbanks20.dag
+# At most 40 CPUs at once (40 trainings x 1), then 50 single-CPU count jobs.
+
+JOB train_ae3_sb0of20 step.sub
+VARS train_ae3_sb0of20 step="train_ae3_sb0of20" cpus="1" memory="4G" category="medium"
+JOB train_ae3_sb1of20 step.sub
+VARS train_ae3_sb1of20 step="train_ae3_sb1of20" cpus="1" memory="4G" category="medium"
+JOB train_ae3_sb2of20 step.sub
+VARS train_ae3_sb2of20 step="train_ae3_sb2of20" cpus="1" memory="4G" category="medium"
+JOB train_ae3_sb3of20 step.sub
+VARS train_ae3_sb3of20 step="train_ae3_sb3of20" cpus="1" memory="4G" category="medium"
+JOB train_ae3_sb4of20 step.sub
+VARS train_ae3_sb4of20 step="train_ae3_sb4of20" cpus="1" memory="4G" category="medium"
+JOB train_ae3_sb5of20 step.sub
+VARS train_ae3_sb5of20 step="train_ae3_sb5of20" cpus="1" memory="4G" category="medium"
+JOB train_ae3_sb6of20 step.sub
+VARS train_ae3_sb6of20 step="train_ae3_sb6of20" cpus="1" memory="4G" category="medium"
+JOB train_ae3_sb7of20 step.sub
+VARS train_ae3_sb7of20 step="train_ae3_sb7of20" cpus="1" memory="4G" category="medium"
+JOB train_ae3_sb8of20 step.sub
+VARS train_ae3_sb8of20 step="train_ae3_sb8of20" cpus="1" memory="4G" category="medium"
+JOB train_ae3_sb9of20 step.sub
+VARS train_ae3_sb9of20 step="train_ae3_sb9of20" cpus="1" memory="4G" category="medium"
+JOB train_ae3_sb10of20 step.sub
+VARS train_ae3_sb10of20 step="train_ae3_sb10of20" cpus="1" memory="4G" category="medium"
+JOB train_ae3_sb11of20 step.sub
+VARS train_ae3_sb11of20 step="train_ae3_sb11of20" cpus="1" memory="4G" category="medium"
+JOB train_ae3_sb12of20 step.sub
+VARS train_ae3_sb12of20 step="train_ae3_sb12of20" cpus="1" memory="4G" category="medium"
+JOB train_ae3_sb13of20 step.sub
+VARS train_ae3_sb13of20 step="train_ae3_sb13of20" cpus="1" memory="4G" category="medium"
+JOB train_ae3_sb14of20 step.sub
+VARS train_ae3_sb14of20 step="train_ae3_sb14of20" cpus="1" memory="4G" category="medium"
+JOB train_ae3_sb15of20 step.sub
+VARS train_ae3_sb15of20 step="train_ae3_sb15of20" cpus="1" memory="4G" category="medium"
+JOB train_ae3_sb16of20 step.sub
+VARS train_ae3_sb16of20 step="train_ae3_sb16of20" cpus="1" memory="4G" category="medium"
+JOB train_ae3_sb17of20 step.sub
+VARS train_ae3_sb17of20 step="train_ae3_sb17of20" cpus="1" memory="4G" category="medium"
+JOB train_ae3_sb18of20 step.sub
+VARS train_ae3_sb18of20 step="train_ae3_sb18of20" cpus="1" memory="4G" category="medium"
+JOB train_ae3_sb19of20 step.sub
+VARS train_ae3_sb19of20 step="train_ae3_sb19of20" cpus="1" memory="4G" category="medium"
+JOB train_ae2_sb0of20 step.sub
+VARS train_ae2_sb0of20 step="train_ae2_sb0of20" cpus="1" memory="4G" category="medium"
+JOB train_ae2_sb1of20 step.sub
+VARS train_ae2_sb1of20 step="train_ae2_sb1of20" cpus="1" memory="4G" category="medium"
+JOB train_ae2_sb2of20 step.sub
+VARS train_ae2_sb2of20 step="train_ae2_sb2of20" cpus="1" memory="4G" category="medium"
+JOB train_ae2_sb3of20 step.sub
+VARS train_ae2_sb3of20 step="train_ae2_sb3of20" cpus="1" memory="4G" category="medium"
+JOB train_ae2_sb4of20 step.sub
+VARS train_ae2_sb4of20 step="train_ae2_sb4of20" cpus="1" memory="4G" category="medium"
+JOB train_ae2_sb5of20 step.sub
+VARS train_ae2_sb5of20 step="train_ae2_sb5of20" cpus="1" memory="4G" category="medium"
+JOB train_ae2_sb6of20 step.sub
+VARS train_ae2_sb6of20 step="train_ae2_sb6of20" cpus="1" memory="4G" category="medium"
+JOB train_ae2_sb7of20 step.sub
+VARS train_ae2_sb7of20 step="train_ae2_sb7of20" cpus="1" memory="4G" category="medium"
+JOB train_ae2_sb8of20 step.sub
+VARS train_ae2_sb8of20 step="train_ae2_sb8of20" cpus="1" memory="4G" category="medium"
+JOB train_ae2_sb9of20 step.sub
+VARS train_ae2_sb9of20 step="train_ae2_sb9of20" cpus="1" memory="4G" category="medium"
+JOB train_ae2_sb10of20 step.sub
+VARS train_ae2_sb10of20 step="train_ae2_sb10of20" cpus="1" memory="4G" category="medium"
+JOB train_ae2_sb11of20 step.sub
+VARS train_ae2_sb11of20 step="train_ae2_sb11of20" cpus="1" memory="4G" category="medium"
+JOB train_ae2_sb12of20 step.sub
+VARS train_ae2_sb12of20 step="train_ae2_sb12of20" cpus="1" memory="4G" category="medium"
+JOB train_ae2_sb13of20 step.sub
+VARS train_ae2_sb13of20 step="train_ae2_sb13of20" cpus="1" memory="4G" category="medium"
+JOB train_ae2_sb14of20 step.sub
+VARS train_ae2_sb14of20 step="train_ae2_sb14of20" cpus="1" memory="4G" category="medium"
+JOB train_ae2_sb15of20 step.sub
+VARS train_ae2_sb15of20 step="train_ae2_sb15of20" cpus="1" memory="4G" category="medium"
+JOB train_ae2_sb16of20 step.sub
+VARS train_ae2_sb16of20 step="train_ae2_sb16of20" cpus="1" memory="4G" category="medium"
+JOB train_ae2_sb17of20 step.sub
+VARS train_ae2_sb17of20 step="train_ae2_sb17of20" cpus="1" memory="4G" category="medium"
+JOB train_ae2_sb18of20 step.sub
+VARS train_ae2_sb18of20 step="train_ae2_sb18of20" cpus="1" memory="4G" category="medium"
+JOB train_ae2_sb19of20 step.sub
+VARS train_ae2_sb19of20 step="train_ae2_sb19of20" cpus="1" memory="4G" category="medium"
+
+JOB count count.sub
+
+JOB evaluate step.sub
+VARS evaluate step="evaluate" cpus="1" memory="16G" category="short"
+
+PARENT train_ae3_sb0of20 train_ae3_sb1of20 train_ae3_sb2of20 train_ae3_sb3of20 train_ae3_sb4of20 train_ae3_sb5of20 train_ae3_sb6of20 train_ae3_sb7of20 train_ae3_sb8of20 train_ae3_sb9of20 train_ae3_sb10of20 train_ae3_sb11of20 train_ae3_sb12of20 train_ae3_sb13of20 train_ae3_sb14of20 train_ae3_sb15of20 train_ae3_sb16of20 train_ae3_sb17of20 train_ae3_sb18of20 train_ae3_sb19of20 train_ae2_sb0of20 train_ae2_sb1of20 train_ae2_sb2of20 train_ae2_sb3of20 train_ae2_sb4of20 train_ae2_sb5of20 train_ae2_sb6of20 train_ae2_sb7of20 train_ae2_sb8of20 train_ae2_sb9of20 train_ae2_sb10of20 train_ae2_sb11of20 train_ae2_sb12of20 train_ae2_sb13of20 train_ae2_sb14of20 train_ae2_sb15of20 train_ae2_sb16of20 train_ae2_sb17of20 train_ae2_sb18of20 train_ae2_sb19of20 CHILD count
+PARENT count CHILD evaluate

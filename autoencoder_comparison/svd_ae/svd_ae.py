@@ -33,7 +33,8 @@ evaluate  fitting factor of each of the 4,000 injections (first 4,000 of seed 40
 
 Spacings are in coefficient units (1 - M ~ |dc|^2 / 2) for every lattice: BCC cubic constant a,
 hexagonal nearest-neighbour distance a; the latent lattices use a / std(c0), the units of the latent space
-(of each sub-bank). --models lists the autoencoders as latent:K, e.g. 3:10 = latent 3, 10 sub-banks.
+(of each sub-bank). --models lists the autoencoders as latent:K, e.g. 3:10 = latent 3, 10 sub-banks, or
+`auto`: every model whose files are all in --out. The plot shows the latent-3 sub-bank models (--plot-models).
 """
 import argparse, json, os, subprocess, sys, time
 from multiprocessing import Pool
@@ -125,6 +126,18 @@ def model_file(out, k, n_sb, j):
 def subbank_edges(c0, n_sb):
     """Inner edges of n_sb slices of equal count in c0 (training waveforms)."""
     return np.quantile(c0, np.arange(1, n_sb) / n_sb)
+
+
+def find_models(out):
+    """Every (latent, sub-banks) whose model files are all in out."""
+    found = []
+    for k in sorted(LATENT, reverse=True):
+        if os.path.exists(model_file(out, k, 1, 0)):
+            found.append((k, 1))
+        for n_sb in range(2, 100):
+            if all(os.path.exists(model_file(out, k, n_sb, j)) for j in range(n_sb)):
+                found.append((k, n_sb))
+    return found
 
 
 class AEBank:
@@ -368,7 +381,8 @@ def evaluate(args):
         out = os.path.join(args.out, f'ff_{tag}_first4000.npy'); np.save(out, ff[:4000]); return out
 
     specs = [f"{first_4000(args.isobank_ff, 'isobank')}:isobank ({human(n_iso)})"]
-    plotted = [m for m in args.models if m[1] > 1] or args.models      # the sub-bank models, if any
+    plotted = [m for m in (args.plot_models or [m for m in args.models if m[0] == 3 and m[1] > 1]) if m in aes] \
+        or args.models      # by default the latent-3 sub-bank models, if any
     for kind, m, label in (('svd', None, 'SVD lattice, no autoencoder'),
                            *[('ae', m, model_label(m)) for m in sorted(plotted, reverse=True)]):
         cand = [r for r in rows if r['kind'] == kind and r['m'] == m and r['n'] > 0]
@@ -400,8 +414,7 @@ def main():
     p['train'].add_argument('--subbanks', type=int, default=1)
     p['train'].add_argument('--subbank', type=int, default=0)
     for m in ('count', 'evaluate'):
-        p[m].add_argument('--models', nargs='+', default=['3:1', '2:1'],
-                          help='latent:sub-banks; the plot shows those with sub-banks, if any')
+        p[m].add_argument('--models', nargs='+', default=['auto'], help='latent:sub-banks, or auto')
         p[m].add_argument('--parts', type=int, required=True)
     p['count'].add_argument('--part', type=int, required=True)
     p['count'].add_argument('--n-samples', type=int, default=N_SAMPLES, help='over all parts')
@@ -410,9 +423,14 @@ def main():
     p['evaluate'].add_argument('--extra-ff', action='append', default=[],
                                help='path:label, fitting factors on the seed-4002 injections (first 4,000 used)')
     p['evaluate'].add_argument('--xlim', default='0.85,1.0')
+    p['evaluate'].add_argument('--plot-models', nargs='+', default=None, help='latent:sub-banks for the plot')
     args = ap.parse_args()
     if args.mode in ('count', 'evaluate'):
-        args.models = [tuple(int(v) for v in m.split(':')) for m in args.models]
+        args.models = find_models(args.out) if args.models == ['auto'] else \
+            [tuple(int(v) for v in m.split(':')) for m in args.models]
+        print('models (latent, sub-banks):', args.models, flush=True)
+    if args.mode == 'evaluate' and args.plot_models:
+        args.plot_models = [tuple(int(v) for v in m.split(':')) for m in args.plot_models]
     dict(data=data, train=train, count=count, evaluate=evaluate)[args.mode](args)
 
 

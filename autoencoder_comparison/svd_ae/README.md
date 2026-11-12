@@ -95,4 +95,9 @@ cd autoencoder_comparison/svd_ae/nikhef && condor_submit_dag svd_ae_subbanks.dag
 | `train_ae3_sb0` … `train_ae2_sb9` | 10 sub-banks × latent 3 and 2 | 2 each | medium |
 | `count`, `evaluate` | as above, now with the one-bank and the sub-bank models (`MODELS` in `step.sh`) | 1 each | short |
 
-The plot then shows the sub-bank models; `lattice_table.md` lists both.
+The plot then shows the latent-3 sub-bank models; `lattice_table.md` lists all of them.
+
+The same test with 20 sub-banks (40 trainings, 1 CPU each) is `svd_ae_subbanks20.dag`. Submit it once
+`svd_ae_subbanks.dag` has finished: the two DAGs write the same bank-size files (`cells/`). Its `count` and
+`evaluate` then include every model trained so far (one bank, 10 and 20 sub-banks), since `step.sh` passes
+`--models auto`.

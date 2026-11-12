@@ -15,15 +15,15 @@ OUT=autoencoder_comparison/runs/eccentric_5d/svd_ae
 ISO=runs/eccentric_5d                         # isobank, from comparison.dag
 AE=autoencoder_comparison/runs/eccentric_5d   # autoencoder on the parameters, from comparison.dag
 mkdir -p "$OUT"
-SUBBANKS=10                                   # svd_ae_subbanks.dag
-MODELS="3:1 2:1 3:$SUBBANKS 2:$SUBBANKS"     # latent:sub-banks
+MODELS=auto      # count and evaluate: every autoencoder whose files are all there (svd_ae.py --models)
 
 case $STEP in
     data)                 $RUN data --out $OUT ;;
     train_ae3|train_ae2)  $RUN train --out $OUT --latent-dim "${STEP#train_ae}" ;;
-    train_ae*_sb*)        # train_ae<latent>_sb<j>: sub-bank j of $SUBBANKS
-        k=${STEP#train_ae}; k=${k%%_sb*}
-        $RUN train --out $OUT --latent-dim "$k" --subbanks $SUBBANKS --subbank "${STEP##*_sb}" ;;
+    train_ae*_sb*)        # train_ae<latent>_sb<j>, sub-bank j of 10, or train_ae<latent>_sb<j>of<K>
+        k=${STEP#train_ae}; k=${k%%_sb*}; j=${STEP##*_sb}; n_sb=10
+        if [[ $j == *of* ]]; then n_sb=${j#*of}; j=${j%of*}; fi
+        $RUN train --out $OUT --latent-dim "$k" --subbanks "$n_sb" --subbank "$j" ;;
     count)                $RUN count --out $OUT --parts "$N_PARTS" --part "$PART" --models $MODELS ;;
     evaluate)
         extra=()
