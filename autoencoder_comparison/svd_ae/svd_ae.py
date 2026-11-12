@@ -366,7 +366,7 @@ def evaluate(args):
         lines.append(f"| {label} | {sp} | {size} | {r['cov']:.2f}% | {r['cov_mc14']:.1f}% | {r['p1']:.4f} "
                      f"| {r['worst']:.4f} | {old} |")
     table = '\n'.join(lines) + '\n'
-    with open(os.path.join(args.out, 'lattice_table.md'), 'w') as fh:
+    with open(os.path.join(args.out, f'lattice_table{args.tag}.md'), 'w') as fh:
         fh.write(table)
     print(table)
 
@@ -392,11 +392,11 @@ def evaluate(args):
         path, _, label = spec.partition(':')
         specs.append(f"{first_4000(path, f'extra{i}')}:{label}")
     subprocess.run([sys.executable, os.path.join(ROOT, 'figures', 'plot_ff_cdf.py'),
-                    '--out', os.path.join(args.out, 'ff_cdf_svd.pdf'), '--xlim', args.xlim,
+                    '--out', os.path.join(args.out, f'ff_cdf_svd{args.tag}.pdf'), '--xlim', args.xlim,
                     *[a for s in specs for a in ('--ff', s)]], check=True)
     summary = subprocess.run([sys.executable, os.path.join(ROOT, 'autoencoder_comparison', 'summarise_ff.py'), *specs],
                              check=True, capture_output=True, text=True).stdout
-    with open(os.path.join(args.out, 'ff_summary_svd.md'), 'w') as fh:
+    with open(os.path.join(args.out, f'ff_summary_svd{args.tag}.md'), 'w') as fh:
         fh.write(summary)
     print(summary)
 
@@ -424,6 +424,7 @@ def main():
                                help='path:label, fitting factors on the seed-4002 injections (first 4,000 used)')
     p['evaluate'].add_argument('--xlim', default='0.85,1.0')
     p['evaluate'].add_argument('--plot-models', nargs='+', default=None, help='latent:sub-banks for the plot')
+    p['evaluate'].add_argument('--tag', default='', help='suffix of the table and figure files, e.g. _sb10')
     args = ap.parse_args()
     if args.mode in ('count', 'evaluate'):
         args.models = find_models(args.out) if args.models == ['auto'] else \

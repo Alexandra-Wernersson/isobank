@@ -93,9 +93,9 @@ cd autoencoder_comparison/svd_ae/nikhef && condor_submit_dag svd_ae_subbanks.dag
 | Step | What | CPUs | Category |
 |---|---|---|---|
 | `train_ae3_sb0` … `train_ae2_sb9` | 10 sub-banks × latent 3 and 2 | 2 each | medium |
-| `count10`, `evaluate10` | bank sizes and plot with the models so far (one bank, 10 sub-banks) | 1 each | short |
+| `count10`, `evaluate10` | bank sizes and plot with the models so far (one bank, 10 sub-banks): `lattice_table_sb10.md`, `ff_summary_svd_sb10.md`, `ff_cdf_svd_sb10.pdf` | 1 each | short |
 | `train_ae3_sb0of20` … `train_ae2_sb19of20` | 20 sub-banks × latent 3 and 2 | 1 each | medium |
-| `count20`, `evaluate20` | the same with every model; overwrites the files of `evaluate10` | 1 each | short |
+| `count20`, `evaluate20` | the same with every model (one bank, 10 and 20 sub-banks): files `..._sb20` | 1 each | short |
 
 At most 40 CPUs at once (50 while counting); about 6–8 h in all. `count` and `evaluate` use every complete set of
 models (`--models auto` in `step.sh`). The plot shows the latent-3 sub-bank models; `lattice_table.md` lists all

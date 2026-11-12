@@ -25,7 +25,7 @@ case $STEP in
         if [[ $j == *of* ]]; then n_sb=${j#*of}; j=${j%of*}; fi
         $RUN train --out $OUT --latent-dim "$k" --subbanks "$n_sb" --subbank "$j" ;;
     count)                $RUN count --out $OUT --parts "$N_PARTS" --part "$PART" --models $MODELS ;;
-    evaluate)
+    evaluate|evaluate[0-9]*)   # evaluate10 -> files ..._sb10 (svd_ae_subbanks.dag); evaluate -> no suffix
         extra=()
         for side in encoder decoder; do       # the parameter autoencoders, where comparison.dag has scored them
             ff=$AE/ff_latent5_$side.npy
@@ -33,8 +33,9 @@ case $STEP in
             n=$(python -c "import numpy as np; n = len(np.load(\"$AE/bank_latent5_$side.npy\", mmap_mode=\"r\")); print(f'{n / 1e6:.2f}M' if n >= 1e6 else f'{n / 1e3:.0f}k')")
             extra+=(--extra-ff "$ff:autoencoder on parameters, $side loss ($n)")
         done
+        tag=${STEP#evaluate}; [[ -n $tag ]] && tag=_sb$tag
         $RUN evaluate --out $OUT --parts "$N_PARTS" --models $MODELS --isobank-ff $ISO/ff_isobank.npy \
-            --isobank-bank $ISO/bank_isobank.npy "${extra[@]}" ;;
+            --isobank-bank $ISO/bank_isobank.npy --tag "$tag" "${extra[@]}" ;;
     *)
         echo "unknown step: $STEP" >&2; exit 1 ;;
 esac

@@ -1,5 +1,5 @@
 # Cabass's sub-banks, first 10 then 20: each autoencoder on a slice of c0, for latent 3 and 2. After each set,
-# the bank sizes and the plot with every model trained so far (the second evaluate overwrites the first).
+# the bank sizes and the plot with every model trained so far, in files ..._sb10 and ..._sb20.
 # Needs the data, train_ae3 and train_ae2 steps of svd_ae.dag (done). Submit from this folder:
 #   condor_submit_dag svd_ae_subbanks.dag
 # At most 40 CPUs at once: 20 trainings x 2 CPUs (10 sub-banks), then 40 x 1 (20 sub-banks); 50 x 1 to count.
@@ -127,11 +127,11 @@ VARS train_ae2_sb19of20 step="train_ae2_sb19of20" cpus="1" memory="4G" category=
 
 JOB count10 count.sub
 JOB evaluate10 step.sub
-VARS evaluate10 step="evaluate" cpus="1" memory="16G" category="short"
+VARS evaluate10 step="evaluate10" cpus="1" memory="16G" category="short"
 
 JOB count20 count.sub
 JOB evaluate20 step.sub
-VARS evaluate20 step="evaluate" cpus="1" memory="16G" category="short"
+VARS evaluate20 step="evaluate20" cpus="1" memory="16G" category="short"
 
 PARENT train_ae3_sb0 train_ae3_sb1 train_ae3_sb2 train_ae3_sb3 train_ae3_sb4 train_ae3_sb5 train_ae3_sb6 train_ae3_sb7 train_ae3_sb8 train_ae3_sb9 train_ae2_sb0 train_ae2_sb1 train_ae2_sb2 train_ae2_sb3 train_ae2_sb4 train_ae2_sb5 train_ae2_sb6 train_ae2_sb7 train_ae2_sb8 train_ae2_sb9 CHILD count10
 PARENT count10 CHILD evaluate10
