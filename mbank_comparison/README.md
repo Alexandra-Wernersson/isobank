@@ -34,6 +34,8 @@ Everything behind the isobank–mbank comparison in `mbank/iclr2026_conference.t
   (→ `ff_mbank_full_k500_seed4002.npy`).
 - `al3d/`: `al3d_ff_10k.py` scores both 3D banks (→ `ff_al3d_isobank_shipped_k100_N10k_seed4242.npy`, `ff_al3d_mbank_stochastic_k100_N10k_seed4242.npy`).
 - `figure/`: `ff_cdf_isobank_vs_mbank.py` reads the four fitting-factor files and makes Fig. 3 (`ff_cdf_isobank_vs_mbank.pdf`).
+- `tuning/`: mbank retrained with changes to its loss and training, with the paper's placement; HTCondor DAG for Nikhef
+  (see [`tuning/README.md`](tuning/README.md)).
 
 ## Data files (not in this folder)
 

@@ -95,6 +95,16 @@ python figures/plot_match_vs_latent.py --config configs/eccentric_5d.py --out ma
 The last one also prints the mean match at `r_target`, which should equal the
 minimal match if calibration and flow are behaving (a useful end-to-end check).
 
+## Comparisons with other methods
+
+Eccentric 5D, run as HTCondor DAGs at Nikhef (each folder's README gives the commands):
+
+| Folder | What |
+|---|---|
+| [`mbank_comparison/`](mbank_comparison/README.md) | the isobank–mbank comparison of the paper (Fig. 3), as run on Snellius |
+| [`mbank_comparison/tuning/`](mbank_comparison/tuning/README.md) | mbank retrained with changes to its loss and training: bank size against coverage |
+| [`autoencoder_comparison/`](autoencoder_comparison/README.md) | metric-preserving autoencoders (Cabass et al.): training curves and fitting factors |
+
 ## Adding a parameter space
 
 Copy a file in `configs/` and set the parameter ranges and waveform model, the
