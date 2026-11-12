@@ -47,12 +47,14 @@ decoder latent space is also stretched, so its bank should be large.
 
 **Decoder fitting factors in parallel.** `ff_ae_decoder` does its 5 million matches on one CPU, about 4 hours.
 `nikhef/ff_decoder.dag` does the same in 20 jobs (each about 15 minutes of matches), then the plots. To switch,
-remove only that job, which ends `comparison.dag` (all its other steps are done) and touches nothing else:
+remove only that job, which ends `comparison.dag` (all its other steps are done) and touches nothing else.
+Remove it before `git pull`: the pull changes `nikhef/step.sh`, which the running job is still reading.
 
 ```bash
-cd /data/gravwav/lopezm/Projects/isobank && git pull
+cd /data/gravwav/lopezm/Projects/isobank
 condor_q -constraint 'DAGNodeName == "ff_ae_decoder"' -af ClusterId DAGNodeName   # check: one job
 condor_rm -constraint 'DAGNodeName == "ff_ae_decoder"'
+git pull
 cd autoencoder_comparison/nikhef && condor_submit_dag ff_decoder.dag
 ```
 
