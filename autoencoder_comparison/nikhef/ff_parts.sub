@@ -1,0 +1,17 @@
+# The fitting factors of one bank, in n_parts jobs (ff_parallel.py). Used by ff_decoder.dag;
+# repo and conda_env as in step.sub.
+repo      = /data/gravwav/lopezm/Projects/isobank
+conda_env = /data/gravwav/lopezm/cmb_env/miniforge3/envs/isobank
+n_parts   = 20
+
+executable       = $(repo)/autoencoder_comparison/nikhef/step.sh
+arguments        = ff_part $(repo) $(conda_env) 1.0 $(which) $(Process) $(n_parts)
+initialdir       = $(repo)
+output           = $(repo)/logs/ff_part_$(which)_$(Process).out
+error            = $(repo)/logs/ff_part_$(which)_$(Process).err
+log              = $(repo)/logs/condor.log
+request_cpus     = 1
+request_memory   = 8G
++UseOS           = "el9"
++JobCategory     = "medium"
+queue $(n_parts)

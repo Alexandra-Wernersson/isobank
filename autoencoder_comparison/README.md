@@ -10,6 +10,7 @@ data, metric, monitoring pairs, placement and fitting-factor protocol as isobank
 | `make_bank_autoencoder.py` | greedy placement of `scripts/generate_bank.py`, with the encoder in place of the flow |
 | `plot_comparison.py` | `training.pdf` (loss and d_z/d_proper during training) and `ff_cdf.pdf` (fitting factors) |
 | `latent_neighbours.py` | folding test: true match of the points a latent space puts within r_target |
+| `ff_parallel.py` | `scripts/evaluate_bank.py` split over parallel jobs, with identical results (`nikhef/ff_parts.sub`, `nikhef/ff_decoder.dag`) |
 | `summarise_ff.py` | spread of the fitting factors: mean ± std, median, 1st/5th/10th percentiles, coverage |
 | `train_flow_ablation.py` | isobank's flow with its loss swapped (not part of the condor run; untested) |
 | `nikhef/` | HTCondor DAG that runs everything at Nikhef |
@@ -43,6 +44,17 @@ isobank's, 18 % coverage. The bad pairs are far apart in the parameters (median 
 decoder latent space is also stretched, so its bank should be large.
 
 `notes/autoencoder_explained.pdf` explains this in simple terms (not committed: `*.pdf` is ignored).
+
+**Decoder fitting factors in parallel.** `ff_ae_decoder` does its 5 million matches on one CPU, about 4 hours.
+`nikhef/ff_decoder.dag` does the same in 20 jobs (each about 15 minutes of matches), then the plots. To switch,
+remove only that job, which ends `comparison.dag` (all its other steps are done) and touches nothing else:
+
+```bash
+cd /data/gravwav/lopezm/Projects/isobank && git pull
+condor_q -constraint 'DAGNodeName == "ff_ae_decoder"' -af ClusterId DAGNodeName   # check: one job
+condor_rm -constraint 'DAGNodeName == "ff_ae_decoder"'
+cd autoencoder_comparison/nikhef && condor_submit_dag ff_decoder.dag
+```
 
 **Next**, at Nikhef, so that every number comes from the Nikhef runs:
 

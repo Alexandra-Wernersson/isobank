@@ -1,0 +1,15 @@
+# The decoder autoencoder's fitting factors in 20 parallel jobs, then the plots.
+# Replaces the ff_ae_decoder and plots steps of comparison.dag. Submit from this folder:
+#   condor_submit_dag ff_decoder.dag
+
+JOB parts ff_parts.sub
+VARS parts which="ae_decoder"
+
+JOB join step.sub
+VARS join step="ff_join_ae_decoder" category="short" memory="4G"
+
+JOB plots step.sub
+VARS plots step="plots" category="express" memory="4G"
+
+PARENT parts CHILD join
+PARENT join CHILD plots
