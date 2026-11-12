@@ -1,0 +1,300 @@
+diff --git a/mbank/flow/flowmodel.py b/mbank/flow/flowmodel.py
+index a95d0ea..ed3e0d2 100644
+--- a/mbank/flow/flowmodel.py
++++ b/mbank/flow/flowmodel.py
+@@ -1,3 +1,4 @@
++
+ """
+ mbank.flow.flowmodel
+ ====================
+@@ -149,13 +150,24 @@ class TanhTransform(Transform):
+ 		return outputs, logabsdet
+ 
+ 	def forward(self, inputs, context=None):
++		
++		self.low.data = self.low.data.to(inputs.device)
++		self.high.data = self.high.data.to(inputs.device)
++		
+ 		inside = torch.logical_and(torch.prod(inputs>self.low, dim = -1), torch.prod(inputs<self.high, dim = -1))
+ 		inputs = inputs.mul(2)
+ 		inputs = inputs.add(-self.high-self.low)
+ 		inputs = inputs.div(self.high-self.low)
+ 
+ 		if torch.min(inputs) <= -1 or torch.max(inputs) >= 1:
+-			raise InputOutsideDomain()
++			#raise InputOutsideDomain()
++			print("Warning: Clamping input to TanhTransform")
++		#epsilon = 1e-5
++		#inputs = torch.clamp(inputs, -1 + epsilon, 1 - epsilon)
++
++		#inputs = torch.clamp(inputs, -0.999, 0.999)
++
++
+ 		outputs = 0.5 * torch.log((1 + inputs) / (1 - inputs))
+ 		logabsdet = -torch.log((1 - inputs ** 2)*0.5*(self.high-self.low))
+ 		logabsdet = torchutils.sum_except_batch(logabsdet, num_batch_dims=1)
+@@ -266,13 +278,29 @@ class GW_Flow(Flow):
+ 	def forward_KL_loss(self, data, weights):
+ 		return -self.log_prob(inputs=data).mean()
+ 
++
++	# def ll_mse_loss(self, data, weights):
++	# 	return torch.square(self.log_prob(inputs=data) - weights + self.constant).mean()
++
++	# def weighted_ll_mse_loss(self, data, weights):
++	# 	w = torch.sqrt(weights - torch.min(weights))
++	# 	#w /= torch.sum(w)
++	# 	return torch.square((self.log_prob(inputs=data) - weights + self.constant)*w).mean()
+ 	def ll_mse_loss(self, data, weights):
+-		return torch.square(self.log_prob(inputs=data) - weights + self.constant).mean()
++		
++		device = data.device  # Get the device of `data` (either CPU or CUDA)
++		weights = weights.to(device)  # Move weights to the same device as data
++		constant = self.constant.to(device) if isinstance(self.constant, torch.Tensor) else self.constant
++		return torch.square(self.log_prob(inputs=data) - weights + constant).mean()
++
+ 
+ 	def weighted_ll_mse_loss(self, data, weights):
+-		w = torch.sqrt(weights - torch.min(weights))
+-		#w /= torch.sum(w)
+-		return torch.square((self.log_prob(inputs=data) - weights + self.constant)*w).mean()
++		device = data.device
++		weights = weights.to(device)
++		constant = self.constant.to(device) if isinstance(self.constant, torch.Tensor) else self.constant
++		
++		w = torch.sqrt(weights - torch.min(weights))  # Compute weights
++		return torch.square((self.log_prob(inputs=data) - weights + constant) * w).mean()
+ 
+ 	def get_jacobian(self, theta):
+ 		theta = torch.tensor(theta, dtype = torch.float32)
+@@ -371,7 +399,8 @@ class GW_Flow(Flow):
+ 				- `validation_metric`: name of the validation metric being used
+ 		"""
+ 		#TODO: implement early stopping!!
+-		
++		device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
++
+ 			#Are you sure you want float32?
+ 		train_data = torch.tensor(train_data, dtype=torch.float32)
+ 		validation_data = torch.tensor(validation_data, dtype=torch.float32)
+@@ -445,6 +474,7 @@ class GW_Flow(Flow):
+ 				#	print('\tnan in dataset: ',np.any(np.isnan(train_weights[ids_].numpy())))
+ 				#	print('\tnan in loss: ',np.any(np.isnan(loss_.numpy())))
+ 				loss_.backward()
++				torch.nn.utils.clip_grad_norm_(self.parameters(), max_norm=5.0) 
+ 				optimizer.step()
+ 
+ 				train_loss.append(loss_.item())
+@@ -459,6 +489,7 @@ class GW_Flow(Flow):
+ 					
+ 					if callable(callback):
+ 						if callback(self, i, train_loss[-1], val_loss[-1]): break
++					
+ 	
+ 				if not (i%int(N_epochs//1000+1)) and verbose:
+ 					lr_ = optimizer.state_dict()['param_groups'][0]['lr']
+@@ -466,11 +497,25 @@ class GW_Flow(Flow):
+ 		except KeyboardInterrupt:
+ 			if verbose: print("KeyboardInterrupt: quitting the training loop")
+ 
+-		history = {'validation_step': validation_step,
+-			'train_loss': np.array(train_loss),
+-			'validation_loss': np.array(val_loss),
+-			'valmetric_value': np.array(metric),
+-		}
++		# history = {'validation_step': validation_step,
++		# 	'train_loss': np.array(train_loss),
++		# 	'validation_loss': np.array(val_loss),
++		# 	'valmetric_value': np.array(metric),
++		# }
++
++		# history = {
++        #     'validation_step': validation_step,
++        #     'train_loss': np.array(torch.tensor(train_loss).to('cuda').cpu().numpy()),  
++        #     'validation_loss': np.array(torch.tensor(val_loss).to('cuda').cpu().numpy()),  
++        #     'valmetric_value': np.array(torch.tensor(metric).to('cuda').cpu().numpy()),  
++        # }
++		history = {
++            'validation_step': validation_step,
++            'train_loss': np.array(torch.tensor(train_loss).to(device).cpu().numpy()),  
++            'validation_loss': np.array(torch.tensor(val_loss).to(device).cpu().numpy()),  
++            'valmetric_value': np.array(torch.tensor(metric).to(device).cpu().numpy()),  
++        }
++
+ 
+ 		return history
+ 
+@@ -480,7 +525,8 @@ class GW_Flow(Flow):
+ 		#raise NotImplementedError("Implement a nice and viable loss function :D")
+ 		if isinstance(callback, tuple): callback, callback_step = callback
+ 		else: callback_step = 10
+-		
++		device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
++
+ 			#Setting the data nicely
+ 		train_samples, train_metric_data = train_data
+ 		train_samples = torch.tensor(train_samples, dtype=torch.float32)
+@@ -488,7 +534,11 @@ class GW_Flow(Flow):
+ 		validation_samples, validation_metric_data = validation_data
+ 		validation_samples = torch.tensor(validation_samples, dtype=torch.float32)
+ 		validation_metric_data = torch.tensor(validation_metric_data, dtype=torch.float32)
+-		
++		train_samples = train_samples.to(device)
++		train_metric_data = train_metric_data.to(device)
++		validation_samples = validation_samples.to(device)
++		validation_metric_data = validation_metric_data.to(device)
++
+ 		N_train, D = train_samples.shape
+ 		
+ 				#Dealing with the first transformation
+@@ -592,7 +642,10 @@ class GW_Flow(Flow):
+ 					
+ 					metric.append(metric_computer.get_validation_metric())
+ 					
+-				if callable(callback) and not (i%callback_step): callback(self, i)
++				#if callable(callback) and not (i%callback_step): callback(self, i)
++				if callable(callback) and not (i % callback_step): 
++				   callback(self, i, train_loss[i], val_loss[-1]) 
++
+ 				if not (i%int(N_epochs//1000+1)) and verbose: it.set_description(desc_str.format(train_loss[i], val_loss[-1]))
+ 		except KeyboardInterrupt:
+ 			print("KeyboardInterrupt: quitting the training loop")
+@@ -737,7 +790,9 @@ class STD_GW_Flow(GW_Flow):
+ 		with torch.no_grad():
+ 			log_volume_element = self.log_prob(theta) + self.constant
+ 		
+-		return log_volume_element.numpy()
++		#return log_volume_element.numpy()
++		return log_volume_element.cpu().numpy()
++
+ 	
+ 	@property
+ 	def boundary_box(self):
+diff --git a/mbank/flow/utils.py b/mbank/flow/utils.py
+index c967da8..81f329e 100644
+--- a/mbank/flow/utils.py
++++ b/mbank/flow/utils.py
+@@ -28,8 +28,13 @@ class validation_metric():
+ 		
+ 		dist_list = []
+ 		for n in range(N_estimation):
+-			true_noise = flow._distribution.sample(self.N_samples).detach().numpy()
+-			dist_list.append(self.get_dist(true_noise))
++			device = next(flow.parameters()).device 
++			true_noise = flow._distribution.sample(self.N_samples).to(device)
++
++			#true_noise = flow._distribution.sample(self.N_samples).detach().numpy()
++			#dist_list.append(self.get_dist(true_noise))
++			dist_list.append(self.get_dist(true_noise).item())
++
+ 		dist_list = np.array(dist_list)
+ 		
+ 		self.metric_mean = np.mean(dist_list)
+@@ -38,14 +43,21 @@ class validation_metric():
+ 		
+ 		return
+ 
++	#def get_dist(self, data):
++	#	"Measures the distance between data and the noise distribution (a standard normal)"
++	#	raise NotImplementedError("The distance between two dataset must be implemented by sub-classes!")
++	
+ 	def get_dist(self, data):
+-		"Measures the distance between data and the noise distribution (a standard normal)"
+-		raise NotImplementedError("The distance between two dataset must be implemented by sub-classes!")
++		device = next(self.flow.parameters()).device
++		if isinstance(data, np.ndarray):
++			data = torch.tensor(data, dtype=torch.float32)
++		return self.flow._distribution.log_prob(data.to(device)).mean()
++
+ 
+ 	def get_validation_metric(self):
+ 		"Check if the data transformed into noise are consistent with the random normal distribution"
+-		
+-		noise_data = self.flow.transform_to_noise(self.data).detach().numpy()
++		device = next(self.flow.parameters()).device
++		noise_data = self.flow.transform_to_noise(self.data).to(device)
+ 		dist = self.get_dist(noise_data)
+ 		
+ 		return dist	
+diff --git a/mbank/metric.py b/mbank/metric.py
+index 19af6bb..732db5c 100644
+--- a/mbank/metric.py
++++ b/mbank/metric.py
+@@ -27,6 +27,8 @@ import warnings
+ from .handlers import variable_handler
+ from .utils import project_metric, get_projected_metric
+ 
++import torch
++
+ 	#TODO: understand whether it's a good idea to use anycache
+ #from anycache import anycache
+ 
+@@ -539,9 +541,11 @@ class cbc_metric(object):
+ 			lal frequency series holding the polarizations
+ 		"""
+ 		if approx is None: approx = self.approx
++		
++		
+ 		theta = np.squeeze(theta)
+ 		if theta.ndim == 2: raise RuntimeError("Theta can be only one dimensional")
+-
++        
+ 		if df is None: df = self.delta_f
+ 		else: assert isinstance(df, float), "Wrong type {} for df: expected float".format(type(df))
+ 
+@@ -701,6 +705,7 @@ class cbc_metric(object):
+ 		
+ 			###
+ 			#Being sustainable and doing things in batch
++		#theta = theta.detach().cpu().numpy()
+ 		theta = np.asarray(theta)
+ 		squeeze = (theta.ndim == 1)
+ 		theta = np.atleast_2d(theta)
+@@ -1821,6 +1826,45 @@ class cbc_metric(object):
+ 		return points
+ 	
+ 	
+-	
+-	
++	def metric_tensor(self, theta):
++		"""
++		Metric tensor at points x = (τ₀, τ₁.₅).
+ 		
++		Args:
++            x: [N, 2] tensor in tau coordinates
++
++        Returns:
++            g: [N, 2, 2] metric tensors
++        """
++		return self.get_metric(theta)
++	
++	def metric_tensor_torch(self, theta):
++		g_np = self.metric_tensor(theta)[0]
++		return torch.from_numpy(g_np).double()
++
++    #def proper_distance(self, theta1, theta2):
++     #   dx = theta2 - theta1  # shape (N, dim)
++     #   x_mid = 0.5 * (theta1 + theta2)
++
++        # Metric tensor (NumPy → Torch)
++     #   g = self.metric_tensor(x_mid)  # shape (N, dim, dim), numpy
++
++     #   if isinstance(g, np.ndarray):
++     #       g = torch.from_numpy(g).float()  # convert to PyTorch
++
++     #   g = g.float()
++     #   g_dx = torch.einsum('nij,nj->ni', g, dx)
++     #   ds2 = torch.sum(dx * g_dx, dim=-1)
++     #   return torch.sqrt(torch.clamp(ds2, min=0.0))	
++	def proper_distance(self, theta1, theta2):
++		dx = theta2 - theta1
++		x_mid = 0.5 * (theta1+theta2)
++
++		g = self.metric_tensor(x_mid)
++		if isinstance(g, np.ndarray):
++			g = torch.from_numpy(g).float()
++		g = g.float()
++		dx = dx.to(g.dtype)
++		g_dx = torch.einsum('nij,nj->ni', g, dx)
++		ds2 = torch.sum(dx * g_dx, dim=-1)
++		return torch.sqrt(torch.clamp(ds2, min=0.0))
