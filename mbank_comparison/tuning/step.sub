@@ -11,7 +11,7 @@ output           = $(work)/logs/$(step)_$(name).out
 error            = $(work)/logs/$(step)_$(name).err
 log              = $(work)/logs/condor.log
 request_cpus     = 1
-request_memory   = 8G
+request_memory   = $(memory:8G)
 +UseOS           = "el9"
 +JobCategory     = "$(category)"
 queue

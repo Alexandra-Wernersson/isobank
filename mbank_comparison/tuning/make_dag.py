@@ -11,6 +11,7 @@ import os
 HERE = os.path.dirname(os.path.abspath(__file__))
 CATEGORY = dict(isobank_flow='long', dataset='short', train='medium', diagnose='short',
                 place='medium', ff='medium', plots='express')
+MEMORY = dict(place='32G')    # placement: padding_0.05 went over 8G; the default is 8G (step.sub)
 FF_PARTS = 3          # per variant: 14 variants x 3 = 42 CPUs, about 1.5 h instead of 4 h
 
 
@@ -21,7 +22,7 @@ def job_name(step, name):
 
 def node(step, name):
     job = job_name(step, name)
-    vars_ = f'step="{step}" name="{name or "-"}" category="{CATEGORY[step]}"'
+    vars_ = f'step="{step}" name="{name or "-"}" category="{CATEGORY[step]}" memory="{MEMORY.get(step, "8G")}"'
     return job, f'JOB {job} step.sub\nVARS {job} {vars_}\n'
 
 

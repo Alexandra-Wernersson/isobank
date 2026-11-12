@@ -2,22 +2,22 @@
 # Submit from this folder: condor_submit_dag tuning.dag
 
 JOB isobank_flow step.sub
-VARS isobank_flow step="isobank_flow" name="-" category="long"
+VARS isobank_flow step="isobank_flow" name="-" category="long" memory="8G"
 
 JOB dataset_d15k step.sub
-VARS dataset_d15k step="dataset" name="d15k" category="short"
+VARS dataset_d15k step="dataset" name="d15k" category="short" memory="8G"
 
 JOB dataset_d50k step.sub
-VARS dataset_d50k step="dataset" name="d50k" category="short"
+VARS dataset_d50k step="dataset" name="d50k" category="short" memory="8G"
 
 JOB train_paper_a step.sub
-VARS train_paper_a step="train" name="paper_a" category="medium"
+VARS train_paper_a step="train" name="paper_a" category="medium" memory="8G"
 
 JOB place_paper_a step.sub
-VARS place_paper_a step="place" name="paper_a" category="medium"
+VARS place_paper_a step="place" name="paper_a" category="medium" memory="32G"
 
 JOB diagnose_paper_a step.sub
-VARS diagnose_paper_a step="diagnose" name="paper_a" category="short"
+VARS diagnose_paper_a step="diagnose" name="paper_a" category="short" memory="8G"
 
 JOB ffparts_paper_a ff.sub
 VARS ffparts_paper_a mode="part" name="paper_a" n_parts="3" n_jobs="3" category="medium"
@@ -26,13 +26,13 @@ JOB ffjoin_paper_a ff.sub
 VARS ffjoin_paper_a mode="join" name="paper_a" n_parts="3" n_jobs="1" category="express"
 
 JOB train_paper_b step.sub
-VARS train_paper_b step="train" name="paper_b" category="medium"
+VARS train_paper_b step="train" name="paper_b" category="medium" memory="8G"
 
 JOB place_paper_b step.sub
-VARS place_paper_b step="place" name="paper_b" category="medium"
+VARS place_paper_b step="place" name="paper_b" category="medium" memory="32G"
 
 JOB diagnose_paper_b step.sub
-VARS diagnose_paper_b step="diagnose" name="paper_b" category="short"
+VARS diagnose_paper_b step="diagnose" name="paper_b" category="short" memory="8G"
 
 JOB ffparts_paper_b ff.sub
 VARS ffparts_paper_b mode="part" name="paper_b" n_parts="3" n_jobs="3" category="medium"
@@ -41,13 +41,13 @@ JOB ffjoin_paper_b ff.sub
 VARS ffjoin_paper_b mode="join" name="paper_b" n_parts="3" n_jobs="1" category="express"
 
 JOB train_paper_c step.sub
-VARS train_paper_c step="train" name="paper_c" category="medium"
+VARS train_paper_c step="train" name="paper_c" category="medium" memory="8G"
 
 JOB place_paper_c step.sub
-VARS place_paper_c step="place" name="paper_c" category="medium"
+VARS place_paper_c step="place" name="paper_c" category="medium" memory="32G"
 
 JOB diagnose_paper_c step.sub
-VARS diagnose_paper_c step="diagnose" name="paper_c" category="short"
+VARS diagnose_paper_c step="diagnose" name="paper_c" category="short" memory="8G"
 
 JOB ffparts_paper_c ff.sub
 VARS ffparts_paper_c mode="part" name="paper_c" n_parts="3" n_jobs="3" category="medium"
@@ -56,13 +56,13 @@ JOB ffjoin_paper_c ff.sub
 VARS ffjoin_paper_c mode="join" name="paper_c" n_parts="3" n_jobs="1" category="express"
 
 JOB train_weighted_0p5 step.sub
-VARS train_weighted_0p5 step="train" name="weighted_0.5" category="medium"
+VARS train_weighted_0p5 step="train" name="weighted_0.5" category="medium" memory="8G"
 
 JOB place_weighted_0p5 step.sub
-VARS place_weighted_0p5 step="place" name="weighted_0.5" category="medium"
+VARS place_weighted_0p5 step="place" name="weighted_0.5" category="medium" memory="32G"
 
 JOB diagnose_weighted_0p5 step.sub
-VARS diagnose_weighted_0p5 step="diagnose" name="weighted_0.5" category="short"
+VARS diagnose_weighted_0p5 step="diagnose" name="weighted_0.5" category="short" memory="8G"
 
 JOB ffparts_weighted_0p5 ff.sub
 VARS ffparts_weighted_0p5 mode="part" name="weighted_0.5" n_parts="3" n_jobs="3" category="medium"
@@ -71,13 +71,13 @@ JOB ffjoin_weighted_0p5 ff.sub
 VARS ffjoin_weighted_0p5 mode="join" name="weighted_0.5" n_parts="3" n_jobs="1" category="express"
 
 JOB train_weighted_1 step.sub
-VARS train_weighted_1 step="train" name="weighted_1" category="medium"
+VARS train_weighted_1 step="train" name="weighted_1" category="medium" memory="8G"
 
 JOB place_weighted_1 step.sub
-VARS place_weighted_1 step="place" name="weighted_1" category="medium"
+VARS place_weighted_1 step="place" name="weighted_1" category="medium" memory="32G"
 
 JOB diagnose_weighted_1 step.sub
-VARS diagnose_weighted_1 step="diagnose" name="weighted_1" category="short"
+VARS diagnose_weighted_1 step="diagnose" name="weighted_1" category="short" memory="8G"
 
 JOB ffparts_weighted_1 ff.sub
 VARS ffparts_weighted_1 mode="part" name="weighted_1" n_parts="3" n_jobs="3" category="medium"
@@ -86,13 +86,13 @@ JOB ffjoin_weighted_1 ff.sub
 VARS ffjoin_weighted_1 mode="join" name="weighted_1" n_parts="3" n_jobs="1" category="express"
 
 JOB train_quantile_0p5 step.sub
-VARS train_quantile_0p5 step="train" name="quantile_0.5" category="medium"
+VARS train_quantile_0p5 step="train" name="quantile_0.5" category="medium" memory="8G"
 
 JOB place_quantile_0p5 step.sub
-VARS place_quantile_0p5 step="place" name="quantile_0.5" category="medium"
+VARS place_quantile_0p5 step="place" name="quantile_0.5" category="medium" memory="32G"
 
 JOB diagnose_quantile_0p5 step.sub
-VARS diagnose_quantile_0p5 step="diagnose" name="quantile_0.5" category="short"
+VARS diagnose_quantile_0p5 step="diagnose" name="quantile_0.5" category="short" memory="8G"
 
 JOB ffparts_quantile_0p5 ff.sub
 VARS ffparts_quantile_0p5 mode="part" name="quantile_0.5" n_parts="3" n_jobs="3" category="medium"
@@ -101,13 +101,13 @@ JOB ffjoin_quantile_0p5 ff.sub
 VARS ffjoin_quantile_0p5 mode="join" name="quantile_0.5" n_parts="3" n_jobs="1" category="express"
 
 JOB train_quantile_0p99 step.sub
-VARS train_quantile_0p99 step="train" name="quantile_0.99" category="medium"
+VARS train_quantile_0p99 step="train" name="quantile_0.99" category="medium" memory="8G"
 
 JOB place_quantile_0p99 step.sub
-VARS place_quantile_0p99 step="place" name="quantile_0.99" category="medium"
+VARS place_quantile_0p99 step="place" name="quantile_0.99" category="medium" memory="32G"
 
 JOB diagnose_quantile_0p99 step.sub
-VARS diagnose_quantile_0p99 step="diagnose" name="quantile_0.99" category="short"
+VARS diagnose_quantile_0p99 step="diagnose" name="quantile_0.99" category="short" memory="8G"
 
 JOB ffparts_quantile_0p99 ff.sub
 VARS ffparts_quantile_0p99 mode="part" name="quantile_0.99" n_parts="3" n_jobs="3" category="medium"
@@ -116,13 +116,13 @@ JOB ffjoin_quantile_0p99 ff.sub
 VARS ffjoin_quantile_0p99 mode="join" name="quantile_0.99" n_parts="3" n_jobs="1" category="express"
 
 JOB train_padding_0p001 step.sub
-VARS train_padding_0p001 step="train" name="padding_0.001" category="medium"
+VARS train_padding_0p001 step="train" name="padding_0.001" category="medium" memory="8G"
 
 JOB place_padding_0p001 step.sub
-VARS place_padding_0p001 step="place" name="padding_0.001" category="medium"
+VARS place_padding_0p001 step="place" name="padding_0.001" category="medium" memory="32G"
 
 JOB diagnose_padding_0p001 step.sub
-VARS diagnose_padding_0p001 step="diagnose" name="padding_0.001" category="short"
+VARS diagnose_padding_0p001 step="diagnose" name="padding_0.001" category="short" memory="8G"
 
 JOB ffparts_padding_0p001 ff.sub
 VARS ffparts_padding_0p001 mode="part" name="padding_0.001" n_parts="3" n_jobs="3" category="medium"
@@ -131,13 +131,13 @@ JOB ffjoin_padding_0p001 ff.sub
 VARS ffjoin_padding_0p001 mode="join" name="padding_0.001" n_parts="3" n_jobs="1" category="express"
 
 JOB train_padding_0p05 step.sub
-VARS train_padding_0p05 step="train" name="padding_0.05" category="medium"
+VARS train_padding_0p05 step="train" name="padding_0.05" category="medium" memory="8G"
 
 JOB place_padding_0p05 step.sub
-VARS place_padding_0p05 step="place" name="padding_0.05" category="medium"
+VARS place_padding_0p05 step="place" name="padding_0.05" category="medium" memory="32G"
 
 JOB diagnose_padding_0p05 step.sub
-VARS diagnose_padding_0p05 step="diagnose" name="padding_0.05" category="short"
+VARS diagnose_padding_0p05 step="diagnose" name="padding_0.05" category="short" memory="8G"
 
 JOB ffparts_padding_0p05 ff.sub
 VARS ffparts_padding_0p05 mode="part" name="padding_0.05" n_parts="3" n_jobs="3" category="medium"
@@ -146,13 +146,13 @@ JOB ffjoin_padding_0p05 ff.sub
 VARS ffjoin_padding_0p05 mode="join" name="padding_0.05" n_parts="3" n_jobs="1" category="express"
 
 JOB train_lr_0p0005 step.sub
-VARS train_lr_0p0005 step="train" name="lr_0.0005" category="medium"
+VARS train_lr_0p0005 step="train" name="lr_0.0005" category="medium" memory="8G"
 
 JOB place_lr_0p0005 step.sub
-VARS place_lr_0p0005 step="place" name="lr_0.0005" category="medium"
+VARS place_lr_0p0005 step="place" name="lr_0.0005" category="medium" memory="32G"
 
 JOB diagnose_lr_0p0005 step.sub
-VARS diagnose_lr_0p0005 step="diagnose" name="lr_0.0005" category="short"
+VARS diagnose_lr_0p0005 step="diagnose" name="lr_0.0005" category="short" memory="8G"
 
 JOB ffparts_lr_0p0005 ff.sub
 VARS ffparts_lr_0p0005 mode="part" name="lr_0.0005" n_parts="3" n_jobs="3" category="medium"
@@ -161,13 +161,13 @@ JOB ffjoin_lr_0p0005 ff.sub
 VARS ffjoin_lr_0p0005 mode="join" name="lr_0.0005" n_parts="3" n_jobs="1" category="express"
 
 JOB train_batch_1000 step.sub
-VARS train_batch_1000 step="train" name="batch_1000" category="medium"
+VARS train_batch_1000 step="train" name="batch_1000" category="medium" memory="8G"
 
 JOB place_batch_1000 step.sub
-VARS place_batch_1000 step="place" name="batch_1000" category="medium"
+VARS place_batch_1000 step="place" name="batch_1000" category="medium" memory="32G"
 
 JOB diagnose_batch_1000 step.sub
-VARS diagnose_batch_1000 step="diagnose" name="batch_1000" category="short"
+VARS diagnose_batch_1000 step="diagnose" name="batch_1000" category="short" memory="8G"
 
 JOB ffparts_batch_1000 ff.sub
 VARS ffparts_batch_1000 mode="part" name="batch_1000" n_parts="3" n_jobs="3" category="medium"
@@ -176,13 +176,13 @@ JOB ffjoin_batch_1000 ff.sub
 VARS ffjoin_batch_1000 mode="join" name="batch_1000" n_parts="3" n_jobs="1" category="express"
 
 JOB train_data_50k step.sub
-VARS train_data_50k step="train" name="data_50k" category="medium"
+VARS train_data_50k step="train" name="data_50k" category="medium" memory="8G"
 
 JOB place_data_50k step.sub
-VARS place_data_50k step="place" name="data_50k" category="medium"
+VARS place_data_50k step="place" name="data_50k" category="medium" memory="32G"
 
 JOB diagnose_data_50k step.sub
-VARS diagnose_data_50k step="diagnose" name="data_50k" category="short"
+VARS diagnose_data_50k step="diagnose" name="data_50k" category="short" memory="8G"
 
 JOB ffparts_data_50k ff.sub
 VARS ffparts_data_50k mode="part" name="data_50k" n_parts="3" n_jobs="3" category="medium"
@@ -191,13 +191,13 @@ JOB ffjoin_data_50k ff.sub
 VARS ffjoin_data_50k mode="join" name="data_50k" n_parts="3" n_jobs="1" category="express"
 
 JOB train_is_wmax_10 step.sub
-VARS train_is_wmax_10 step="train" name="is_wmax_10" category="medium"
+VARS train_is_wmax_10 step="train" name="is_wmax_10" category="medium" memory="8G"
 
 JOB place_is_wmax_10 step.sub
-VARS place_is_wmax_10 step="place" name="is_wmax_10" category="medium"
+VARS place_is_wmax_10 step="place" name="is_wmax_10" category="medium" memory="32G"
 
 JOB diagnose_is_wmax_10 step.sub
-VARS diagnose_is_wmax_10 step="diagnose" name="is_wmax_10" category="short"
+VARS diagnose_is_wmax_10 step="diagnose" name="is_wmax_10" category="short" memory="8G"
 
 JOB ffparts_is_wmax_10 ff.sub
 VARS ffparts_is_wmax_10 mode="part" name="is_wmax_10" n_parts="3" n_jobs="3" category="medium"
@@ -206,13 +206,13 @@ JOB ffjoin_is_wmax_10 ff.sub
 VARS ffjoin_is_wmax_10 mode="join" name="is_wmax_10" n_parts="3" n_jobs="1" category="express"
 
 JOB train_is_no_clip step.sub
-VARS train_is_no_clip step="train" name="is_no_clip" category="medium"
+VARS train_is_no_clip step="train" name="is_no_clip" category="medium" memory="8G"
 
 JOB place_is_no_clip step.sub
-VARS place_is_no_clip step="place" name="is_no_clip" category="medium"
+VARS place_is_no_clip step="place" name="is_no_clip" category="medium" memory="32G"
 
 JOB diagnose_is_no_clip step.sub
-VARS diagnose_is_no_clip step="diagnose" name="is_no_clip" category="short"
+VARS diagnose_is_no_clip step="diagnose" name="is_no_clip" category="short" memory="8G"
 
 JOB ffparts_is_no_clip ff.sub
 VARS ffparts_is_no_clip mode="part" name="is_no_clip" n_parts="3" n_jobs="3" category="medium"
@@ -221,7 +221,7 @@ JOB ffjoin_is_no_clip ff.sub
 VARS ffjoin_is_no_clip mode="join" name="is_no_clip" n_parts="3" n_jobs="1" category="express"
 
 JOB plots step.sub
-VARS plots step="plots" name="-" category="express"
+VARS plots step="plots" name="-" category="express" memory="8G"
 
 PARENT dataset_d15k CHILD train_paper_a
 PARENT train_paper_a CHILD place_paper_a diagnose_paper_a
