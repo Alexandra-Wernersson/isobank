@@ -14,6 +14,7 @@ data, metric, monitoring pairs, placement and fitting-factor protocol as isobank
 | `summarise_ff.py` | spread of the fitting factors: mean ± std, median, 1st/5th/10th percentiles, coverage |
 | `train_flow_ablation.py` | isobank's flow with its loss swapped (not part of the condor run; untested) |
 | `nikhef/` | HTCondor DAG that runs everything at Nikhef |
+| `svd_ae/` | Cabass's full pipeline (SVD coefficients → autoencoder → lattice), scored as `svd_baseline/`; one cumulative plot with isobank, the SVD lattice and the parameter autoencoders |
 
 ## Status (12 November 2026)
 

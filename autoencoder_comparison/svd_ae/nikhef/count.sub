@@ -1,0 +1,17 @@
+# Bank sizes: lattice cells reached by 2e8 draws, in n_parts single-CPU jobs (svd_ae.py count).
+# n_parts must be the same in step.sub (the evaluate step joins them).
+repo      = /data/gravwav/lopezm/Projects/isobank
+conda_env = /data/gravwav/lopezm/cmb_env/miniforge3/envs/isobank
+n_parts   = 50
+
+executable       = $(repo)/autoencoder_comparison/svd_ae/nikhef/step.sh
+arguments        = count $(repo) $(conda_env) 1 $(Process) $(n_parts)
+initialdir       = $(repo)
+output           = $(repo)/logs/svd_ae_count_$(Process).out
+error            = $(repo)/logs/svd_ae_count_$(Process).err
+log              = $(repo)/logs/condor.log
+request_cpus     = 1
+request_memory   = 4G
++UseOS           = "el9"
++JobCategory     = "short"
+queue $(n_parts)
