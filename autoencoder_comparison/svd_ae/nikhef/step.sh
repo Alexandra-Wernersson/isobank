@@ -25,7 +25,7 @@ case $STEP in
         for side in encoder decoder; do       # the parameter autoencoders, where comparison.dag has scored them
             ff=$AE/ff_latent5_$side.npy
             [[ -f $ff ]] || continue
-            n=$(python -c "import numpy as np; print(f'{len(np.load(\"$AE/bank_latent5_$side.npy\", mmap_mode=\"r\")) / 1e3:.0f}k')")
+            n=$(python -c "import numpy as np; n = len(np.load(\"$AE/bank_latent5_$side.npy\", mmap_mode=\"r\")); print(f'{n / 1e6:.2f}M' if n >= 1e6 else f'{n / 1e3:.0f}k')")
             extra+=(--extra-ff "$ff:autoencoder on parameters, $side loss ($n)")
         done
         $RUN evaluate --out $OUT --parts "$N_PARTS" --isobank-ff $ISO/ff_isobank.npy \
