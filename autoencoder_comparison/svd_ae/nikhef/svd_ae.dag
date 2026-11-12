@@ -1,10 +1,10 @@
 # SVD + autoencoder (Cabass et al.) next to the plain SVD lattice, isobank and the parameter autoencoders.
 # Needs ff_isobank.npy and bank_isobank.npy from comparison.dag. Submit from this folder:
 #   condor_submit_dag svd_ae.dag
-# At most 50 CPUs at once: data 16, then the two trainings 8 each, then 50 single-CPU count jobs.
+# At most 50 CPUs at once: data 32 (as svd_baseline), then the two trainings 8 each, then 50 single-CPU count jobs.
 
 JOB data step.sub
-VARS data step="data" cpus="16" memory="24G" category="medium"
+VARS data step="data" cpus="32" memory="24G" category="medium"
 
 JOB train_ae3 step.sub
 VARS train_ae3 step="train_ae3" cpus="8" memory="8G" category="medium"

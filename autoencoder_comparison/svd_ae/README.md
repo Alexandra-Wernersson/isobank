@@ -49,7 +49,7 @@ cd autoencoder_comparison/svd_ae/nikhef && condor_submit_dag svd_ae.dag
 
 | Step | What | CPUs | Category |
 |---|---|---|---|
-| `data` | 30k waveforms, SVD, regressor (as `svd_grid_refined.py`) | 16 | medium |
+| `data` | 30k waveforms, SVD, regressor (as `svd_grid_refined.py`) | 32 | medium |
 | `train_ae3`, `train_ae2` | the autoencoder, latent 3 and 2 | 8 each | medium |
 | `count` | 50 jobs, 4e6 draws each: cells of every lattice | 1 each | short |
 | `evaluate` | fitting factors, `lattice_table.md`, `ff_cdf_svd.pdf`, `ff_summary_svd.md` | 1 | short |
