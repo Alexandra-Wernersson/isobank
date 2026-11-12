@@ -15,8 +15,9 @@ data, metric, monitoring pairs, placement and fitting-factor protocol as isobank
 
 ## Status (12 November 2026)
 
-**Nikhef run.** One job went over 16 GB and was held, then released without changing its memory (probably
-`bank_ae_decoder`, not confirmed). Results so far:
+**Nikhef run.** One job went over 16 GB and was held, then released without changing its memory; it then
+finished. It seems to be `ff_ae_encoder`, but on the laptop that step peaks at 0.5 GB (matches in chunks of
+20,000, a 41,796-template bank), so the cause is unclear: see command 3 below. Results so far:
 
 | Bank | Templates | Coverage, FF ≥ 0.97 | Worst FF | Notes |
 |---|---|---|---|---|
@@ -35,7 +36,7 @@ and their true waveform match. A faithful map gives near-identical waveforms:
 Both autoencoders fold: they get local distances right (table below) but put distant, badly matching waveforms
 next to each other, so placement leaves those regions uncovered. That explains the encoder bank: 55x smaller than
 isobank's, 18 % coverage. The bad pairs are far apart in the parameters (median 70 % of the s1z range). The
-decoder latent space is also stretched, so its bank is large (likely the >16 GB job).
+decoder latent space is also stretched, so its bank should be large.
 
 `notes/autoencoder_explained.pdf` explains this in simple terms (not committed: `*.pdf` is ignored).
 
@@ -53,8 +54,10 @@ OMP_NUM_THREADS=1 /data/gravwav/lopezm/cmb_env/miniforge3/envs/isobank/bin/pytho
     --config configs/eccentric_5d.py --isobank runs/eccentric_5d/flow_best.pt \
     --autoencoder $A/autoencoder_latent5_encoder.pt --autoencoder $A/autoencoder_latent5_decoder.pt
 
-# 3. which job went over 16 GB (and its memory request, to raise in comparison.dag)
-condor_history -constraint 'DAGNodeName =!= undefined' -af DAGNodeName RequestMemory MemoryUsage | sort -u
+# 3. the held job: what it exceeded and its peak memory (MB)
+condor_history -constraint 'DAGNodeName == "ff_ae_encoder"' \
+    -af ClusterId RequestMemory MemoryUsage ResidentSetSize_RAW NumJobStarts HoldReason
+grep -A3 "Job was held" logs/condor.log
 ```
 
 Then: fill in the tables above with these numbers, rebuild the PDF from them, and check `training.pdf` and
