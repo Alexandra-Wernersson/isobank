@@ -44,7 +44,7 @@ It differs from theirs in four ways:
 Templates are placed on a lattice in the latent space and decoded back to coefficients. The `no lattice` rows
 show the autoencoder's own reconstruction error.
 
-## Results (Nikhef, 13 November 2026)
+## Results (Nikhef, 12 November 2026)
 
 `svd_ae.dag`, one bank (`../runs/eccentric_5d/svd_ae/lattice_table.md`, `ff_summary_svd.md`):
 
