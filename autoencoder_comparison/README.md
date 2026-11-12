@@ -9,10 +9,58 @@ data, metric, monitoring pairs, placement and fitting-factor protocol as isobank
 | `train_autoencoder.py` | trains the autoencoder; the metric loss on the decoder (`--side decoder`, Appendix B: J_Dᵀ M J_D = I) or on the encoder (`--side encoder`: J_Eᵀ J_E = M) |
 | `make_bank_autoencoder.py` | greedy placement of `scripts/generate_bank.py`, with the encoder in place of the flow |
 | `plot_comparison.py` | `training.pdf` (loss and d_z/d_proper during training) and `ff_cdf.pdf` (fitting factors) |
+| `latent_neighbours.py` | folding test: true match of the points a latent space puts within r_target |
 | `train_flow_ablation.py` | isobank's flow with its loss swapped (not part of the condor run; untested) |
 | `nikhef/` | HTCondor DAG that runs everything at Nikhef |
 
-## First results (laptop, 3000 epochs)
+## Status (12 November 2026)
+
+**Nikhef run.** One job went over 16 GB and was held, then released without changing its memory (probably
+`bank_ae_decoder`, not confirmed). Results so far:
+
+| Bank | Templates | Coverage, FF ≥ 0.97 | Worst FF | Notes |
+|---|---|---|---|---|
+| isobank | ? | ? | ? | `ff_isobank` finished, not read yet |
+| autoencoder, encoder loss | 41,796 | 17.75 ± 0.38 % | 0.557 | miss rate flat from k = 20; shortlist reach ≥ 24.7 r_target |
+| autoencoder, decoder loss | ? | ? | ? | `ff_ae_decoder` finished, not read yet |
+
+**Folding test (laptop models, not the Nikhef ones).** Random points that the latent space puts within r_target,
+and their true waveform match. A faithful map gives near-identical waveforms:
+
+| Latent space | Pairs within r_target | Median match | Match < 0.97 | Match < 0.5 |
+|---|---|---|---|---|
+| autoencoder, encoder loss | 4,166,204 | 0.676 | 97.8 % | 8.3 % |
+| autoencoder, decoder loss | 225 | 0.839 | 75.1 % | 26.2 % |
+
+Both autoencoders fold: they get local distances right (table below) but put distant, badly matching waveforms
+next to each other, so placement leaves those regions uncovered. That explains the encoder bank: 55x smaller than
+isobank's, 18 % coverage. The bad pairs are far apart in the parameters (median 70 % of the s1z range). The
+decoder latent space is also stretched, so its bank is large (likely the >16 GB job).
+
+`notes/autoencoder_explained.pdf` explains this in simple terms (not committed: `*.pdf` is ignored).
+
+**Next**, at Nikhef, so that every number comes from the Nikhef runs:
+
+```bash
+cd /data/gravwav/lopezm/Projects/isobank && git pull
+
+# 1. coverage of the isobank and decoder banks
+grep -E "^bank|^coverage" logs/ff_isobank.out logs/ff_ae_decoder.out
+
+# 2. folding test on the Nikhef models, with isobank's flow as the reference
+A=autoencoder_comparison/runs/eccentric_5d
+OMP_NUM_THREADS=1 /data/gravwav/lopezm/cmb_env/miniforge3/envs/isobank/bin/python autoencoder_comparison/latent_neighbours.py \
+    --config configs/eccentric_5d.py --isobank runs/eccentric_5d/flow_best.pt \
+    --autoencoder $A/autoencoder_latent5_encoder.pt --autoencoder $A/autoencoder_latent5_decoder.pt
+
+# 3. which job went over 16 GB (and its memory request, to raise in comparison.dag)
+condor_history -constraint 'DAGNodeName =!= undefined' -af DAGNodeName RequestMemory MemoryUsage | sort -u
+```
+
+Then: fill in the tables above with these numbers, rebuild the PDF from them, and check `training.pdf` and
+`ff_cdf.pdf` once the `plots` step has run.
+
+## Local distances (laptop, 3000 epochs)
 
 A quick check that the latent space preserves distances, before placing any bank. It uses ~3000 held-out pairs at
 placement scale (0.5–1.5 r_target), built as isobank's monitoring pairs. For each pair,
