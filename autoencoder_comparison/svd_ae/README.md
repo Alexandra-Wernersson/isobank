@@ -83,7 +83,7 @@ cd autoencoder_comparison/svd_ae/nikhef && condor_submit_dag svd_ae.dag
 Outputs go to `autoencoder_comparison/runs/eccentric_5d/svd_ae/`; logs to `logs/svd_ae_*`. The DAG uses at most
 50 CPUs at once.
 
-Then the sub-banks, reusing the `data` step and the one-bank models:
+Then the sub-banks, 10 and then 20, in one DAG that reuses the `data` step and the one-bank models:
 
 ```bash
 cd /data/gravwav/lopezm/Projects/isobank && git pull
@@ -93,11 +93,10 @@ cd autoencoder_comparison/svd_ae/nikhef && condor_submit_dag svd_ae_subbanks.dag
 | Step | What | CPUs | Category |
 |---|---|---|---|
 | `train_ae3_sb0` … `train_ae2_sb9` | 10 sub-banks × latent 3 and 2 | 2 each | medium |
-| `count`, `evaluate` | as above, now with the one-bank and the sub-bank models (`MODELS` in `step.sh`) | 1 each | short |
+| `count10`, `evaluate10` | bank sizes and plot with the models so far (one bank, 10 sub-banks) | 1 each | short |
+| `train_ae3_sb0of20` … `train_ae2_sb19of20` | 20 sub-banks × latent 3 and 2 | 1 each | medium |
+| `count20`, `evaluate20` | the same with every model; overwrites the files of `evaluate10` | 1 each | short |
 
-The plot then shows the latent-3 sub-bank models; `lattice_table.md` lists all of them.
-
-The same test with 20 sub-banks (40 trainings, 1 CPU each) is `svd_ae_subbanks20.dag`. Submit it once
-`svd_ae_subbanks.dag` has finished: the two DAGs write the same bank-size files (`cells/`). Its `count` and
-`evaluate` then include every model trained so far (one bank, 10 and 20 sub-banks), since `step.sh` passes
-`--models auto`.
+At most 40 CPUs at once (50 while counting); about 6–8 h in all. `count` and `evaluate` use every complete set of
+models (`--models auto` in `step.sh`). The plot shows the latent-3 sub-bank models; `lattice_table.md` lists all
+of them.
