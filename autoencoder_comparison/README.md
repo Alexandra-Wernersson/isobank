@@ -10,6 +10,7 @@ data, metric, monitoring pairs, placement and fitting-factor protocol as isobank
 | `make_bank_autoencoder.py` | greedy placement of `scripts/generate_bank.py`, with the encoder in place of the flow |
 | `plot_comparison.py` | `training.pdf` (loss and d_z/d_proper during training) and `ff_cdf.pdf` (fitting factors) |
 | `latent_neighbours.py` | folding test: true match of the points a latent space puts within r_target |
+| `summarise_ff.py` | spread of the fitting factors: mean ± std, median, 1st/5th/10th percentiles, coverage |
 | `train_flow_ablation.py` | isobank's flow with its loss swapped (not part of the condor run; untested) |
 | `nikhef/` | HTCondor DAG that runs everything at Nikhef |
 
@@ -19,11 +20,14 @@ data, metric, monitoring pairs, placement and fitting-factor protocol as isobank
 finished. It seems to be `ff_ae_encoder`, but on the laptop that step peaks at 0.5 GB (matches in chunks of
 20,000, a 41,796-template bank), so the cause is unclear: see command 3 below. Results so far:
 
-| Bank | Templates | Coverage, FF ≥ 0.97 | Worst FF | Notes |
-|---|---|---|---|---|
-| isobank | ? | ? | ? | `ff_isobank` finished, not read yet |
-| autoencoder, encoder loss | 41,796 | 17.75 ± 0.38 % | 0.557 | miss rate flat from k = 20; shortlist reach ≥ 24.7 r_target |
-| autoencoder, decoder loss | ? | ? | ? | `ff_ae_decoder` finished, not read yet |
+| Bank | Templates | Coverage, FF ≥ 0.97 | FF mean ± std | 1st / 5th pct | Notes |
+|---|---|---|---|---|---|
+| isobank | ? | ? | ? | ? | `ff_isobank` finished, not read yet |
+| autoencoder, encoder loss | 41,796 | 17.75 ± 0.38 % | ? | ? | worst FF 0.557; miss rate flat from k = 20; shortlist reach ≥ 24.7 r_target |
+| autoencoder, decoder loss | ? | ? | ? | ? | `ff_ae_decoder` finished, not read yet |
+
+The worst FF is the minimum of one set of 10,000 injections and changes a lot from set to set; the mean ± std
+and the low percentiles (from `summarise_ff.py`) describe the spread more stably.
 
 **Folding test (laptop models, not the Nikhef ones).** Random points that the latent space puts within r_target,
 and their true waveform match. A faithful map gives near-identical waveforms:
@@ -45,11 +49,14 @@ decoder latent space is also stretched, so its bank should be large.
 ```bash
 cd /data/gravwav/lopezm/Projects/isobank && git pull
 
-# 1. coverage of the isobank and decoder banks
-grep -E "^bank|^coverage" logs/ff_isobank.out logs/ff_ae_decoder.out
+# 1. bank sizes, and the spread of the fitting factors of the three banks
+grep -E "^bank" logs/ff_isobank.out logs/ff_ae_encoder.out logs/ff_ae_decoder.out
+A=autoencoder_comparison/runs/eccentric_5d
+/data/gravwav/lopezm/cmb_env/miniforge3/envs/isobank/bin/python autoencoder_comparison/summarise_ff.py \
+    runs/eccentric_5d/ff_isobank.npy:isobank $A/ff_latent5_encoder.npy:"autoencoder, encoder loss" \
+    $A/ff_latent5_decoder.npy:"autoencoder, decoder loss"
 
 # 2. folding test on the Nikhef models, with isobank's flow as the reference
-A=autoencoder_comparison/runs/eccentric_5d
 OMP_NUM_THREADS=1 /data/gravwav/lopezm/cmb_env/miniforge3/envs/isobank/bin/python autoencoder_comparison/latent_neighbours.py \
     --config configs/eccentric_5d.py --isobank runs/eccentric_5d/flow_best.pt \
     --autoencoder $A/autoencoder_latent5_encoder.pt --autoencoder $A/autoencoder_latent5_decoder.pt
@@ -122,7 +129,7 @@ The DAG (one CPU per step, `OMP_NUM_THREADS=1`):
 | `ae_data`, `train_ae_encoder`, `train_ae_decoder` | data, then the two autoencoders | short, medium |
 | `bank_isobank`, `bank_ae_*` | the same greedy placement: radius r_target (config `MU`), stop at `STOP_ACCEPTANCE` | long |
 | `ff_isobank`, `ff_ae_*` | `scripts/evaluate_bank.py`: 10,000 injections, seed 4002, k = 500 | medium |
-| `plots` | `training.pdf` and `ff_cdf.pdf` in `autoencoder_comparison/runs/eccentric_5d/` | express |
+| `plots` | `training.pdf`, `ff_cdf.pdf` and `ff_summary.md` in `autoencoder_comparison/runs/eccentric_5d/` | express |
 
 The banks use the same placement and radius, so their sizes differ; the figure gives each bank's size. To add
 mbank's fitting factors to the figure, rerun `plot_comparison.py` with `--extra-ff path:"mbank (2.95M)"`.

@@ -6,7 +6,7 @@ plot_tuning.py -- the figures and table of the mbank tuning sweep.
   * tuning.pdf: bank size against coverage (FF >= 0.97) for each variant, as
     figures/bank_size_vs_coverage.png, with isobank and the paper's mbank bank;
   * tuning_loss.pdf: the validation loss of each trained flow;
-  * tuning.csv: per variant, size, coverage and the flow diagnostics.
+  * tuning.csv: per variant, size, coverage, the spread of the fitting factors and the flow diagnostics.
 
 WORK/<variant>/ holds bank.npy, ff.npy, diagnostics.json and history_*.npz.
 """
@@ -51,8 +51,11 @@ def collect(work, variants):
         if not (os.path.exists(bank) and os.path.exists(ff)):
             print(f"{v['name']}: no bank or fitting factors yet, skipped")
             continue
-        cov, err = coverage(np.load(ff))
-        row = dict(name=v['name'], templates=len(np.load(bank, mmap_mode='r')), coverage=cov, error=err)
+        f = np.load(ff)
+        cov, err = coverage(f)
+        p1, p5 = np.percentile(f, [1, 5])
+        row = dict(name=v['name'], templates=len(np.load(bank, mmap_mode='r')), coverage=cov, error=err,
+                   ff_mean=f.mean(), ff_std=f.std(ddof=1), ff_p1=p1, ff_p5=p5)
         diag = os.path.join(d, 'diagnostics.json')
         if os.path.exists(diag):
             with open(diag) as fh:
@@ -129,7 +132,7 @@ def main():
     plot_sizes(rows, isobank, os.path.join(args.work, 'tuning.pdf'))
     plot_losses(args.work, variants, os.path.join(args.work, 'tuning_loss.pdf'))
 
-    keys = ['name', 'templates', 'coverage', 'error', 'abs_r_p50', 'abs_r_p90', 'frac_weight_above_10',
+    keys = ['name', 'templates', 'coverage', 'error', 'ff_mean', 'ff_std', 'ff_p1', 'ff_p5', 'abs_r_p50', 'abs_r_p90', 'frac_weight_above_10',
             'C_minus_Cbest', 'samples_inside', 'log10_volume', 'log10_volume_inside']
     with open(os.path.join(args.work, 'tuning.csv'), 'w', newline='') as fh:
         w = csv.DictWriter(fh, keys, extrasaction='ignore')

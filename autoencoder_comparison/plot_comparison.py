@@ -8,7 +8,8 @@ plot_comparison.py -- the two comparison figures, isobank vs the autoencoders.
   * training.pdf: each method's training loss (relative to its first logged value)
     and the 10th percentile and median of d_z / d_proper on the held-out
     monitoring pairs, against the fraction of training done;
-  * ff_cdf.pdf: cumulative distribution of fitting factors (figures/plot_ff_cdf.py).
+  * ff_cdf.pdf: cumulative distribution of fitting factors (figures/plot_ff_cdf.py);
+  * ff_summary.md: the spread of the fitting factors of each bank (summarise_ff.py).
 
 The autoencoder runs are the history_*.json, bank_*.npy and ff_*.npy files in --runs.
 """
@@ -103,6 +104,12 @@ def main():
     for s in specs:
         cmd += ['--ff', s]
     subprocess.run(cmd, check=True)
+
+    table = subprocess.run([sys.executable, os.path.join(ROOT, 'autoencoder_comparison', 'summarise_ff.py'),
+                            *specs], check=True, capture_output=True, text=True).stdout
+    with open(os.path.join(out, 'ff_summary.md'), 'w') as fh:
+        fh.write(table)
+    print(table + f"-> {os.path.join(out, 'ff_summary.md')}")
 
 
 if __name__ == '__main__':
