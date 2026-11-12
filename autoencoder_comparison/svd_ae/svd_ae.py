@@ -4,9 +4,10 @@ coefficients -> distance-preserving autoencoder -> lattice in the latent space),
 exactly as svd_baseline/svd_grid_refined.py scores the plain SVD lattice.
 
     python autoencoder_comparison/svd_ae/svd_ae.py data     --out DIR
-    python autoencoder_comparison/svd_ae/svd_ae.py train    --out DIR --latent-dim 3
-    python autoencoder_comparison/svd_ae/svd_ae.py count    --out DIR --parts 50 --part 7
-    python autoencoder_comparison/svd_ae/svd_ae.py evaluate --out DIR --isobank-ff FF.npy --isobank-bank BANK.npy
+    python autoencoder_comparison/svd_ae/svd_ae.py train    --out DIR --latent-dim 3 [--subbanks 10 --subbank 4]
+    python autoencoder_comparison/svd_ae/svd_ae.py count    --out DIR --parts 50 --part 7 --models 3:1 3:10
+    python autoencoder_comparison/svd_ae/svd_ae.py evaluate --out DIR --parts 50 --models 3:1 3:10 \
+        --isobank-ff FF.npy --isobank-bank BANK.npy
 
 data      waveforms, SVD basis, coefficients and the parameters -> coefficients regressor, as
           svd_grid_refined.py (same draws, seeds and regressor); 10 coefficients are kept (Cabass: dims = 10).
@@ -14,18 +15,25 @@ train     the autoencoder of Cabass's GW example (autoencoder_GWs, autoencoder_u
           train_autoencoders_b_1_sb_0_to_2.py): MLP 10 -> latent -> 10 (GELU, 64 hidden, 4 layers),
           coefficients divided by std(c0), half the waveforms held out (seed 1648), loss = reconstruction
           MSE + MSE of the exp(-d)-weighted pairwise distances, Adam 1e-3, 50,000 steps, best validation
-          model. Two changes: the pairs are all pairs of a random batch of 2048 waveforms per step (all
-          pairs of 16,000 waveforms do not fit in memory), and float64, so precision is not a confound.
+          model. Two changes: with more than 2048 training waveforms (one bank), the pairs are all pairs of a
+          random batch of 2048 per step (all pairs of 13,000 do not fit in memory; each sub-bank trains on all
+          its waveforms, as Cabass), and float64, so precision is not a confound.
+          Sub-banks (--subbanks K, as Cabass's 3 sub-banks): the waveforms are split into K slices of equal
+          count in c0, and each slice has its own autoencoder, trained on its waveforms, centred on their mean
+          (in place of each sub-bank's own mean phase) and divided by their std(c0). One bank (K = 1) is not
+          centred, as Cabass's script.
 count     bank size = lattice cells reached, sampled as svd_grid_refined.py (regressor; 80% of the draws
           uniform in Mc^(-5/3)), in independent parts: the plain SVD lattice (BCC on c0..c2, as
-          svd_grid_refined.py) and the latent lattices (BCC in 3D, hexagonal in 2D).
+          svd_grid_refined.py) and the latent lattices (BCC in 3D, hexagonal in 2D); with sub-banks, each draw
+          goes to the sub-bank of its c0 and the bank is the sum of the sub-banks' cells.
 evaluate  fitting factor of each of the 4,000 injections (first 4,000 of seed 4002, as the isobank
           fitting factors) with its lattice template, as svd_grid_refined.py: overlap with the signal's
           own amplitude and one template amplitude profile, no extra time/phase maximisation. Table of
           all lattices, and the cumulative plot at the bank size closest to isobank's.
 
 Spacings are in coefficient units (1 - M ~ |dc|^2 / 2) for every lattice: BCC cubic constant a,
-hexagonal nearest-neighbour distance a; the latent lattices use a / std(c0), the units of the latent space.
+hexagonal nearest-neighbour distance a; the latent lattices use a / std(c0), the units of the latent space
+(of each sub-bank). --models lists the autoencoders as latent:K, e.g. 3:10 = latent 3, 10 sub-banks.
 """
 import argparse, json, os, subprocess, sys, time
 from multiprocessing import Pool
@@ -49,7 +57,8 @@ SVD_BCC = RF.BCC                               # 0.44 ... 0.60, as svd_grid_refi
 LATENT = {3: [.40, .44, .48, .52, .56, .60],   # BCC
           2: [.06, .08, .10, .13, .16, .20, .25, .30]}   # hexagonal
 N_SAMPLES, CHUNK = 200_000_000, 500_000        # 2e8 draws, as svd_grid_refined.py
-BITS = 20
+BITS = 19                                      # per lattice index; 3 x 19 + 1 + 4 bits of sub-bank
+SB_SHIFT = 1 + 3 * BITS
 
 
 def ncpu():
@@ -62,10 +71,10 @@ def step_vec(dim, a):
     return np.full(3, a) if dim == 3 else np.array([a, a * np.sqrt(3)])
 
 
-def snap(z, step):
+def snap(z, step, sb=None):
     """Nearest point of step * Z^d  U  step * (Z^d + 1/2): body-centred cubic for step = (a, a, a)
     (identical to svd_grid_refined.snap_bcc), hexagonal of side a for step = (a, a sqrt 3).
-    Returns the points and one int64 id per cell."""
+    step may differ per row (per sub-bank). Returns the points and one int64 id per cell (and sub-bank sb)."""
     i0 = np.rint(z / step); i1 = np.rint(z / step - .5)
     p0, p1 = i0 * step, (i1 + .5) * step
     odd = ((z - p1) ** 2).sum(1) < ((z - p0) ** 2).sum(1)
@@ -76,14 +85,21 @@ def snap(z, step):
     ids = odd.astype(np.int64)
     for j in range(u.shape[1]):
         ids |= u[:, j] << (1 + BITS * j)
+    if sb is not None:
+        ids |= sb.astype(np.int64) << SB_SHIFT
     return p, ids
 
 
-def lattices(latent_dims):
-    """name -> (kind, latent dim or None, spacing in coefficient units)."""
+def tag(model):
+    k, n_sb = model
+    return f'ae{k}' if n_sb == 1 else f'ae{k}sb{n_sb}'
+
+
+def lattices(models):
+    """name -> (kind, model (latent dim, sub-banks) or None, spacing in coefficient units)."""
     out = {f'svd_a{a:.2f}': ('svd', None, a) for a in SVD_BCC}
-    for k in latent_dims:
-        out.update({f'ae{k}_a{a:.2f}': ('ae', k, a) for a in LATENT[k]})
+    for m in models:
+        out.update({f'{tag(m)}_a{a:.2f}': ('ae', m, a) for a in LATENT[m[0]]})
     return out
 
 
@@ -102,19 +118,50 @@ def load_regressor(out):
     return predict
 
 
-def load_ae(out, k):
-    d = torch.load(os.path.join(out, f'svd_ae_latent{k}.pt'), weights_only=True)
-    model = Autoencoder(N_COEF, k).double(); model.load_state_dict(d['state']); model.eval()
-    norm = float(d['norm'])
+def model_file(out, k, n_sb, j):
+    return os.path.join(out, f'svd_ae_latent{k}.pt' if n_sb == 1 else f'svd_ae_latent{k}_sb{j}of{n_sb}.pt')
 
-    def enc(c):
-        with torch.no_grad():
-            return model.encoder(torch.tensor(c / norm)).numpy()
 
-    def dec(z):
-        with torch.no_grad():
-            return model.decoder(torch.tensor(z)).numpy() * norm
-    return enc, dec, norm
+def subbank_edges(c0, n_sb):
+    """Inner edges of n_sb slices of equal count in c0 (training waveforms)."""
+    return np.quantile(c0, np.arange(1, n_sb) / n_sb)
+
+
+class AEBank:
+    """The n_sb autoencoders of one model; each coefficient vector goes to the sub-bank of its c0."""
+    def __init__(self, out, k, n_sb):
+        self.k, self.n_sb, self.nets, self.mean, self.norm = k, n_sb, [], [], []
+        for j in range(n_sb):
+            d = torch.load(model_file(out, k, n_sb, j), weights_only=True)
+            net = Autoencoder(N_COEF, k).double(); net.load_state_dict(d['state']); net.eval()
+            self.nets.append(net); self.norm.append(float(d['norm']))
+            self.mean.append(d['mean'].numpy() if 'mean' in d else np.zeros(N_COEF))
+            if j == 0:
+                self.edges = d['edges'].numpy() if 'edges' in d else np.empty(0)
+        self.norm = np.array(self.norm)
+
+    def route(self, c):
+        return np.searchsorted(self.edges, c[:, 0])
+
+    def encode(self, c):
+        sb = self.route(c); z = np.empty((len(c), self.k))
+        for j in np.unique(sb):
+            i = sb == j
+            with torch.no_grad():
+                z[i] = self.nets[j].encoder(torch.tensor((c[i] - self.mean[j]) / self.norm[j])).numpy()
+        return z, sb
+
+    def decode(self, z, sb):
+        c = np.empty((len(z), N_COEF))
+        for j in np.unique(sb):
+            i = sb == j
+            with torch.no_grad():
+                c[i] = self.nets[j].decoder(torch.tensor(z[i])).numpy() * self.norm[j] + self.mean[j]
+        return c
+
+    def snap(self, z, sb, a):
+        """The latent lattice of spacing a (coefficient units) of each point's sub-bank."""
+        return snap(z, step_vec(self.k, a)[None, :] / self.norm[sb][:, None], sb)
 
 
 # --- steps -----------------------------------------------------------------------------------
@@ -169,15 +216,20 @@ def data(args):
 
 
 def train(args):
-    """Cabass's GW-example autoencoder on the coefficients of the training waveforms."""
-    torch.set_num_threads(ncpu()); torch.manual_seed(args.latent_dim)
+    """Cabass's GW-example autoencoder on the coefficients of the training waveforms (of one sub-bank)."""
+    K, j = args.subbanks, args.subbank
+    torch.set_num_threads(ncpu()); torch.manual_seed(args.latent_dim + 100 * j)
     Z = np.load(os.path.join(args.out, 'svd_data.npz'))
     c = Z['C'][:int(Z['nfit'])]                 # training waveforms only, never the injections
+    edges = subbank_edges(c[:, 0], K)
+    c = c[np.searchsorted(edges, c[:, 0]) == j]
+    mean = c.mean(0) if K > 1 else np.zeros(N_COEF)
     norm = c[:, 0].std()
-    x = torch.tensor(c / norm)
+    x = torch.tensor((c - mean) / norm)
     np.random.seed(1648)
     held = np.random.choice([0, 1], size=(len(x),), p=[1. / 2, 1. / 2]).astype('bool')
     xt, xv = x[~held], x[held]
+    full = len(xt) <= args.batch                # all of them every step, as Cabass (each sub-bank)
     xv = xv[torch.randperm(len(xv))[:args.batch]]
     model = Autoencoder(N_COEF, args.latent_dim).double()
     opt = torch.optim.Adam(model.parameters(), lr=1e-3)
@@ -188,12 +240,13 @@ def train(args):
         d0 = torch.pdist(b); wt = torch.exp(-d0)
         return mse(rec, b) + mse(wt * torch.pdist(z), wt * d0)
 
-    print(f'autoencoder {N_COEF} -> {args.latent_dim} -> {N_COEF}, {len(xt):,} training and {len(x) - len(xt):,} '
-          f'held-out waveforms, std(c0) = {norm:.2f}', flush=True)
+    print(f'autoencoder {N_COEF} -> {args.latent_dim} -> {N_COEF}, sub-bank {j} of {K}, {len(xt):,} training and '
+          f'{len(x) - len(xt):,} held-out waveforms, std(c0) = {norm:.2f}, std(c1) = {c[:, 1].std():.2f}, '
+          f'std(c2) = {c[:, 2].std():.2f}', flush=True)
     best, history, t0 = (np.inf, None), dict(step=[], train=[], valid=[]), time.time()
     for step in range(args.steps):
         opt.zero_grad()
-        l = loss(xt[torch.randint(len(xt), (args.batch,))]); l.backward(); opt.step()
+        l = loss(xt if full else xt[torch.randint(len(xt), (args.batch,))]); l.backward(); opt.step()
         if step % 100 == 0 or step == args.steps - 1:
             with torch.no_grad():
                 lv = float(loss(xv))
@@ -202,18 +255,19 @@ def train(args):
                 best = (lv, {k: v.clone() for k, v in model.state_dict().items()})
             if step % 5000 == 0:
                 print(f'step {step}  train {float(l):.3e}  valid {lv:.3e}  [{(time.time() - t0) / 60:.0f} min]', flush=True)
-    torch.save(dict(state=best[1], norm=torch.tensor(norm)), os.path.join(args.out, f'svd_ae_latent{args.latent_dim}.pt'))
-    with open(os.path.join(args.out, f'history_svd_ae_latent{args.latent_dim}.json'), 'w') as fh:
+    path = model_file(args.out, args.latent_dim, K, j)
+    torch.save(dict(state=best[1], norm=torch.tensor(norm), mean=torch.tensor(mean), edges=torch.tensor(edges)), path)
+    with open(path.replace('svd_ae_', 'history_svd_ae_').replace('.pt', '.json'), 'w') as fh:
         json.dump(history, fh)
-    print(f'best validation loss {best[0]:.3e} -> svd_ae_latent{args.latent_dim}.pt')
+    print(f'best validation loss {best[0]:.3e} -> {os.path.basename(path)}')
 
 
 def count(args):
     """Distinct lattice cells reached by this part's share of the 2e8 draws."""
     torch.set_num_threads(1)
     predict = load_regressor(args.out)
-    aes = {k: load_ae(args.out, k) for k in args.latent_dims}
-    lat = lattices(args.latent_dims)
+    aes = {m: AEBank(args.out, *m) for m in args.models}
+    lat = lattices(args.models)
     n = args.n_samples // args.parts
     rng = np.random.default_rng([6, args.part])
     cells = {name: np.empty(0, np.int64) for name in lat}
@@ -221,9 +275,9 @@ def count(args):
     for done in range(0, n, CHUNK):
         c5 = predict(RF.sample(min(CHUNK, n - done), rng))
         c = np.c_[c5, np.zeros((len(c5), N_COEF - RF.KMAX))]    # the regressor gives 5; beyond the 5th, < 1e-6 of mismatch (svd_feasibility k = 5)
-        z = {k: aes[k][0](c) for k in aes}
-        for name, (kind, k, a) in lat.items():
-            ids = snap(c[:, :3], step_vec(3, a))[1] if kind == 'svd' else snap(z[k], step_vec(k, a) / aes[k][2])[1]
+        z = {m: aes[m].encode(c) for m in aes}
+        for name, (kind, m, a) in lat.items():
+            ids = snap(c[:, :3], step_vec(3, a))[1] if kind == 'svd' else aes[m].snap(*z[m], a)[1]
             cells[name] = np.union1d(cells[name], ids)
         print(f'{done + len(c5):,} of {n:,}  [{(time.time() - t0) / 60:.1f} min]', flush=True)
     os.makedirs(os.path.join(args.out, 'cells'), exist_ok=True)
@@ -235,8 +289,8 @@ def evaluate(args):
     Vt, w, nfit = Z['Vt'], Z['w'], int(Z['nfit'])
     ci, ri, Wi, mc = Z['C'][nfit:], Z['r_inj'], Z['W_inj'], Z['mc_inj']
     mask = w > 1e-12
-    aes = {k: load_ae(args.out, k) for k in args.latent_dims}
-    lat = lattices(args.latent_dims)
+    aes = {m: AEBank(args.out, *m) for m in args.models}
+    lat = lattices(args.models)
 
     def ff_of(coef):       # svd_grid_refined.coverage: signal amplitude x template amplitude x cos(phase error)
         rec = coef @ Vt[:coef.shape[1]]
@@ -259,17 +313,17 @@ def evaluate(args):
     print(f'bank sizes from {n_drawn:,} draws (half: {n_drawn // 2:,})')
 
     rows, ffs = [], {}
-    for name, (kind, k, a) in lat.items():
+    z = {m: aes[m].encode(ci) for m in aes}
+    for name, (kind, m, a) in lat.items():
         if kind == 'svd':
             coef = snap(ci[:, :3], step_vec(3, a))[0]
         else:
-            enc, dec, norm = aes[k]
-            coef = dec(snap(enc(ci), step_vec(k, a) / norm)[0])
+            coef = aes[m].decode(aes[m].snap(*z[m], a)[0], z[m][1])
         ffs[name] = ff_of(coef)
-        rows.append(dict(name=name, kind=kind, k=k, a=a, n=len(cells[name]), n_half=half[name]))
-    for k, (enc, dec, norm) in aes.items():      # autoencoder alone, no lattice: its reconstruction error
-        ffs[f'ae{k}_nolattice'] = ff_of(dec(enc(ci)))
-        rows.append(dict(name=f'ae{k}_nolattice', kind='ae', k=k, a=0., n=0, n_half=0))
+        rows.append(dict(name=name, kind=kind, m=m, a=a, n=len(cells[name]), n_half=half[name]))
+    for m in aes:      # autoencoder alone, no lattice: its reconstruction error
+        ffs[f'{tag(m)}_nolattice'] = ff_of(aes[m].decode(*z[m]))
+        rows.append(dict(name=f'{tag(m)}_nolattice', kind='ae', m=m, a=0., n=0, n_half=0))
     for r in rows:
         ff = ffs[r['name']]; np.save(os.path.join(args.out, f"ff_{r['name']}.npy"), ff)
         r.update(cov=100 * (ff >= .97).mean(), cov_mc14=100 * (ff[mc < 1.4] >= .97).mean(),
@@ -282,11 +336,16 @@ def evaluate(args):
              f'(and from half of them, for convergence). isobank: {n_iso:,} templates.', '',
              '| Lattice | Spacing | Templates (half the draws) | Coverage | Mc < 1.4 | 1st pct | Worst | svd_refined_ecc5d.json |',
              '|---|---|---|---|---|---|---|---|']
-    names = {'svd': 'SVD, BCC on c0..c2', 3: 'SVD + autoencoder, latent 3, BCC', 2: 'SVD + autoencoder, latent 2, hexagonal'}
+    def model_label(m):
+        return f"SVD + autoencoder, latent {m[0]}, " + ('one bank' if m[1] == 1 else f'{m[1]} sub-banks')
+
     for r in rows:
-        label = names['svd'] if r['kind'] == 'svd' else names[r['k']]
+        if r['kind'] == 'svd':
+            label = 'SVD, BCC on c0..c2'
+        else:
+            label = model_label(r['m']) + (', BCC' if r['m'][0] == 3 else ', hexagonal')
         if r['a'] == 0:
-            label, size, sp = label.split(',')[0] + f", latent {r['k']}, no lattice", '–', '–'
+            label, size, sp = model_label(r['m']) + ', no lattice', '–', '–'
         else:
             size, sp = f"{r['n']:,} ({r['n_half']:,})", f"{r['a']:.2f}"
         old = ref.get(r['a']) if r['kind'] == 'svd' else None
@@ -309,9 +368,10 @@ def evaluate(args):
         out = os.path.join(args.out, f'ff_{tag}_first4000.npy'); np.save(out, ff[:4000]); return out
 
     specs = [f"{first_4000(args.isobank_ff, 'isobank')}:isobank ({human(n_iso)})"]
-    for kind, k, label in (('svd', None, 'SVD lattice, no autoencoder'), *[('ae', k, f'SVD + autoencoder, latent {k}')
-                                                                            for k in sorted(aes, reverse=True)]):
-        cand = [r for r in rows if r['kind'] == kind and r['k'] == k and r['n'] > 0]
+    plotted = [m for m in args.models if m[1] > 1] or args.models      # the sub-bank models, if any
+    for kind, m, label in (('svd', None, 'SVD lattice, no autoencoder'),
+                           *[('ae', m, model_label(m)) for m in sorted(plotted, reverse=True)]):
+        cand = [r for r in rows if r['kind'] == kind and r['m'] == m and r['n'] > 0]
         r = min(cand, key=lambda r: abs(np.log(r['n'] / n_iso)))
         specs.append(f"{os.path.join(args.out, 'ff_' + r['name'] + '.npy')}:{label} ({human(r['n'])})")
     for i, spec in enumerate(args.extra_ff):
@@ -337,8 +397,11 @@ def main():
     p['train'].add_argument('--latent-dim', type=int, required=True, choices=sorted(LATENT))
     p['train'].add_argument('--steps', type=int, default=50_000)
     p['train'].add_argument('--batch', type=int, default=2048)
+    p['train'].add_argument('--subbanks', type=int, default=1)
+    p['train'].add_argument('--subbank', type=int, default=0)
     for m in ('count', 'evaluate'):
-        p[m].add_argument('--latent-dims', type=int, nargs='+', default=[3, 2])
+        p[m].add_argument('--models', nargs='+', default=['3:1', '2:1'],
+                          help='latent:sub-banks; the plot shows those with sub-banks, if any')
         p[m].add_argument('--parts', type=int, required=True)
     p['count'].add_argument('--part', type=int, required=True)
     p['count'].add_argument('--n-samples', type=int, default=N_SAMPLES, help='over all parts')
@@ -348,6 +411,8 @@ def main():
                                help='path:label, fitting factors on the seed-4002 injections (first 4,000 used)')
     p['evaluate'].add_argument('--xlim', default='0.85,1.0')
     args = ap.parse_args()
+    if args.mode in ('count', 'evaluate'):
+        args.models = [tuple(int(v) for v in m.split(':')) for m in args.models]
     dict(data=data, train=train, count=count, evaluate=evaluate)[args.mode](args)
 
 

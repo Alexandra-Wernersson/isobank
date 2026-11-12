@@ -15,11 +15,16 @@ OUT=autoencoder_comparison/runs/eccentric_5d/svd_ae
 ISO=runs/eccentric_5d                         # isobank, from comparison.dag
 AE=autoencoder_comparison/runs/eccentric_5d   # autoencoder on the parameters, from comparison.dag
 mkdir -p "$OUT"
+SUBBANKS=10                                   # svd_ae_subbanks.dag
+MODELS="3:1 2:1 3:$SUBBANKS 2:$SUBBANKS"     # latent:sub-banks
 
 case $STEP in
     data)                 $RUN data --out $OUT ;;
     train_ae3|train_ae2)  $RUN train --out $OUT --latent-dim "${STEP#train_ae}" ;;
-    count)                $RUN count --out $OUT --parts "$N_PARTS" --part "$PART" ;;
+    train_ae*_sb*)        # train_ae<latent>_sb<j>: sub-bank j of $SUBBANKS
+        k=${STEP#train_ae}; k=${k%%_sb*}
+        $RUN train --out $OUT --latent-dim "$k" --subbanks $SUBBANKS --subbank "${STEP##*_sb}" ;;
+    count)                $RUN count --out $OUT --parts "$N_PARTS" --part "$PART" --models $MODELS ;;
     evaluate)
         extra=()
         for side in encoder decoder; do       # the parameter autoencoders, where comparison.dag has scored them
@@ -28,7 +33,7 @@ case $STEP in
             n=$(python -c "import numpy as np; n = len(np.load(\"$AE/bank_latent5_$side.npy\", mmap_mode=\"r\")); print(f'{n / 1e6:.2f}M' if n >= 1e6 else f'{n / 1e3:.0f}k')")
             extra+=(--extra-ff "$ff:autoencoder on parameters, $side loss ($n)")
         done
-        $RUN evaluate --out $OUT --parts "$N_PARTS" --isobank-ff $ISO/ff_isobank.npy \
+        $RUN evaluate --out $OUT --parts "$N_PARTS" --models $MODELS --isobank-ff $ISO/ff_isobank.npy \
             --isobank-bank $ISO/bank_isobank.npy "${extra[@]}" ;;
     *)
         echo "unknown step: $STEP" >&2; exit 1 ;;

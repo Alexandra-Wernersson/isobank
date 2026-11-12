@@ -1,0 +1,54 @@
+# Cabass's sub-banks: 10 autoencoders per latent size, each on a slice of c0, then the bank sizes and the plot
+# again, now with the one-bank and the sub-bank models. Needs the data, train_ae3 and train_ae2 steps of
+# svd_ae.dag (done). Submit from this folder:
+#   condor_submit_dag svd_ae_subbanks.dag
+# At most 40 CPUs at once (20 trainings x 2), then 50 single-CPU count jobs.
+
+JOB train_ae3_sb0 step.sub
+VARS train_ae3_sb0 step="train_ae3_sb0" cpus="2" memory="4G" category="medium"
+JOB train_ae3_sb1 step.sub
+VARS train_ae3_sb1 step="train_ae3_sb1" cpus="2" memory="4G" category="medium"
+JOB train_ae3_sb2 step.sub
+VARS train_ae3_sb2 step="train_ae3_sb2" cpus="2" memory="4G" category="medium"
+JOB train_ae3_sb3 step.sub
+VARS train_ae3_sb3 step="train_ae3_sb3" cpus="2" memory="4G" category="medium"
+JOB train_ae3_sb4 step.sub
+VARS train_ae3_sb4 step="train_ae3_sb4" cpus="2" memory="4G" category="medium"
+JOB train_ae3_sb5 step.sub
+VARS train_ae3_sb5 step="train_ae3_sb5" cpus="2" memory="4G" category="medium"
+JOB train_ae3_sb6 step.sub
+VARS train_ae3_sb6 step="train_ae3_sb6" cpus="2" memory="4G" category="medium"
+JOB train_ae3_sb7 step.sub
+VARS train_ae3_sb7 step="train_ae3_sb7" cpus="2" memory="4G" category="medium"
+JOB train_ae3_sb8 step.sub
+VARS train_ae3_sb8 step="train_ae3_sb8" cpus="2" memory="4G" category="medium"
+JOB train_ae3_sb9 step.sub
+VARS train_ae3_sb9 step="train_ae3_sb9" cpus="2" memory="4G" category="medium"
+JOB train_ae2_sb0 step.sub
+VARS train_ae2_sb0 step="train_ae2_sb0" cpus="2" memory="4G" category="medium"
+JOB train_ae2_sb1 step.sub
+VARS train_ae2_sb1 step="train_ae2_sb1" cpus="2" memory="4G" category="medium"
+JOB train_ae2_sb2 step.sub
+VARS train_ae2_sb2 step="train_ae2_sb2" cpus="2" memory="4G" category="medium"
+JOB train_ae2_sb3 step.sub
+VARS train_ae2_sb3 step="train_ae2_sb3" cpus="2" memory="4G" category="medium"
+JOB train_ae2_sb4 step.sub
+VARS train_ae2_sb4 step="train_ae2_sb4" cpus="2" memory="4G" category="medium"
+JOB train_ae2_sb5 step.sub
+VARS train_ae2_sb5 step="train_ae2_sb5" cpus="2" memory="4G" category="medium"
+JOB train_ae2_sb6 step.sub
+VARS train_ae2_sb6 step="train_ae2_sb6" cpus="2" memory="4G" category="medium"
+JOB train_ae2_sb7 step.sub
+VARS train_ae2_sb7 step="train_ae2_sb7" cpus="2" memory="4G" category="medium"
+JOB train_ae2_sb8 step.sub
+VARS train_ae2_sb8 step="train_ae2_sb8" cpus="2" memory="4G" category="medium"
+JOB train_ae2_sb9 step.sub
+VARS train_ae2_sb9 step="train_ae2_sb9" cpus="2" memory="4G" category="medium"
+
+JOB count count.sub
+
+JOB evaluate step.sub
+VARS evaluate step="evaluate" cpus="1" memory="16G" category="short"
+
+PARENT train_ae3_sb0 train_ae3_sb1 train_ae3_sb2 train_ae3_sb3 train_ae3_sb4 train_ae3_sb5 train_ae3_sb6 train_ae3_sb7 train_ae3_sb8 train_ae3_sb9 train_ae2_sb0 train_ae2_sb1 train_ae2_sb2 train_ae2_sb3 train_ae2_sb4 train_ae2_sb5 train_ae2_sb6 train_ae2_sb7 train_ae2_sb8 train_ae2_sb9 CHILD count
+PARENT count CHILD evaluate

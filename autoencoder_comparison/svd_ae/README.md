@@ -29,13 +29,39 @@ whose bank size is closest to isobank's.
   loss of `../`);
 - Adam 1e-3, 50,000 steps, keeps the best validation model.
 
-It differs from theirs in three ways:
-- pairs are taken within a random batch of 2048 per step;
+**Sub-banks** (`--subbanks K`): as Cabass's 3 sub-banks, the waveforms are split into K slices of equal count in
+c0, each with its own autoencoder, centred on its mean and divided by its own std(c0). Each network then only has
+to be precise over a narrow range of c0. A draw or an injection goes to the sub-bank of its c0, and the bank size
+is the sum over sub-banks.
+
+It differs from theirs in four ways:
+- their sub-banks each have their own SVD basis; ours share Alexandra's single basis, sliced and centred;
+- with one bank (13,000 training waveforms), pairs are taken within a random batch of 2048 per step (each
+  sub-bank trains on all its waveforms, as theirs);
 - it runs in float64;
-- it uses one bank instead of their sub-banks.
+- the best model is picked every 100 steps on at most 2048 held-out waveforms (theirs: every epoch, all of them).
 
 Templates are placed on a lattice in the latent space and decoded back to coefficients. The `no lattice` rows
 show the autoencoder's own reconstruction error.
+
+## Results (Nikhef, 13 November 2026)
+
+`svd_ae.dag`, one bank (`../runs/eccentric_5d/svd_ae/lattice_table.md`, `ff_summary_svd.md`):
+
+| Bank | Templates | Coverage, FF ≥ 0.97 | 1st pct |
+|---|---|---|---|
+| isobank (Nikhef retrain) | 3.01M | 98.38 ± 0.20 % | 0.963 |
+| SVD lattice, no autoencoder | 3.33M | 99.70 ± 0.09 % | 0.974 |
+| SVD + autoencoder, latent 3, one bank | 10k | 1.27 ± 0.18 % | < 0 |
+| autoencoder on parameters, encoder loss | 42k | 17.70 ± 0.60 % | 0.800 |
+| autoencoder on parameters, decoder loss | 31.8M | 98.83 ± 0.17 % | 0.968 |
+
+- The SVD rows reproduce `svd_baseline/results/svd_refined_ecc5d.json` (same coverage, sizes within 0.02 %).
+- With one bank the autoencoder does not train precisely enough: its validation loss stops at 7.3e-6 after 5,000
+  steps, an error of 1–2 per coefficient (a template needs about 0.1), so even without a lattice its fitting
+  factors are near 0. This is why `svd_ae_subbanks.dag` adds Cabass's sub-banks.
+- Locally (300 waveforms per sub-bank, 3 sub-banks), sub-banks cut the error on c0 and c1 by 3–5×; c2 is then
+  the limit.
 
 ## Running at Nikhef
 
@@ -56,3 +82,17 @@ cd autoencoder_comparison/svd_ae/nikhef && condor_submit_dag svd_ae.dag
 
 Outputs go to `autoencoder_comparison/runs/eccentric_5d/svd_ae/`; logs to `logs/svd_ae_*`. The DAG uses at most
 50 CPUs at once.
+
+Then the sub-banks, reusing the `data` step and the one-bank models:
+
+```bash
+cd /data/gravwav/lopezm/Projects/isobank && git pull
+cd autoencoder_comparison/svd_ae/nikhef && condor_submit_dag svd_ae_subbanks.dag
+```
+
+| Step | What | CPUs | Category |
+|---|---|---|---|
+| `train_ae3_sb0` … `train_ae2_sb9` | 10 sub-banks × latent 3 and 2 | 2 each | medium |
+| `count`, `evaluate` | as above, now with the one-bank and the sub-bank models (`MODELS` in `step.sh`) | 1 each | short |
+
+The plot then shows the sub-bank models; `lattice_table.md` lists both.
