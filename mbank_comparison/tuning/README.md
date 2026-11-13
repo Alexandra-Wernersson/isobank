@@ -15,6 +15,31 @@ it with isobank's `scripts/evaluate_bank.py`: 10,000 injections, seed 4002, k = 
 | `data_50k` | 50,000 training points (paper: 15,000) |
 | `is_wmax_10`, `is_no_clip` | `paper_a`'s flow, covering fraction by importance sampling, weights clipped at W_max = 10 or not at all |
 
+## Results (Nikhef, 13 November 2026)
+
+`results/tuning.csv`, `results/tuning.pdf`, `results/tuning_loss.pdf`; the reviewer-facing figure is
+`results/tuning_summary.pdf` (`plot_tuning_summary.py`).
+
+| Variant | Templates | Coverage, FF ≥ 0.97 |
+|---|---|---|
+| `paper_a`, `paper_b`, `paper_c` | 3.09M, 2.84M, 3.01M | 94.78, 93.51, 93.73 % |
+| `weighted_0.5`, `weighted_1` | 2.99M, 3.03M | 94.46, 94.37 % |
+| `quantile_0.5`, `quantile_0.99` | 2.92M, 3.01M | 94.00, 93.49 % |
+| `padding_0.001`, `padding_0.05` | 3.05M, 3.07M | 93.80, 94.30 % |
+| `lr_0.0005`, `batch_1000` | 2.84M, 2.98M | 93.41, 93.61 % |
+| `data_50k` | 3.04M | 94.29 % |
+| `is_wmax_10`, `is_no_clip` | 2.99M, 3.11M | 94.20, 94.32 % |
+| isobank (Nikhef retrain) | 3.01M | 98.4 % |
+
+Errors are about ±0.23 %. Every variant is within the scatter of the three runs with the paper's settings (93.5–94.8 %):
+no change to the loss, training or placement brings mbank near isobank.
+
+- The weighted loss gives the best flow fit (median |r| 0.019, against 0.03–0.05 for the paper's runs) and a
+  coverage at the top of the scatter, but one run per variant cannot separate it from the repeats.
+- The fraction of flow samples inside the box (`samples_inside`, about 4 %) does not depend on the padding; it
+  follows the starting quantile of C (19 % at 0.5, 2 % at 0.99). The volume inside the box is the same in every
+  variant (log10 ≈ −0.68), so this changes mbank's reported volume and wasted proposals, not the bank.
+
 The variants are the rows of `variants.tsv`. To change them, edit it and run `python make_dag.py`, which
 rewrites `tuning.dag`.
 

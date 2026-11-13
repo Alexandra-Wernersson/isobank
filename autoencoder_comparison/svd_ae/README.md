@@ -63,6 +63,20 @@ show the autoencoder's own reconstruction error.
 - Locally (300 waveforms per sub-bank, 3 sub-banks), sub-banks cut the error on c0 and c1 by 3–5×; c2 is then
   the limit.
 
+`svd_ae_subbanks.dag` (`lattice_table_sb20.md`, `ff_summary_svd_sb20.md`; each at the size closest to isobank's):
+
+| Bank | Templates | Coverage, FF ≥ 0.97 | 1st pct | Worst | No lattice |
+|---|---|---|---|---|---|
+| SVD + autoencoder, latent 3, 10 sub-banks | 3.28M | 79.77 ± 0.64 % | 0.837 | 0.730 | 84.7 % |
+| SVD + autoencoder, latent 3, 20 sub-banks | 2.68M | 96.55 ± 0.29 % | 0.952 | 0.587 | 98.5 % |
+| SVD + autoencoder, latent 2, 10 or 20 sub-banks | 0.6–13M | 50–55 % | 0.55–0.59 | < 0 | 54–55 % |
+
+- Coverage rises with the number of sub-banks (1 → 10 → 20: 1 % → 80 % → 96.6 %) and has not levelled off.
+- Even with 20 sub-banks the autoencoder costs coverage against the SVD it is built on: 98.5 % with no lattice,
+  and 96.6 % at 2.68M against 99.1 % for the plain SVD lattice at 2.61M; its worst FF is 0.59 (isobank 0.87).
+- Latent 2 (Cabass's choice) stays near 54 %: two dimensions cannot hold c2.
+- `plot_ff_cdf_svd_vs_isobank.py` draws the cumulative figure (`ff_cdf_svd_vs_isobank.pdf`).
+
 ## Running at Nikhef
 
 Needs `runs/eccentric_5d/ff_isobank.npy` and `bank_isobank.npy` from `../nikhef/comparison.dag`. The parameter
