@@ -75,7 +75,7 @@ show the autoencoder's own reconstruction error.
 - Even with 20 sub-banks the autoencoder costs coverage against the SVD it is built on: 98.5 % with no lattice,
   and 96.6 % at 2.68M against 99.1 % for the plain SVD lattice at 2.61M; its worst FF is 0.59 (isobank 0.87).
 - Latent 2 (Cabass's choice) stays near 54 %: two dimensions cannot hold c2.
-- `plot_ff_cdf_svd_vs_isobank.py` draws the cumulative figure (`ff_cdf_svd_vs_isobank.pdf`).
+- `plot_ff_cdf_svd_vs_isobank.py` draws the cumulative figure (`ff_cdf_svd_vs_isobank.pdf`): isobank against Cabass et al. (2025) with 10 and 20 sub-banks. The plain SVD lattice is left out: like Cabass et al.'s, its templates are rebuilt from SVD coefficients, not exact waveforms.
 
 ## Running at Nikhef
 
