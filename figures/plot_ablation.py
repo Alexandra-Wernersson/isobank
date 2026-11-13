@@ -77,8 +77,7 @@ def main():
     axes[-1].set_xlabel('Missed injections, FF < 0.97 (%)')
     axes[-1].set_xlim(2.5, 7.2)
     axes[-1].legend(handles=[
-        plt.Line2D([], [], ls='-', marker='D', color=INK, ms=7, lw=1.6, label='mean ± std of the retrainings'),
-        plt.Rectangle((0, 0), 1, 1, color=BAND, label='full objective, mean ± std')],
+        plt.Line2D([], [], ls='-', marker='D', color=INK, ms=7, lw=1.6, label=r'$\mu \pm \sigma$')],
         loc='center right', fontsize=7.5, frameon=True, framealpha=0.95, edgecolor='#d1d5db')
     plt.savefig(args.out, dpi=200, bbox_inches='tight', facecolor='white')
     print(f'-> {args.out}')
