@@ -1,13 +1,14 @@
 """
 plot_ff_cdf_svd_vs_isobank.py -- FF cumulative distributions, isobank vs Cabass et al. (2025), arXiv:2511.10466
 (SVD coefficients -> autoencoder -> lattice, with 10 and 20 sub-banks), eccentric 5D, in the style of
-mbank_comparison/figure/ff_cdf_isobank_vs_mbank.py. The plain SVD lattice is in lattice_table_sb20.md, not here:
-like Cabass et al.'s, its templates are waveforms rebuilt from SVD coefficients, not exact waveforms.
+mbank_comparison/figure/ff_cdf_isobank_vs_mbank.py, with the plain SVD grid underneath (Alexandra's baseline).
+Like Cabass et al.'s, the SVD grid's templates are waveforms rebuilt from SVD coefficients, not exact waveforms.
 
     python autoencoder_comparison/svd_ae/plot_ff_cdf_svd_vs_isobank.py --runs autoencoder_comparison/runs/eccentric_5d/svd_ae
 
 All curves: the first 4,000 injections of seed 4002 (Alexandra's SVD tests). Each Cabass et al. lattice at the
-spacing whose bank size is closest to isobank's (as svd_ae.py evaluate), scored with the phase overlap of
+spacing whose bank size is closest to isobank's (as svd_ae.py evaluate); both SVD methods are scored with the
+phase overlap of
 svd_grid_refined.py, without an extra time/phase search; isobank uses the true match.
 Reads the ff_*.npy files and lattice_table_sb20.md of --runs; writes ff_cdf_svd_vs_isobank.pdf there.
 """
@@ -19,6 +20,7 @@ import matplotlib.pyplot as plt
 THR = 0.97
 CURVES = [   # file in --runs, lattice_table row (label, spacing) or None, colour, line style, label
     ('ff_isobank_first4000.npy', None, '#0284c7', '-', 'isobank'),
+    ('ff_svd_a0.44.npy', ('SVD, BCC on c0..c2', '0.44'), '#d97706', '-', 'SVD grid, no autoencoder'),
     ('ff_ae3sb20_a0.48.npy', ('SVD + autoencoder, latent 3, 20 sub-banks, BCC', '0.48'), '#059669', (0, (5, 2)),
      'Cabass et al. (2025), 20 sub-banks'),
     ('ff_ae3sb10_a0.44.npy', ('SVD + autoencoder, latent 3, 10 sub-banks, BCC', '0.44'), '#7c3aed', (0, (5, 2)),
