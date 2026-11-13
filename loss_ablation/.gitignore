@@ -1,0 +1,7 @@
+ecc5d/runs/
+al3d/runs/
+*/logs/*
+!*/logs/.gitkeep
+*.pt
+*.npy
+__pycache__/
