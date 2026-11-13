@@ -28,7 +28,7 @@ Outputs, in `WORK`:
 ## Results (Nikhef, 13 November 2026)
 
 `results/tuning.csv`, `results/tuning.pdf`, `results/tuning_loss.pdf`; the reviewer-facing figure is
-`results/tuning_summary.pdf` (`plot_tuning_summary.py`).
+`results/tuning_summary.pdf` (`plot_tuning_summary.py`), and a compact version, `results/tuning_violins.pdf` (`plot_tuning_violins.py`: the distribution of 1 − FF of each variant, from `results/ff/<variant>.npy`).
 
 | Variant | Templates | Coverage, FF ≥ 0.97 |
 |---|---|---|
