@@ -10,7 +10,7 @@ preprocessing is part of training. mbank: the three runs with the paper's settin
 et al.: 20 sub-banks, latent 3; 'placement' is counting the lattice cells (count20), and preprocessing includes
 the waveforms, the SVD and the bank-size regressor. Scoring against the injections (5.7 CPU-h, the same for every
 method) is left out.
-'search' is construction plus matched-filtering one hour of data with the bank, in PyCBC's convention (Usman et al.
+'search' is matched-filtering one hour of data with the bank (these Nikhef banks, not the paper's), in PyCBC's convention (Usman et al.
 2016, arXiv:1508.02357, Sec. 3.3-3.4): 256 s blocks at 4096 Hz (N = 2^20), one inverse complex FFT of 5 N log2 N
 flop per template and block, 128 s of each block kept (pycbc_inspiral's start/end padding), at FLOPS per core.
 """
@@ -44,7 +44,7 @@ def main():
     full = lambda step: step in ('construction', 'search')
     for xi, (name, col, steps, n, _) in enumerate(MODELS):
         steps = dict(steps, construction=list(np.sum([steps[s] for s in steps], axis=0)))
-        steps['search'] = list(np.array(steps['construction']) + SEARCH * np.array(n))
+        steps['search'] = list(SEARCH * np.array(n))   # one hour of data, in CPU-h
         for (step, marker), dx in zip(STEPS, offs):
             if step not in steps:
                 continue
