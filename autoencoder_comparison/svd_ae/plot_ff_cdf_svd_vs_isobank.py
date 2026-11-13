@@ -4,7 +4,8 @@ plot_ff_cdf_svd_vs_isobank.py -- FF cumulative distributions, isobank vs Cabass 
 mbank_comparison/figure/ff_cdf_isobank_vs_mbank.py, with the plain SVD grid underneath (Alexandra's baseline).
 Like Cabass et al.'s, the SVD grid's templates are waveforms rebuilt from SVD coefficients, not exact waveforms.
 
-    python autoencoder_comparison/svd_ae/plot_ff_cdf_svd_vs_isobank.py --runs autoencoder_comparison/runs/eccentric_5d/svd_ae
+    python autoencoder_comparison/svd_ae/plot_ff_cdf_svd_vs_isobank.py --runs autoencoder_comparison/runs/eccentric_5d/svd_ae \
+        --isobank-ff mbank_comparison/ecc5d/cell_ALL_k500_ff.npy --isobank-size 2267558   # the paper's bank
 
 All curves: the first 4,000 injections of seed 4002 (Alexandra's SVD tests). Each Cabass et al. lattice at the
 spacing whose bank size is closest to isobank's (as svd_ae.py evaluate); both SVD methods are scored with the
@@ -44,13 +45,18 @@ def main():
     ap.add_argument('--runs', required=True)
     ap.add_argument('--table', default='lattice_table_sb20.md')
     ap.add_argument('--out', default=None, help='default: ff_cdf_svd_vs_isobank.pdf in --runs')
+    ap.add_argument('--isobank-ff', default=None, help="isobank's fitting factors instead of --runs' (first 4,000 used)")
+    ap.add_argument('--isobank-size', type=int, default=None, help='its bank size, with --isobank-ff')
     args = ap.parse_args()
     sizes = bank_sizes(os.path.join(args.runs, args.table))
+    if args.isobank_size:
+        sizes[None] = args.isobank_size
 
     fig, ax = plt.subplots(figsize=(6.4, 4.6))
     rows = []
     for name, key, col, ls, label in CURVES:
-        ff = np.load(os.path.join(args.runs, name)); n = sizes[key]
+        path = args.isobank_ff if key is None and args.isobank_ff else os.path.join(args.runs, name)
+        ff = np.load(path)[:4000]; n = sizes[key]
         s = np.sort(ff); y = 100 * np.arange(1, len(s) + 1) / len(s)
         cov = 100 * (ff >= THR).mean(); se = 100 * np.sqrt((cov / 100) * (1 - cov / 100) / len(ff))
         ax.semilogy(s, y, color=col, ls=ls, lw=2.0, label=f'{label} ({n / 1e6:.2f}M) — {cov:.2f}%',

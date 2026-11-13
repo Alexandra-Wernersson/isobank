@@ -3,7 +3,7 @@ plot_tuning_violins.py -- the mbank tuning sweep, one column per variant, isoban
 on top, the distribution of the fitting factor underneath.
 
     python mbank_comparison/tuning/plot_tuning_violins.py --ff-dir mbank_comparison/tuning/results/ff \
-        --isobank-ff runs/eccentric_5d/ff_isobank.npy --isobank-size 3009368
+        --isobank-ff mbank_comparison/ecc5d/cell_ALL_k500_ff.npy --isobank-size 2267558   # the paper's bank
 
 --ff-dir holds <variant>.npy, the fitting factors of each variant (WORK/<variant>/ff.npy at Nikhef), on the
 10,000 injections of seed 4002, as isobank's. Top: coverage (FF >= 0.97, +/- 1 sigma, filled, left axis) and
