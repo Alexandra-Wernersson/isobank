@@ -15,6 +15,8 @@ Everything else is the reference's:
 - radius = r_target;
 - the same 10,000 injections of seed 4002, scored as `scripts/evaluate_bank.py` (`ff_parallel.py`, 10 parts).
 
+Note: the banks are placed with `flow_best.pt`, which inflates the latent distances in some runs (`loss_ablation/README.md`); the final-epoch checkpoint is safer.
+
 `summarise.py` writes `runs/eccentric_5d_retrain/summary.md`: per run, bank size, coverage, 1st percentile and
 worst FF, and the flow's best held-out p10; then the mean ± std over the trainings and over the placements.
 

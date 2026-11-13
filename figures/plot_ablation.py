@@ -22,7 +22,7 @@ GROUPS = [   # (legend entry, colour, [(label, miss rates per retraining)])
         (r'without $\mathcal{L}_{\rm loc}$', [5.15, 4.60]),
         (r'without $\mathcal{L}_{\rm bnd}$', [5.33, 3.73, 4.25, 4.40]),
         (r'without $\mathcal{L}_{\rm edge}$', [4.90, 5.45]),
-        (r'without adaptive $\gamma_i$', [3.98, 5.63, 3.53, 3.90]),
+        (r'without adaptive $\lambda_i$', [3.98, 5.63, 3.53, 3.90]),
         (r'$\mathcal{L}_{\rm loc}$ and $\mathcal{L}_{\rm edge}$ only', [3.35, 4.85]),
         (r'$\mathcal{L}_{\rm glob}$ only', [6.85, 6.83]),
     ]),
