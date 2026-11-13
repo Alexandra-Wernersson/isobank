@@ -96,8 +96,9 @@ def main():
         ax.grid(False, axis='x'); ax.tick_params(axis='y', labelsize=8.5)
     fig.align_ylabels((a_cov, a_ff))
     handles = [Patch(color=ISO, label='isobank')] + [Patch(color=col, label=lab) for lab, col, _ in GROUPS]
-    a_ff.legend(handles=handles, loc='upper center', bbox_to_anchor=(0.5, -0.17), ncol=4, fontsize=8, frameon=False,
-                handlelength=1.2, columnspacing=1.4)
+    leg = a_ff.legend(handles=handles, loc='lower center', ncol=4, fontsize=7.5, frameon=True, fancybox=True,
+                      framealpha=0.95, borderpad=0.5, handlelength=1.0, handletextpad=0.5, columnspacing=1.0)   # over the thin tails
+    leg.get_frame().set_edgecolor('#d1d5db'); leg.set_zorder(5)
     out = args.out or os.path.join(os.path.dirname(os.path.abspath(args.ff_dir)), 'tuning_violins.pdf')
     plt.savefig(out, dpi=200, bbox_inches='tight', facecolor='white')
     print(f'-> {out}')
