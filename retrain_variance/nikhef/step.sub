@@ -1,0 +1,16 @@
+# One step of retrain.dag. Paths as in ../../autoencoder_comparison/nikhef/step.sub.
+repo      = /data/gravwav/lopezm/Projects/isobank
+conda_env = /data/gravwav/lopezm/cmb_env/miniforge3/envs/isobank
+n_parts   = 10
+
+executable       = $(repo)/retrain_variance/nikhef/step.sh
+arguments        = $(step) $(run) $(repo) $(conda_env) $(Process) $(n_parts)
+initialdir       = $(repo)
+output           = $(repo)/logs/retrain_$(step)_$(run)_$(Process).out
+error            = $(repo)/logs/retrain_$(step)_$(run)_$(Process).err
+log              = $(repo)/logs/condor.log
+request_cpus     = 1
+request_memory   = $(memory)
++UseOS           = "el9"
++JobCategory     = "$(category)"
+queue $(n_jobs)
