@@ -51,22 +51,22 @@ def main():
             y -= 1.; rows.append((label, col, v, y))
 
     plt.style.use('seaborn-v0_8-whitegrid')
-    fig, ax = plt.subplots(figsize=(6.0, 3.6))
+    fig, ax = plt.subplots(figsize=(4.3, 4.3))   # 0.6 of the column width in the paper
     m_full, s_full = np.mean(FULL), np.std(FULL, ddof=1)
     ax.axvspan(m_full - s_full, m_full + s_full, color=BAND, lw=0, zorder=0)
     ax.axvline(m_full, color=ISO, ls='--', lw=1, zorder=1)
     for label, col, v, yi in rows:
         ax.errorbar(np.mean(v), yi, xerr=np.std(v, ddof=1), fmt='o', ms=5.5, color=col, mec='white', mew=0.7,
                     lw=1.4, capsize=2, zorder=4)
-    ax.set_yticks([r[3] for r in rows], [r[0] for r in rows], fontsize=8)
-    ax.set_ylim(rows[-1][3] - 0.6, 0.6); ax.tick_params(axis='x', labelsize=8.5)
+    ax.set_yticks([r[3] for r in rows], [r[0] for r in rows], fontsize=9)
+    ax.set_ylim(rows[-1][3] - 0.6, 0.6); ax.tick_params(axis='x', labelsize=9)
     ax.grid(False, axis='y')
-    ax.set_xlabel('Missed injections, FF < 0.97 (%)', fontsize=9)
+    ax.set_xlabel('Missed injections, FF < 0.97 (%)', fontsize=9.5)
     ax.set_xlim(2.5, 7.2)
     handles = [plt.Line2D([], [], ls='-', marker='o', color=INK, ms=5.5, lw=1.4, label=r'$\mu \pm \sigma$')]
     handles += [plt.Line2D([], [], ls='', marker='o', color=col, ms=5.5, label=lab)
                 for lab, col in [('full objective', ISO)] + [(g[0], g[1]) for g in GROUPS]]
-    ax.legend(handles=handles, loc='upper right', ncol=2, fontsize=7, columnspacing=1.0, handletextpad=0.4, frameon=True, framealpha=0.95, edgecolor='#d1d5db')
+    ax.legend(handles=handles, loc='center right', bbox_to_anchor=(1.0, 0.42), ncol=1, fontsize=7.5, handletextpad=0.4, frameon=True, framealpha=0.95, edgecolor='#d1d5db')
     plt.savefig(args.out, dpi=200, bbox_inches='tight', facecolor='white')
     print(f'-> {args.out}')
 
