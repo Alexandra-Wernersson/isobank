@@ -6,7 +6,7 @@ plot_ablation.py -- the loss ablation and the coefficient sensitivity (eccentric
 Numbers of Tables tab:ablation_5d and tab:weights_5d: banks of 2.27M templates (+/- 3 %), 4,000 injections, missed
 fraction = FF < 0.97. Dot = mean of the retrainings of each setting, bar = their standard deviation (n - 1; from
 two retrainings only a rough estimate). The band is the mean +/- standard deviation of the full objective, the dashed
-line its mean. Colour: terms removed or coefficients changed.
+line its mean. Colour: terms removed or coefficients changed; gamma is the tail weight (nominal 3; 0 = no tail weighting).
 """
 import argparse
 import numpy as np
@@ -22,7 +22,6 @@ GROUPS = [   # (legend entry, colour, [(label, miss rates per retraining)])
         (r'without $\mathcal{L}_{\rm loc}$', [5.15, 4.60]),
         (r'without $\mathcal{L}_{\rm bnd}$', [5.33, 3.73, 4.25, 4.40]),
         (r'without $\mathcal{L}_{\rm edge}$', [4.90, 5.45]),
-        (r'without adaptive $\lambda_i$', [3.98, 5.63, 3.53, 3.90]),
         (r'$\mathcal{L}_{\rm loc}$ and $\mathcal{L}_{\rm edge}$ only', [3.35, 4.85]),
         (r'$\mathcal{L}_{\rm glob}$ only', [6.85, 6.83]),
     ]),
@@ -33,8 +32,9 @@ GROUPS = [   # (legend entry, colour, [(label, miss rates per retraining)])
         (r'$\beta_{bnd}\times2$', [4.23, 3.60]),
         (r'$\beta_{edge}\times0.5$', [4.13, 4.48]),
         (r'$\beta_{edge}\times2$', [3.70, 3.28]),
-        ('tail weight 1', [3.28, 3.53]),
-        ('tail weight 10', [5.43, 5.15]),
+        (r'$\gamma=0$', [3.98, 5.63, 3.53, 3.90]),
+        (r'$\gamma=1$', [3.28, 3.53]),
+        (r'$\gamma=10$', [5.43, 5.15]),
     ]),
 ]
 
