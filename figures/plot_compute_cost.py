@@ -8,8 +8,8 @@ isobank's train_isobank node computes the radius and the training pairs before t
 part of training. mbank: the three runs with the paper's settings (mean, bar = min-max). Cabass et al.: 20 sub-banks,
 latent 3; 'placement' is counting the lattice cells (count20), and preprocessing includes the waveforms, the SVD and
 the bank-size regressor. Scoring against the injections (5.7 CPU-h, the same for every method) is left out.
-'search' is the estimated cost of matched-filtering one hour of data with the bank: SEARCH CPU-s per template per
-second of data (one FFT per template and 256 s segment at 2048 Hz, half overlap, 2e9 flop/s per core; the
+The star adds to the total the estimated cost of matched-filtering one hour of data with the bank: SEARCH CPU-s per
+template per second of data (one FFT per template and 256 s segment at 2048 Hz, half overlap, 2e9 flop/s per core; the
 break-even estimate of the reviewer report), times the bank size.
 """
 import argparse
@@ -20,7 +20,7 @@ import matplotlib.pyplot as plt
 
 INK = '#111827'
 SEARCH = 2e-4   # CPU-seconds per template per second of data
-STEPS = [('preprocessing', '^'), ('training', 's'), ('placement', 'D'), ('total', 'o'), ('search, 1 h of data', '*')]
+STEPS = [('preprocessing', '^'), ('training', 's'), ('placement', 'D'), ('total', 'o'), ('total + search of 1 h of data', '*')]
 MODELS = [   # name, colour (as in the FF figures), {step: [CPU-h per run]}, [templates per run]
     ('isobank', '#0284c7', dict(training=[3.35], placement=[0.35]), [3009368]),
     ('mbank', '#8b8f98', dict(preprocessing=[0.12] * 3, training=[0.19, 0.12, 0.18], placement=[1.23, 0.77, 1.56]),
@@ -39,7 +39,7 @@ def main():
     offs = np.linspace(-0.32, 0.32, len(STEPS))
     for xi, (name, col, steps, n) in enumerate(MODELS):
         steps = dict(steps, total=list(np.sum([steps[s] for s in steps], axis=0)))
-        steps[STEPS[-1][0]] = list(SEARCH * np.array(n))   # 3600 s of data, in CPU-hours
+        steps[STEPS[-1][0]] = list(np.array(steps['total']) + SEARCH * np.array(n))   # + 3600 s of data, CPU-h
         for (step, marker), dx in zip(STEPS, offs):
             if step not in steps:
                 ax.text(xi + dx, 0.12, 'in\ntraining', ha='center', va='center', fontsize=7, color=INK, alpha=0.6)
