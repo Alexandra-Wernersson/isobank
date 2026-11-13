@@ -59,7 +59,7 @@ def main():
     plt.style.use('seaborn-v0_8-whitegrid')
     fig, (a_cov, a_ff) = plt.subplots(2, 1, figsize=(9.0, 5.6), sharex=True,
                                       gridspec_kw=dict(height_ratios=[1.4, 3], hspace=0.08))
-    a_n = a_cov.twinx()   # coverage (filled, left) above, templates (open, right) below; the ticks share gridlines
+    a_n = a_cov.twinx()   # coverage (filled, left) below, templates (open, right) above; the ticks share gridlines
     cov = np.array([100 * (ff >= .97).mean() for *_, ff in items])
     err = np.array([100 * np.sqrt(c / 100 * (1 - c / 100) / len(ff)) for c, (*_, ff) in zip(cov, items)])
     n = np.array([sizes.get(name, np.nan) / 1e6 for name, *_ in items])
@@ -69,8 +69,8 @@ def main():
         a_n.plot(xi, ni, 's', mfc='white', mec=col, ms=5.5, mew=1.6, zorder=3)
     a_cov.annotate(f'{cov[0]:.1f}%', (xs[0], cov[0]), xytext=(9, 0), textcoords='offset points', va='center',
                    fontsize=8.5, color=INK)
-    a_cov.set_ylim(75, 100); a_cov.set_yticks([80, 90, 100]); a_cov.set_ylabel('Coverage (%)')
-    a_n.set_ylim(2.6, 3.6); a_n.set_yticks([2.8, 3.2, 3.6]); a_n.set_ylabel('Templates (M)', y=0.2)
+    a_cov.set_ylim(92, 100); a_cov.set_yticks([92, 96, 100]); a_cov.set_ylabel('Coverage (%)')
+    a_n.set_ylim(2.0, 3.6); a_n.set_yticks([2.0, 2.8, 3.6]); a_n.set_ylabel('Templates (M)')
     a_n.grid(False); a_n.tick_params(axis='y', labelsize=8.5)
     for sp in a_n.spines.values():
         sp.set_visible(False)
