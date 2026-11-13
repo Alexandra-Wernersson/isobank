@@ -40,6 +40,7 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('--runs', required=True)
     ap.add_argument('--table', default='lattice_table_sb20.md')
+    ap.add_argument('--out', default=None, help='default: ff_cdf_svd_vs_isobank.pdf in --runs')
     args = ap.parse_args()
     sizes = bank_sizes(os.path.join(args.runs, args.table))
 
@@ -60,7 +61,7 @@ def main():
     ax.grid(True, which='both', alpha=0.25)
     ax.legend(fontsize=8.2, loc='upper left', framealpha=0.92)
     plt.tight_layout()
-    out = os.path.join(args.runs, 'ff_cdf_svd_vs_isobank.pdf')
+    out = args.out or os.path.join(args.runs, 'ff_cdf_svd_vs_isobank.pdf')
     plt.savefig(out, dpi=150, bbox_inches='tight', facecolor='white')
     print(f'saved {out}\n')
     print(f"{'bank':>34} | {'templates':>10} | {'coverage':>16} | {'p1 FF':>7} | {'min FF':>7} | N_inj")
