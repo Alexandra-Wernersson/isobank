@@ -17,7 +17,7 @@ import matplotlib.pyplot as plt
 ISO, INK, BAND = '#0284c7', '#111827', '#dbeafe'   # isobank's blue for the full objective
 FULL = [3.73, 2.75, 3.60, 3.45, 3.28]
 GROUPS = [   # (legend entry, colour, [(label, miss rates per retraining)])
-    ('terms removed', '#d97706', [
+    ('terms removed', 'darkorange', [
         (r'without $\mathcal{L}_{\rm glob}$', [3.65, 3.48]),
         (r'without $\mathcal{L}_{\rm loc}$', [5.15, 4.60]),
         (r'without $\mathcal{L}_{\rm bnd}$', [5.33, 3.73, 4.25, 4.40]),
@@ -26,7 +26,7 @@ GROUPS = [   # (legend entry, colour, [(label, miss rates per retraining)])
         (r'$\mathcal{L}_{\rm loc}$ and $\mathcal{L}_{\rm edge}$ only', [3.35, 4.85]),
         (r'$\mathcal{L}_{\rm glob}$ only', [6.85, 6.83]),
     ]),
-    ('coefficients changed', '#7c3aed', [
+    ('coefficients changed', 'mediumseagreen', [
         (r'$\beta_{loc}\times0.5$', [3.03, 2.93]),
         (r'$\beta_{loc}\times2$', [4.33, 3.70]),
         (r'$\beta_{bnd}\times0.5$', [3.18, 2.90]),
