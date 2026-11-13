@@ -4,7 +4,7 @@ plot_ablation.py -- the loss ablation and the coefficient sensitivity (eccentric
     python figures/plot_ablation.py --out figures/ablation_5d.pdf
 
 Numbers of Tables tab:ablation_5d and tab:weights_5d: banks of 2.27M templates (+/- 3 %), 4,000 injections, missed
-fraction = FF < 0.97. Diamond = mean of the retrainings of each setting, bar = their standard deviation (n - 1; from
+fraction = FF < 0.97. Dot = mean of the retrainings of each setting, bar = their standard deviation (n - 1; from
 two retrainings only a rough estimate). The band is the mean +/- standard deviation of the full objective, the dashed
 line its mean. Colour: terms removed or coefficients changed.
 """
@@ -56,17 +56,17 @@ def main():
     ax.axvspan(m_full - s_full, m_full + s_full, color=BAND, lw=0, zorder=0)
     ax.axvline(m_full, color=ISO, ls='--', lw=1, zorder=1)
     for label, col, v, yi in rows:
-        ax.errorbar(np.mean(v), yi, xerr=np.std(v, ddof=1), fmt='D', ms=7, color=col, mec='white', mew=0.8,
+        ax.errorbar(np.mean(v), yi, xerr=np.std(v, ddof=1), fmt='o', ms=7, color=col, mec='white', mew=0.8,
                     lw=1.6, capsize=3, zorder=4)
     ax.set_yticks([r[3] for r in rows], [r[0] for r in rows], fontsize=9)
     ax.set_ylim(rows[-1][3] - 0.7, 0.7)
     ax.grid(False, axis='y')
     ax.set_xlabel('Missed injections, FF < 0.97 (%)')
     ax.set_xlim(2.5, 7.2)
-    handles = [plt.Line2D([], [], ls='-', marker='D', color=col, ms=7, lw=1.6, label=lab)
-               for lab, col in [('full objective', ISO)] + [(g[0], g[1]) for g in GROUPS]]
-    ax.legend(handles=handles, title=r'$\mu \pm \sigma$', loc='lower right', fontsize=8, title_fontsize=8.5,
-              frameon=True, framealpha=0.95, edgecolor='#d1d5db')
+    handles = [plt.Line2D([], [], ls='-', marker='o', color=INK, ms=7, lw=1.6, label=r'$\mu \pm \sigma$')]
+    handles += [plt.Line2D([], [], ls='', marker='o', color=col, ms=7, label=lab)
+                for lab, col in [('full objective', ISO)] + [(g[0], g[1]) for g in GROUPS]]
+    ax.legend(handles=handles, loc='lower right', fontsize=8, frameon=True, framealpha=0.95, edgecolor='#d1d5db')
     plt.savefig(args.out, dpi=200, bbox_inches='tight', facecolor='white')
     print(f'-> {args.out}')
 
