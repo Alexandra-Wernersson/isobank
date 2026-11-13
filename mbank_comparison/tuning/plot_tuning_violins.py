@@ -8,7 +8,7 @@ on top, the distribution of the fitting factor underneath.
 --ff-dir holds <variant>.npy, the fitting factors of each variant (WORK/<variant>/ff.npy at Nikhef), on the
 10,000 injections of seed 4002, as isobank's. Top: coverage (FF >= 0.97, +/- 1 sigma, filled, left axis) and
 templates (open, right axis). Bottom: violins of FF, cut at FLOOR
-(the share of injections below it is printed); the dashed line is FF = 0.97. Colour = what was changed.
+(the share of injections below it is printed); the red dotted line is FF = 0.97. Colour = what was changed.
 Writes results/tuning_violins.pdf (or --out).
 """
 import argparse, csv, os
@@ -86,8 +86,7 @@ def main():
             body.set_facecolor(col); body.set_edgecolor('white'); body.set_linewidth(0.8); body.set_alpha(0.9)
         a_ff.plot([xi - 0.2, xi + 0.2], [np.median(ff)] * 2, color='white', lw=1.6, solid_capstyle='round')
         below.append((name, 100 * (ff < FLOOR).mean()))
-    a_ff.axhline(0.97, color=INK, ls='--', lw=1.1, zorder=4)
-    a_ff.text(1.005, 0.97, 'FF = 0.97', transform=a_ff.get_yaxis_transform(), color=INK, fontsize=8, va='center')
+    a_ff.axhline(0.97, color='#dc2626', ls=':', lw=1.6, zorder=4)   # as the FF cumulative plots
     a_ff.set_ylim(FLOOR, 1.0005); a_ff.set_yticks([0.96, 0.97, 0.98, 0.99, 1.0])
     a_ff.set_ylabel('Fitting factor')
     a_ff.set_xticks(xs, [it[1] for it in items], fontsize=8.5)
