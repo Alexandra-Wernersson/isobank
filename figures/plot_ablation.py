@@ -4,10 +4,11 @@ plot_ablation.py -- the loss ablation and the weight sensitivity (eccentric 5D) 
     python figures/plot_ablation.py --out figures/ablation_5d.pdf
 
 Numbers of Tables tab:ablation_5d and tab:weights_5d: banks of 2.27M templates (+/- 3 %), 4,000 injections, missed
-fraction = FF < 0.97. One dot per retraining; diamond = mean, with error bar SIGMA / sqrt(n), SIGMA being the standard
-deviation of the five retrainings of the full objective (two retrainings cannot estimate their own). The band is the
-range of the full objective, the dashed line its mean. On the right, the difference of the means (as
-printed in the tables) +/- SIGMA * sqrt(1/n + 1/5); it is in bold, and the row dark, when it exceeds twice that.
+fraction = FF < 0.97. Diamond = mean of the retrainings, bar = their standard deviation (n - 1; from two retrainings
+only a rough estimate). The band is the mean +/- standard deviation of the full objective (SIGMA), the dashed line its
+mean. On the right, the difference of the means (as printed in the tables) +/- SIGMA * sqrt(1/n + 1/5), the
+uncertainty of a difference of means with SIGMA as the retraining spread; it is in bold, and the row dark, when it
+exceeds twice that.
 """
 import argparse
 import numpy as np
@@ -54,7 +55,7 @@ def main():
     for ax, (title, rows) in zip(axes, PANELS):
         rows = [('full objective', FULL, 0.)] + rows
         ys = -np.arange(len(rows))
-        ax.axvspan(min(FULL), max(FULL), color=BAND, lw=0, zorder=0)
+        ax.axvspan(m_full - SIGMA, m_full + SIGMA, color=BAND, lw=0, zorder=0)
         ax.axvline(m_full, color=ISO, ls='--', lw=1, zorder=1)
         for y, (label, v, diff) in zip(ys, rows):
             n, m = len(v), np.mean(v)
@@ -62,9 +63,8 @@ def main():
             err = SIGMA * np.sqrt(1 / n + 1 / len(FULL))
             clear = full or abs(diff) > 2 * err
             col = ISO if full else CLEAR if clear else FAINT
-            ax.plot(v, [y] * n, 'o', ms=6, mfc='white', mec=col, mew=1.5, zorder=3)
-            ax.errorbar(m, y, xerr=SIGMA / np.sqrt(n), fmt='D', ms=7, color=col, mec='white', mew=0.8, lw=1.6,
-                        capsize=0, zorder=4)
+            ax.errorbar(m, y, xerr=np.std(v, ddof=1), fmt='D', ms=7, color=col, mec='white', mew=0.8, lw=1.6,
+                        capsize=3, zorder=4)
             ax.text(1.015, y, '—' if full else f'{diff:+.2f} ± {err:.2f}', transform=ax.get_yaxis_transform(), va='center',
                     fontsize=8.5, color=INK if clear else FAINT, fontweight='bold' if clear and not full else 'normal')
         ax.text(1.015, 0.6 + 0.35, 'Δ ± 1σ (points)', transform=ax.get_yaxis_transform(), va='bottom', fontsize=8,
@@ -77,9 +77,8 @@ def main():
     axes[-1].set_xlabel('Missed injections, FF < 0.97 (%)')
     axes[-1].set_xlim(2.5, 7.2)
     axes[-1].legend(handles=[
-        plt.Line2D([], [], ls='', marker='o', mfc='white', mec=INK, mew=1.5, ms=6, label='one retraining'),
-        plt.Line2D([], [], ls='-', marker='D', color=INK, ms=7, lw=1.6, label=r'mean $\pm\,\sigma/\sqrt{n}$'),
-        plt.Rectangle((0, 0), 1, 1, color=BAND, label='range of the full objective')],
+        plt.Line2D([], [], ls='-', marker='D', color=INK, ms=7, lw=1.6, label='mean ± std of the retrainings'),
+        plt.Rectangle((0, 0), 1, 1, color=BAND, label='full objective, mean ± std')],
         loc='center right', fontsize=7.5, frameon=True, framealpha=0.95, edgecolor='#d1d5db')
     plt.savefig(args.out, dpi=200, bbox_inches='tight', facecolor='white')
     print(f'-> {args.out}')
