@@ -74,10 +74,10 @@ def main():
     a_n.grid(False); a_n.tick_params(axis='y', labelsize=8.5)
     for sp in a_n.spines.values():
         sp.set_visible(False)
-    a_cov.legend(handles=[plt.Line2D([], [], ls='', marker='o', color=INK, mec='white', ms=6.5, label='coverage (left)'),
+    a_cov.legend(handles=[plt.Line2D([], [], ls='', marker='o', color=INK, mec='white', ms=6.5, label='coverage'),
                           plt.Line2D([], [], ls='', marker='s', mfc='white', mec=INK, mew=1.6, ms=5.5,
-                                     label='templates (right)')],
-                 loc='lower right', bbox_to_anchor=(1.0, 0.98), ncol=2, fontsize=8, frameon=False, handletextpad=0.3)
+                                     label='templates')],
+                 loc='upper right', ncol=2, borderaxespad=0.3, fontsize=8, frameon=False, handletextpad=0.3)
 
     below = []
     for (name, _, col, ff), xi in zip(items, xs):
