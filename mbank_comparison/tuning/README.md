@@ -15,6 +15,16 @@ it with isobank's `scripts/evaluate_bank.py`: 10,000 injections, seed 4002, k = 
 | `data_50k` | 50,000 training points (paper: 15,000) |
 | `is_wmax_10`, `is_no_clip` | `paper_a`'s flow, covering fraction by importance sampling, weights clipped at W_max = 10 or not at all |
 
+The variants are the rows of `variants.tsv`. To change them, edit it and run `python make_dag.py`, which
+rewrites `tuning.dag`.
+
+Outputs, in `WORK`:
+- `tuning.pdf`: bank size against coverage, with isobank (from `runs/eccentric_5d/` if the comparison DAG has
+  made its bank, else the paper's) and the paper's mbank bank;
+- `tuning_loss.pdf`: validation loss of each flow;
+- `tuning.csv`: per variant, size, coverage and the flow diagnostics of `diagnose_flow.py` (fit error,
+  fraction of samples inside the box, `C − C*`, mbank's volume and the corrected one).
+
 ## Results (Nikhef, 13 November 2026)
 
 `results/tuning.csv`, `results/tuning.pdf`, `results/tuning_loss.pdf`; the reviewer-facing figure is
@@ -39,16 +49,6 @@ no change to the loss, training or placement brings mbank near isobank.
 - The fraction of flow samples inside the box (`samples_inside`, about 4 %) does not depend on the padding; it
   follows the starting quantile of C (19 % at 0.5, 2 % at 0.99). The volume inside the box is the same in every
   variant (log10 ≈ −0.68), so this changes mbank's reported volume and wasted proposals, not the bank.
-
-The variants are the rows of `variants.tsv`. To change them, edit it and run `python make_dag.py`, which
-rewrites `tuning.dag`.
-
-Outputs, in `WORK`:
-- `tuning.pdf`: bank size against coverage, with isobank (from `runs/eccentric_5d/` if the comparison DAG has
-  made its bank, else the paper's) and the paper's mbank bank;
-- `tuning_loss.pdf`: validation loss of each flow;
-- `tuning.csv`: per variant, size, coverage and the flow diagnostics of `diagnose_flow.py` (fit error,
-  fraction of samples inside the box, `C − C*`, mbank's volume and the corrected one).
 
 ## mbank
 
