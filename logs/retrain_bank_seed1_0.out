@@ -1,0 +1,38 @@
+Eccentric 5D BNS/NSBH (m1, m2, s1z, s2z, e)
+r_target = 0.15656   radius factor = 1.0   r_place = 0.15656
+stop: coord acceptance < 0.1
+Starting greedy placement  (r_placement=0.15656, batch=50,000)...
+  Batch    0 | evaluated=41,678  bank=40,992  uncovered_vol=1.0000  (coord=0.9835)  [stop_on=coord]
+  Batch   25 | evaluated=1,082,414  bank=819,176  uncovered_vol=0.9103  (coord=0.6165)  [stop_on=coord]
+  Batch   50 | evaluated=2,123,530  bank=1,382,847  uncovered_vol=0.8519  (coord=0.4870)  [stop_on=coord]
+  Batch   75 | evaluated=3,165,626  bank=1,845,119  uncovered_vol=0.7939  (coord=0.4098)  [stop_on=coord]
+  Batch  100 | evaluated=4,208,134  bank=2,242,745  uncovered_vol=0.7521  (coord=0.3555)  [stop_on=coord]
+  Batch  125 | evaluated=5,249,462  bank=2,594,480  uncovered_vol=0.7080  (coord=0.3185)  [stop_on=coord]
+  Batch  150 | evaluated=6,291,260  bank=2,908,989  uncovered_vol=0.6730  (coord=0.2822)  [stop_on=coord]
+  Batch  175 | evaluated=7,333,054  bank=3,195,397  uncovered_vol=0.6438  (coord=0.2669)  [stop_on=coord]
+  Batch  200 | evaluated=8,373,804  bank=3,458,643  uncovered_vol=0.6309  (coord=0.2448)  [stop_on=coord]
+  [partial save: 3,458,643 templates -> runs/eccentric_5d_retrain/seed1/bank_partial.npy]
+  Batch  225 | evaluated=9,415,572  bank=3,702,658  uncovered_vol=0.6075  (coord=0.2269)  [stop_on=coord]
+  Batch  250 | evaluated=10,457,107  bank=3,929,971  uncovered_vol=0.5723  (coord=0.2085)  [stop_on=coord]
+  Batch  275 | evaluated=11,498,361  bank=4,142,003  uncovered_vol=0.5542  (coord=0.1970)  [stop_on=coord]
+  Batch  300 | evaluated=12,539,900  bank=4,341,524  uncovered_vol=0.5357  (coord=0.1872)  [stop_on=coord]
+  Batch  325 | evaluated=13,582,678  bank=4,529,147  uncovered_vol=0.5077  (coord=0.1742)  [stop_on=coord]
+  Batch  350 | evaluated=14,624,942  bank=4,707,320  uncovered_vol=0.4999  (coord=0.1676)  [stop_on=coord]
+  Batch  375 | evaluated=15,666,444  bank=4,877,110  uncovered_vol=0.4683  (coord=0.1584)  [stop_on=coord]
+  Batch  400 | evaluated=16,708,411  bank=5,037,354  uncovered_vol=0.4587  (coord=0.1531)  [stop_on=coord]
+  [partial save: 5,037,354 templates -> runs/eccentric_5d_retrain/seed1/bank_partial.npy]
+  Batch  425 | evaluated=17,750,387  bank=5,190,518  uncovered_vol=0.4357  (coord=0.1419)  [stop_on=coord]
+  Batch  450 | evaluated=18,792,399  bank=5,337,022  uncovered_vol=0.4304  (coord=0.1345)  [stop_on=coord]
+  Batch  475 | evaluated=19,833,730  bank=5,477,102  uncovered_vol=0.4294  (coord=0.1326)  [stop_on=coord]
+  Batch  500 | evaluated=20,875,850  bank=5,611,926  uncovered_vol=0.4179  (coord=0.1268)  [stop_on=coord]
+  Batch  525 | evaluated=21,916,943  bank=5,740,921  uncovered_vol=0.3939  (coord=0.1225)  [stop_on=coord]
+  Batch  550 | evaluated=22,958,761  bank=5,864,974  uncovered_vol=0.3790  (coord=0.1140)  [stop_on=coord]
+  Batch  575 | evaluated=24,000,631  bank=5,984,777  uncovered_vol=0.3718  (coord=0.1131)  [stop_on=coord]
+  Batch  600 | evaluated=25,042,777  bank=6,099,691  uncovered_vol=0.3744  (coord=0.1110)  [stop_on=coord]
+  [partial save: 6,099,691 templates -> runs/eccentric_5d_retrain/seed1/bank_partial.npy]
+  Batch  625 | evaluated=26,084,839  bank=6,210,899  uncovered_vol=0.3529  (coord=0.1029)  [stop_on=coord]
+  Batch  650 | evaluated=27,126,222  bank=6,318,365  uncovered_vol=0.3489  (coord=0.1011)  [stop_on=coord]
+  Uncovered coordinate acceptance 0.0982 < 0.1 — converged, stopping.  (vol=0.3284 coord=0.0982)
+Bank complete: 6,343,518 templates
+
+Placed 6,343,518 templates in 41.7 min -> runs/eccentric_5d_retrain/seed1/bank.npy

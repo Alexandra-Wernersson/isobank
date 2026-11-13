@@ -1,0 +1,25 @@
+Eccentric 5D BNS/NSBH (m1, m2, s1z, s2z, e)
+r_target = 0.15656   radius factor = 1.0   r_place = 0.15656
+stop: coord acceptance < 0.1
+Starting greedy placement  (r_placement=0.15656, batch=50,000)...
+WARNING: metric-volume weights have effective sample size 4.5% of the batch (< 5%).
+         The stopping criterion is unreliable in this space — validate the bank with an explicit coverage test and do not trust convergence alone.
+  Batch    0 | evaluated=41,795  bank=40,377  uncovered_vol=1.0000  (coord=0.9661)  [stop_on=coord]
+  Batch   25 | evaluated=1,083,592  bank=672,829  uncovered_vol=0.8644  (coord=0.4458)  [stop_on=coord]
+  Batch   50 | evaluated=2,124,901  bank=1,059,780  uncovered_vol=0.8242  (coord=0.3230)  [stop_on=coord]
+  Batch   75 | evaluated=3,166,836  bank=1,355,940  uncovered_vol=0.7885  (coord=0.2568)  [stop_on=coord]
+  Batch  100 | evaluated=4,209,009  bank=1,601,391  uncovered_vol=0.7683  (coord=0.2206)  [stop_on=coord]
+  Batch  125 | evaluated=5,251,212  bank=1,813,324  uncovered_vol=0.7617  (coord=0.1897)  [stop_on=coord]
+  Batch  150 | evaluated=6,293,103  bank=2,000,634  uncovered_vol=0.7413  (coord=0.1703)  [stop_on=coord]
+  Batch  175 | evaluated=7,335,282  bank=2,169,076  uncovered_vol=0.7314  (coord=0.1555)  [stop_on=coord]
+  Batch  200 | evaluated=8,376,772  bank=2,323,122  uncovered_vol=0.7184  (coord=0.1415)  [stop_on=coord]
+  [partial save: 2,323,122 templates -> runs/eccentric_5d_retrain/place1/bank_partial.npy]
+  Batch  225 | evaluated=9,418,873  bank=2,464,916  uncovered_vol=0.7114  (coord=0.1304)  [stop_on=coord]
+  Batch  250 | evaluated=10,460,740  bank=2,597,433  uncovered_vol=0.6857  (coord=0.1216)  [stop_on=coord]
+  Batch  275 | evaluated=11,501,989  bank=2,720,486  uncovered_vol=0.6933  (coord=0.1152)  [stop_on=coord]
+  Batch  300 | evaluated=12,543,800  bank=2,837,632  uncovered_vol=0.6745  (coord=0.1083)  [stop_on=coord]
+  Batch  325 | evaluated=13,584,800  bank=2,948,787  uncovered_vol=0.6735  (coord=0.1018)  [stop_on=coord]
+  Uncovered coordinate acceptance 0.0979 < 0.1 — converged, stopping.  (vol=0.6551 coord=0.0979)
+Bank complete: 3,012,740 templates
+
+Placed 3,012,740 templates in 23.2 min -> runs/eccentric_5d_retrain/place1/bank.npy
