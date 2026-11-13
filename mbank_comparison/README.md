@@ -60,3 +60,22 @@ they `chdir` to, and import `config.py` from, `isobank_testing/examples/eccentri
 The fitting-factor files listed above (80 kB each) are enough to regenerate the table and figure without rerunning any scoring.
 
 The minimal-match sweep for the reviewer response, packaged to run anywhere, is in `mbank/mm_sweep/`.
+
+## Environment at Nikhef
+
+mbank needs its own env, `isobank-mbank`: the pins of the isobank env (`../environment.yml`, the Snellius
+versions) plus mbank's dependencies, with mbank installed from the fork
+[MelissaLP/mbank](https://github.com/MelissaLP/mbank) (the paper's mbank, with the options of `tuning/`).
+On `stbc-i1`:
+
+```bash
+cd /data/gravwav/lopezm/Projects/isobank && git pull
+cd /data/gravwav/lopezm/Projects/mbank && git pull          # the fork
+
+E=/data/gravwav/lopezm/cmb_env/miniforge3/envs/isobank-mbank
+conda env create -f /data/gravwav/lopezm/Projects/isobank/environment.yml -p $E
+$E/bin/pip install --no-deps -e /data/gravwav/lopezm/Projects/mbank
+$E/bin/python -c "import mbank, torch, lalsimulation, glasflow; print(mbank.__file__)"   # a path in Projects/mbank
+```
+
+Running the `tuning/` sweep is described in [`tuning/README.md`](tuning/README.md).

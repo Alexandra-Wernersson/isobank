@@ -1,0 +1,64 @@
+# isobank's run-to-run variance (reviewer 6RHG): the flow retrained with 3 network seeds, and the reference
+# flow re-placed with 2 placement seeds; each bank scored on the 10,000 injections of seed 4002 in 10 parts.
+# Needs runs/eccentric_5d/ (flow_best.pt, r_target.npy) from the comparison DAG. Submit from this folder:
+#   condor_submit_dag retrain.dag
+# At most 3 trainings + 2 placements at once, then up to 50 single-CPU fitting-factor jobs.
+
+JOB train_seed1 step.sub
+VARS train_seed1 step="train" run="seed1" category="long" memory="8G" n_jobs="1"
+JOB bank_seed1 step.sub
+VARS bank_seed1 step="bank" run="seed1" category="long" memory="16G" n_jobs="1"
+JOB ffparts_seed1 step.sub
+VARS ffparts_seed1 step="ff_part" run="seed1" category="medium" memory="8G" n_jobs="10"
+JOB ffjoin_seed1 step.sub
+VARS ffjoin_seed1 step="ff_join" run="seed1" category="express" memory="4G" n_jobs="1"
+JOB train_seed2 step.sub
+VARS train_seed2 step="train" run="seed2" category="long" memory="8G" n_jobs="1"
+JOB bank_seed2 step.sub
+VARS bank_seed2 step="bank" run="seed2" category="long" memory="16G" n_jobs="1"
+JOB ffparts_seed2 step.sub
+VARS ffparts_seed2 step="ff_part" run="seed2" category="medium" memory="8G" n_jobs="10"
+JOB ffjoin_seed2 step.sub
+VARS ffjoin_seed2 step="ff_join" run="seed2" category="express" memory="4G" n_jobs="1"
+JOB train_seed3 step.sub
+VARS train_seed3 step="train" run="seed3" category="long" memory="8G" n_jobs="1"
+JOB bank_seed3 step.sub
+VARS bank_seed3 step="bank" run="seed3" category="long" memory="16G" n_jobs="1"
+JOB ffparts_seed3 step.sub
+VARS ffparts_seed3 step="ff_part" run="seed3" category="medium" memory="8G" n_jobs="10"
+JOB ffjoin_seed3 step.sub
+VARS ffjoin_seed3 step="ff_join" run="seed3" category="express" memory="4G" n_jobs="1"
+JOB bank_place1 step.sub
+VARS bank_place1 step="bank" run="place1" category="long" memory="16G" n_jobs="1"
+JOB ffparts_place1 step.sub
+VARS ffparts_place1 step="ff_part" run="place1" category="medium" memory="8G" n_jobs="10"
+JOB ffjoin_place1 step.sub
+VARS ffjoin_place1 step="ff_join" run="place1" category="express" memory="4G" n_jobs="1"
+JOB bank_place2 step.sub
+VARS bank_place2 step="bank" run="place2" category="long" memory="16G" n_jobs="1"
+JOB ffparts_place2 step.sub
+VARS ffparts_place2 step="ff_part" run="place2" category="medium" memory="8G" n_jobs="10"
+JOB ffjoin_place2 step.sub
+VARS ffjoin_place2 step="ff_join" run="place2" category="express" memory="4G" n_jobs="1"
+JOB summary step.sub
+VARS summary step="summary" run="-" category="express" memory="4G" n_jobs="1"
+
+PARENT train_seed1 CHILD bank_seed1
+PARENT bank_seed1 CHILD ffparts_seed1
+PARENT ffparts_seed1 CHILD ffjoin_seed1
+RETRY bank_seed1 2
+PARENT train_seed2 CHILD bank_seed2
+PARENT bank_seed2 CHILD ffparts_seed2
+PARENT ffparts_seed2 CHILD ffjoin_seed2
+RETRY bank_seed2 2
+PARENT train_seed3 CHILD bank_seed3
+PARENT bank_seed3 CHILD ffparts_seed3
+PARENT ffparts_seed3 CHILD ffjoin_seed3
+RETRY bank_seed3 2
+PARENT bank_place1 CHILD ffparts_place1
+PARENT ffparts_place1 CHILD ffjoin_place1
+RETRY bank_place1 2
+PARENT bank_place2 CHILD ffparts_place2
+PARENT ffparts_place2 CHILD ffjoin_place2
+RETRY bank_place2 2
+PARENT ffjoin_seed1 ffjoin_seed2 ffjoin_seed3 ffjoin_place1 ffjoin_place2 CHILD summary

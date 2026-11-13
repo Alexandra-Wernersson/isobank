@@ -1,0 +1,140 @@
+# Cabass's sub-banks, first 10 then 20: each autoencoder on a slice of c0, for latent 3 and 2. After each set,
+# the bank sizes and the plot with every model trained so far, in files ..._sb10 and ..._sb20.
+# Needs the data, train_ae3 and train_ae2 steps of svd_ae.dag (done). Submit from this folder:
+#   condor_submit_dag svd_ae_subbanks.dag
+# At most 40 CPUs at once: 20 trainings x 2 CPUs (10 sub-banks), then 40 x 1 (20 sub-banks); 50 x 1 to count.
+
+JOB train_ae3_sb0 step.sub
+VARS train_ae3_sb0 step="train_ae3_sb0" cpus="2" memory="4G" category="medium"
+JOB train_ae3_sb1 step.sub
+VARS train_ae3_sb1 step="train_ae3_sb1" cpus="2" memory="4G" category="medium"
+JOB train_ae3_sb2 step.sub
+VARS train_ae3_sb2 step="train_ae3_sb2" cpus="2" memory="4G" category="medium"
+JOB train_ae3_sb3 step.sub
+VARS train_ae3_sb3 step="train_ae3_sb3" cpus="2" memory="4G" category="medium"
+JOB train_ae3_sb4 step.sub
+VARS train_ae3_sb4 step="train_ae3_sb4" cpus="2" memory="4G" category="medium"
+JOB train_ae3_sb5 step.sub
+VARS train_ae3_sb5 step="train_ae3_sb5" cpus="2" memory="4G" category="medium"
+JOB train_ae3_sb6 step.sub
+VARS train_ae3_sb6 step="train_ae3_sb6" cpus="2" memory="4G" category="medium"
+JOB train_ae3_sb7 step.sub
+VARS train_ae3_sb7 step="train_ae3_sb7" cpus="2" memory="4G" category="medium"
+JOB train_ae3_sb8 step.sub
+VARS train_ae3_sb8 step="train_ae3_sb8" cpus="2" memory="4G" category="medium"
+JOB train_ae3_sb9 step.sub
+VARS train_ae3_sb9 step="train_ae3_sb9" cpus="2" memory="4G" category="medium"
+JOB train_ae2_sb0 step.sub
+VARS train_ae2_sb0 step="train_ae2_sb0" cpus="2" memory="4G" category="medium"
+JOB train_ae2_sb1 step.sub
+VARS train_ae2_sb1 step="train_ae2_sb1" cpus="2" memory="4G" category="medium"
+JOB train_ae2_sb2 step.sub
+VARS train_ae2_sb2 step="train_ae2_sb2" cpus="2" memory="4G" category="medium"
+JOB train_ae2_sb3 step.sub
+VARS train_ae2_sb3 step="train_ae2_sb3" cpus="2" memory="4G" category="medium"
+JOB train_ae2_sb4 step.sub
+VARS train_ae2_sb4 step="train_ae2_sb4" cpus="2" memory="4G" category="medium"
+JOB train_ae2_sb5 step.sub
+VARS train_ae2_sb5 step="train_ae2_sb5" cpus="2" memory="4G" category="medium"
+JOB train_ae2_sb6 step.sub
+VARS train_ae2_sb6 step="train_ae2_sb6" cpus="2" memory="4G" category="medium"
+JOB train_ae2_sb7 step.sub
+VARS train_ae2_sb7 step="train_ae2_sb7" cpus="2" memory="4G" category="medium"
+JOB train_ae2_sb8 step.sub
+VARS train_ae2_sb8 step="train_ae2_sb8" cpus="2" memory="4G" category="medium"
+JOB train_ae2_sb9 step.sub
+VARS train_ae2_sb9 step="train_ae2_sb9" cpus="2" memory="4G" category="medium"
+JOB train_ae3_sb0of20 step.sub
+VARS train_ae3_sb0of20 step="train_ae3_sb0of20" cpus="1" memory="4G" category="medium"
+JOB train_ae3_sb1of20 step.sub
+VARS train_ae3_sb1of20 step="train_ae3_sb1of20" cpus="1" memory="4G" category="medium"
+JOB train_ae3_sb2of20 step.sub
+VARS train_ae3_sb2of20 step="train_ae3_sb2of20" cpus="1" memory="4G" category="medium"
+JOB train_ae3_sb3of20 step.sub
+VARS train_ae3_sb3of20 step="train_ae3_sb3of20" cpus="1" memory="4G" category="medium"
+JOB train_ae3_sb4of20 step.sub
+VARS train_ae3_sb4of20 step="train_ae3_sb4of20" cpus="1" memory="4G" category="medium"
+JOB train_ae3_sb5of20 step.sub
+VARS train_ae3_sb5of20 step="train_ae3_sb5of20" cpus="1" memory="4G" category="medium"
+JOB train_ae3_sb6of20 step.sub
+VARS train_ae3_sb6of20 step="train_ae3_sb6of20" cpus="1" memory="4G" category="medium"
+JOB train_ae3_sb7of20 step.sub
+VARS train_ae3_sb7of20 step="train_ae3_sb7of20" cpus="1" memory="4G" category="medium"
+JOB train_ae3_sb8of20 step.sub
+VARS train_ae3_sb8of20 step="train_ae3_sb8of20" cpus="1" memory="4G" category="medium"
+JOB train_ae3_sb9of20 step.sub
+VARS train_ae3_sb9of20 step="train_ae3_sb9of20" cpus="1" memory="4G" category="medium"
+JOB train_ae3_sb10of20 step.sub
+VARS train_ae3_sb10of20 step="train_ae3_sb10of20" cpus="1" memory="4G" category="medium"
+JOB train_ae3_sb11of20 step.sub
+VARS train_ae3_sb11of20 step="train_ae3_sb11of20" cpus="1" memory="4G" category="medium"
+JOB train_ae3_sb12of20 step.sub
+VARS train_ae3_sb12of20 step="train_ae3_sb12of20" cpus="1" memory="4G" category="medium"
+JOB train_ae3_sb13of20 step.sub
+VARS train_ae3_sb13of20 step="train_ae3_sb13of20" cpus="1" memory="4G" category="medium"
+JOB train_ae3_sb14of20 step.sub
+VARS train_ae3_sb14of20 step="train_ae3_sb14of20" cpus="1" memory="4G" category="medium"
+JOB train_ae3_sb15of20 step.sub
+VARS train_ae3_sb15of20 step="train_ae3_sb15of20" cpus="1" memory="4G" category="medium"
+JOB train_ae3_sb16of20 step.sub
+VARS train_ae3_sb16of20 step="train_ae3_sb16of20" cpus="1" memory="4G" category="medium"
+JOB train_ae3_sb17of20 step.sub
+VARS train_ae3_sb17of20 step="train_ae3_sb17of20" cpus="1" memory="4G" category="medium"
+JOB train_ae3_sb18of20 step.sub
+VARS train_ae3_sb18of20 step="train_ae3_sb18of20" cpus="1" memory="4G" category="medium"
+JOB train_ae3_sb19of20 step.sub
+VARS train_ae3_sb19of20 step="train_ae3_sb19of20" cpus="1" memory="4G" category="medium"
+JOB train_ae2_sb0of20 step.sub
+VARS train_ae2_sb0of20 step="train_ae2_sb0of20" cpus="1" memory="4G" category="medium"
+JOB train_ae2_sb1of20 step.sub
+VARS train_ae2_sb1of20 step="train_ae2_sb1of20" cpus="1" memory="4G" category="medium"
+JOB train_ae2_sb2of20 step.sub
+VARS train_ae2_sb2of20 step="train_ae2_sb2of20" cpus="1" memory="4G" category="medium"
+JOB train_ae2_sb3of20 step.sub
+VARS train_ae2_sb3of20 step="train_ae2_sb3of20" cpus="1" memory="4G" category="medium"
+JOB train_ae2_sb4of20 step.sub
+VARS train_ae2_sb4of20 step="train_ae2_sb4of20" cpus="1" memory="4G" category="medium"
+JOB train_ae2_sb5of20 step.sub
+VARS train_ae2_sb5of20 step="train_ae2_sb5of20" cpus="1" memory="4G" category="medium"
+JOB train_ae2_sb6of20 step.sub
+VARS train_ae2_sb6of20 step="train_ae2_sb6of20" cpus="1" memory="4G" category="medium"
+JOB train_ae2_sb7of20 step.sub
+VARS train_ae2_sb7of20 step="train_ae2_sb7of20" cpus="1" memory="4G" category="medium"
+JOB train_ae2_sb8of20 step.sub
+VARS train_ae2_sb8of20 step="train_ae2_sb8of20" cpus="1" memory="4G" category="medium"
+JOB train_ae2_sb9of20 step.sub
+VARS train_ae2_sb9of20 step="train_ae2_sb9of20" cpus="1" memory="4G" category="medium"
+JOB train_ae2_sb10of20 step.sub
+VARS train_ae2_sb10of20 step="train_ae2_sb10of20" cpus="1" memory="4G" category="medium"
+JOB train_ae2_sb11of20 step.sub
+VARS train_ae2_sb11of20 step="train_ae2_sb11of20" cpus="1" memory="4G" category="medium"
+JOB train_ae2_sb12of20 step.sub
+VARS train_ae2_sb12of20 step="train_ae2_sb12of20" cpus="1" memory="4G" category="medium"
+JOB train_ae2_sb13of20 step.sub
+VARS train_ae2_sb13of20 step="train_ae2_sb13of20" cpus="1" memory="4G" category="medium"
+JOB train_ae2_sb14of20 step.sub
+VARS train_ae2_sb14of20 step="train_ae2_sb14of20" cpus="1" memory="4G" category="medium"
+JOB train_ae2_sb15of20 step.sub
+VARS train_ae2_sb15of20 step="train_ae2_sb15of20" cpus="1" memory="4G" category="medium"
+JOB train_ae2_sb16of20 step.sub
+VARS train_ae2_sb16of20 step="train_ae2_sb16of20" cpus="1" memory="4G" category="medium"
+JOB train_ae2_sb17of20 step.sub
+VARS train_ae2_sb17of20 step="train_ae2_sb17of20" cpus="1" memory="4G" category="medium"
+JOB train_ae2_sb18of20 step.sub
+VARS train_ae2_sb18of20 step="train_ae2_sb18of20" cpus="1" memory="4G" category="medium"
+JOB train_ae2_sb19of20 step.sub
+VARS train_ae2_sb19of20 step="train_ae2_sb19of20" cpus="1" memory="4G" category="medium"
+
+JOB count10 count.sub
+JOB evaluate10 step.sub
+VARS evaluate10 step="evaluate10" cpus="1" memory="16G" category="short"
+
+JOB count20 count.sub
+JOB evaluate20 step.sub
+VARS evaluate20 step="evaluate20" cpus="1" memory="16G" category="short"
+
+PARENT train_ae3_sb0 train_ae3_sb1 train_ae3_sb2 train_ae3_sb3 train_ae3_sb4 train_ae3_sb5 train_ae3_sb6 train_ae3_sb7 train_ae3_sb8 train_ae3_sb9 train_ae2_sb0 train_ae2_sb1 train_ae2_sb2 train_ae2_sb3 train_ae2_sb4 train_ae2_sb5 train_ae2_sb6 train_ae2_sb7 train_ae2_sb8 train_ae2_sb9 CHILD count10
+PARENT count10 CHILD evaluate10
+PARENT evaluate10 CHILD train_ae3_sb0of20 train_ae3_sb1of20 train_ae3_sb2of20 train_ae3_sb3of20 train_ae3_sb4of20 train_ae3_sb5of20 train_ae3_sb6of20 train_ae3_sb7of20 train_ae3_sb8of20 train_ae3_sb9of20 train_ae3_sb10of20 train_ae3_sb11of20 train_ae3_sb12of20 train_ae3_sb13of20 train_ae3_sb14of20 train_ae3_sb15of20 train_ae3_sb16of20 train_ae3_sb17of20 train_ae3_sb18of20 train_ae3_sb19of20 train_ae2_sb0of20 train_ae2_sb1of20 train_ae2_sb2of20 train_ae2_sb3of20 train_ae2_sb4of20 train_ae2_sb5of20 train_ae2_sb6of20 train_ae2_sb7of20 train_ae2_sb8of20 train_ae2_sb9of20 train_ae2_sb10of20 train_ae2_sb11of20 train_ae2_sb12of20 train_ae2_sb13of20 train_ae2_sb14of20 train_ae2_sb15of20 train_ae2_sb16of20 train_ae2_sb17of20 train_ae2_sb18of20 train_ae2_sb19of20 
+PARENT train_ae3_sb0of20 train_ae3_sb1of20 train_ae3_sb2of20 train_ae3_sb3of20 train_ae3_sb4of20 train_ae3_sb5of20 train_ae3_sb6of20 train_ae3_sb7of20 train_ae3_sb8of20 train_ae3_sb9of20 train_ae3_sb10of20 train_ae3_sb11of20 train_ae3_sb12of20 train_ae3_sb13of20 train_ae3_sb14of20 train_ae3_sb15of20 train_ae3_sb16of20 train_ae3_sb17of20 train_ae3_sb18of20 train_ae3_sb19of20 train_ae2_sb0of20 train_ae2_sb1of20 train_ae2_sb2of20 train_ae2_sb3of20 train_ae2_sb4of20 train_ae2_sb5of20 train_ae2_sb6of20 train_ae2_sb7of20 train_ae2_sb8of20 train_ae2_sb9of20 train_ae2_sb10of20 train_ae2_sb11of20 train_ae2_sb12of20 train_ae2_sb13of20 train_ae2_sb14of20 train_ae2_sb15of20 train_ae2_sb16of20 train_ae2_sb17of20 train_ae2_sb18of20 train_ae2_sb19of20 CHILD count20
+PARENT count20 CHILD evaluate20

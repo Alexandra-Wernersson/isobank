@@ -20,7 +20,8 @@ from isobank import cbc_metric, load_PSD, get_boundaries_from_ranges
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.environ.get('ISOBANK_ROOT') or os.path.dirname(HERE)   # repository root
 #	set ISOBANK_ROOT if this config lives outside the repository
-OUT_DIR = os.path.join(ROOT, 'runs', 'eccentric_5d')      # checkpoints, banks, radii
+OUT_DIR = os.environ.get('ISOBANK_OUT_DIR') or os.path.join(ROOT, 'runs', 'eccentric_5d')   # checkpoints, banks, radii
+#	set ISOBANK_OUT_DIR to keep a run's outputs apart (e.g. the retrains of retrain_variance/)
 os.makedirs(OUT_DIR, exist_ok=True)
 PSD_FILE = os.path.join(ROOT, 'data', 'psds', 'aligo_O3actual_H1.txt')
 

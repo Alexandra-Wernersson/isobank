@@ -14,6 +14,7 @@ data, metric, monitoring pairs, placement and fitting-factor protocol as isobank
 | `summarise_ff.py` | spread of the fitting factors: mean ± std, median, 1st/5th/10th percentiles, coverage |
 | `train_flow_ablation.py` | isobank's flow with its loss swapped (not part of the condor run; untested) |
 | `nikhef/` | HTCondor DAG that runs everything at Nikhef |
+| `svd_ae/` | Cabass's full pipeline (SVD coefficients → autoencoder → lattice), scored as `svd_baseline/`; one cumulative plot with isobank, the SVD lattice and the parameter autoencoders |
 
 ## Status (12 November 2026)
 
@@ -123,7 +124,7 @@ git clone -b iclr git@github.com:Alexandra-Wernersson/isobank.git /data/gravwav/
 cd /data/gravwav/lopezm/Projects/isobank && mkdir -p logs
 
 # 2. env (miniforge, if you don't have conda: https://github.com/conda-forge/miniforge)
-mamba env create -f autoencoder_comparison/nikhef/environment.yml -p /data/gravwav/lopezm/cmb_env/miniforge3/envs/isobank
+conda env create -f autoencoder_comparison/nikhef/environment.yml -p /data/gravwav/lopezm/cmb_env/miniforge3/envs/isobank
 
 # 3. check the two paths at the top of autoencoder_comparison/nikhef/step.sub (repo, conda_env)
 

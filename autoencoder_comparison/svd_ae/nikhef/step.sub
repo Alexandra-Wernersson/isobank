@@ -1,0 +1,16 @@
+# One step of svd_ae.dag. repo and conda_env as in ../../nikhef/step.sub.
+repo      = /data/gravwav/lopezm/Projects/isobank
+conda_env = /data/gravwav/lopezm/cmb_env/miniforge3/envs/isobank
+n_parts   = 50
+
+executable       = $(repo)/autoencoder_comparison/svd_ae/nikhef/step.sh
+arguments        = $(step) $(repo) $(conda_env) $(cpus) 0 $(n_parts)
+initialdir       = $(repo)
+output           = $(repo)/logs/svd_ae_$(step).out
+error            = $(repo)/logs/svd_ae_$(step).err
+log              = $(repo)/logs/condor.log
+request_cpus     = $(cpus)
+request_memory   = $(memory)
++UseOS           = "el9"
++JobCategory     = "$(category)"
+queue

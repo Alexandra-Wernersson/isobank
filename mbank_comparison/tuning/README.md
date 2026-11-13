@@ -25,6 +25,31 @@ Outputs, in `WORK`:
 - `tuning.csv`: per variant, size, coverage and the flow diagnostics of `diagnose_flow.py` (fit error,
   fraction of samples inside the box, `C − C*`, mbank's volume and the corrected one).
 
+## Results (Nikhef, 13 November 2026)
+
+`results/tuning.csv`, `results/tuning.pdf`, `results/tuning_loss.pdf`; the reviewer-facing figure is
+`results/tuning_summary.pdf` (`plot_tuning_summary.py`), and a compact version, `results/tuning_violins.pdf` (`plot_tuning_violins.py`: the distribution of 1 − FF of each variant, from `results/ff/<variant>.npy`).
+
+| Variant | Templates | Coverage, FF ≥ 0.97 |
+|---|---|---|
+| `paper_a`, `paper_b`, `paper_c` | 3.09M, 2.84M, 3.01M | 94.78, 93.51, 93.73 % |
+| `weighted_0.5`, `weighted_1` | 2.99M, 3.03M | 94.46, 94.37 % |
+| `quantile_0.5`, `quantile_0.99` | 2.92M, 3.01M | 94.00, 93.49 % |
+| `padding_0.001`, `padding_0.05` | 3.05M, 3.07M | 93.80, 94.30 % |
+| `lr_0.0005`, `batch_1000` | 2.84M, 2.98M | 93.41, 93.61 % |
+| `data_50k` | 3.04M | 94.29 % |
+| `is_wmax_10`, `is_no_clip` | 2.99M, 3.11M | 94.20, 94.32 % |
+| isobank (Nikhef retrain) | 3.01M | 98.4 % |
+
+Errors are about ±0.23 %. Every variant is within the scatter of the three runs with the paper's settings (93.5–94.8 %):
+no change to the loss, training or placement brings mbank near isobank.
+
+- The weighted loss gives the best flow fit (median |r| 0.019, against 0.03–0.05 for the paper's runs) and a
+  coverage at the top of the scatter, but one run per variant cannot separate it from the repeats.
+- The fraction of flow samples inside the box (`samples_inside`, about 4 %) does not depend on the padding; it
+  follows the starting quantile of C (19 % at 0.5, 2 % at 0.99). The volume inside the box is the same in every
+  variant (log10 ≈ −0.68), so this changes mbank's reported volume and wasted proposals, not the bank.
+
 ## mbank
 
 The variants need options added to mbank in the fork [MelissaLP/mbank](https://github.com/MelissaLP/mbank):
@@ -44,9 +69,12 @@ On `stbc-i1`:
 git clone -b iclr git@github.com:Alexandra-Wernersson/isobank.git /data/gravwav/lopezm/Projects/isobank
 git clone git@github.com:MelissaLP/mbank.git /data/gravwav/lopezm/Projects/mbank
 
-# env: the versions of the Snellius runs, plus mbank from the fork
-mamba env create -f /data/gravwav/lopezm/Projects/isobank/environment.yml -p /data/gravwav/lopezm/cmb_env/miniforge3/envs/isobank-mbank
-/data/gravwav/lopezm/cmb_env/miniforge3/envs/isobank-mbank/bin/pip install --no-deps -e /data/gravwav/lopezm/Projects/mbank
+# env isobank-mbank: the pins of the isobank env plus mbank's dependencies, and mbank from the fork
+# (a separate env, so the isobank env of the autoencoder runs is left as it is)
+E=/data/gravwav/lopezm/cmb_env/miniforge3/envs/isobank-mbank
+conda env create -f /data/gravwav/lopezm/Projects/isobank/environment.yml -p $E
+$E/bin/pip install --no-deps -e /data/gravwav/lopezm/Projects/mbank
+$E/bin/python -c "import mbank, torch, lalsimulation, glasflow; print(mbank.__file__)"   # a path in Projects/mbank
 
 # check the paths at the top of mbank_comparison/tuning/step.sub, then
 mkdir -p /data/gravwav/lopezm/Projects/mbank_tuning/logs                 # the `work` folder of step.sub
@@ -59,6 +87,11 @@ running, submit this one once its `train_isobank` step has finished, so the two 
 
 The steps run mbank's scripts from the fork's `bin/`, through `../mbank_placement/run_mbank_cli.py` as the
 paper's runs did, one CPU each with `OMP_NUM_THREADS=1`. Logs: `WORK/logs/<step>_<variant>.out` and `.err`.
+
+The fitting factors of each variant run in 3 parallel jobs (`FF_PARTS` in `make_dag.py`; `ff.sub`,
+`ff_step.sh`, `../../autoencoder_comparison/ff_parallel.py`), then a join that writes `ff.npy`. Results are
+identical to one `evaluate_bank.py` run, but take about 1.5 h instead of 4 h. The sweep uses at most 42 CPUs at
+once. Each job asks for 8 GB, the placements for 32 GB (`MEMORY` in `make_dag.py`). Logs: `WORK/logs/ff_part_<variant>_<i>.out`, `ff_join_<variant>_0.out`.
 
 A command-line value equal to mbank's parser default is overridden by `base.ini`: e.g. `--learning-rate 0.001`
 (mbank's default) would leave the ini's 0.005 in place. Check `args_*.json` in a variant's folder for the

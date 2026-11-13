@@ -1,0 +1,82 @@
+Eccentric 5D BNS/NSBH (m1, m2, s1z, s2z, e)
+r_target = 0.15656  (mu = 0.03)
+
+Long-range pairs...
+  10000 pairs  d=[0.296, 807.793]
+
+Local pairs...
+  5000 pairs after filter
+
+Boundary pairs...
+  9987 pairs after filter
+
+Edge pairs (hard sub-region anchors)...
+  4997 pairs after filter
+
+Monitoring pairs (held out)...
+  2997 pairs after filter
+Training IsometricFlow | d=5 | 9 layers (depth=1) | 20,016 params | 1000 epochs
+Pairs: long=10000  local=5000  boundary=9987  monitor=2997  edge=4997
+Loss weights: L_global x1.0  L_local x5.0  L_bound x10.0  L_edge x10.0
+Tail penalty: top-25% pairs weighted 4x
+Checkpoint criterion: max min(p10_monitor, p10_edge)
+Epoch 000 | loss=71.3383 | L_g=0.2126 L_l=1.7610 L_b=2.1008 L_e=1.8830 | train  med=0.6622 p10=0.3517 | monitor med=0.6633 p10=0.3510 | edge med=0.6386 p10=0.3847 | global_r=0.906
+  *** Best (monitor p10=0.3510  train p10=0.3517  edge p10=0.3847  gap=+0.0006)
+Epoch 020 | loss=2.3300 | L_g=0.0261 L_l=0.0790 L_b=0.0847 L_e=0.0930 | train  med=0.9679 p10=0.9078 | monitor med=0.9633 p10=0.8991 | edge med=0.9658 p10=0.9054 | global_r=0.983
+  *** Best (monitor p10=0.8991  train p10=0.9078  edge p10=0.9054  gap=+0.0087)
+Epoch 040 | loss=0.8356 | L_g=0.0194 L_l=0.0117 L_b=0.0217 L_e=0.0134 | train  med=1.0039 p10=0.9854 | monitor med=1.0055 p10=0.9862 | edge med=1.0031 p10=0.9849 | global_r=0.985
+  *** Best (monitor p10=0.9862  train p10=0.9854  edge p10=0.9849  gap=-0.0008)
+Epoch 060 | loss=0.8694 | L_g=0.0321 L_l=0.0858 L_b=0.0330 L_e=0.0252 | train  med=1.0486 p10=1.0035 | monitor med=1.0488 p10=1.0098 | edge med=1.0454 p10=1.0036 | global_r=0.983
+  *** Best (monitor p10=1.0098  train p10=1.0035  edge p10=1.0036  gap=-0.0063)
+Epoch 080 | loss=0.4438 | L_g=0.0149 L_l=0.0130 L_b=0.0117 L_e=0.0117 | train  med=1.0020 p10=0.9703 | monitor med=1.0002 p10=0.9713 | edge med=1.0010 p10=0.9726 | global_r=0.984
+Epoch 100 | loss=0.6152 | L_g=0.0248 L_l=0.0266 L_b=0.0219 L_e=0.0148 | train  med=1.0156 p10=0.9861 | monitor med=1.0132 p10=0.9848 | edge med=1.0160 p10=0.9885 | global_r=0.962
+Epoch 120 | loss=0.5593 | L_g=0.0273 L_l=0.0235 L_b=0.0144 L_e=0.0135 | train  med=0.9903 p10=0.9467 | monitor med=0.9937 p10=0.9484 | edge med=0.9930 p10=0.9563 | global_r=0.975
+Epoch 140 | loss=0.4454 | L_g=0.0241 L_l=0.0191 L_b=0.0148 L_e=0.0101 | train  med=0.9798 p10=0.9598 | monitor med=0.9784 p10=0.9550 | edge med=0.9783 p10=0.9581 | global_r=0.984
+Epoch 160 | loss=0.3859 | L_g=0.0307 L_l=0.0122 L_b=0.0173 L_e=0.0102 | train  med=1.0110 p10=0.9697 | monitor med=1.0130 p10=0.9730 | edge med=1.0109 p10=0.9793 | global_r=0.983
+Epoch 180 | loss=0.4730 | L_g=0.0198 L_l=0.0040 L_b=0.0031 L_e=0.0037 | train  med=1.0128 p10=0.9717 | monitor med=1.0138 p10=0.9795 | edge med=1.0133 p10=0.9798 | global_r=0.988
+Epoch 200 | loss=0.4214 | L_g=0.0226 L_l=0.0060 L_b=0.0129 L_e=0.0070 | train  med=1.0135 p10=0.9850 | monitor med=1.0130 p10=0.9784 | edge med=1.0123 p10=0.9863 | global_r=0.987
+Epoch 220 | loss=0.2469 | L_g=0.0201 L_l=0.0112 L_b=0.0166 L_e=0.0097 | train  med=0.9878 p10=0.9645 | monitor med=0.9881 p10=0.9689 | edge med=0.9873 p10=0.9664 | global_r=0.985
+Epoch 240 | loss=0.2584 | L_g=0.0219 L_l=0.0352 L_b=0.0332 L_e=0.0197 | train  med=0.9963 p10=0.9708 | monitor med=0.9987 p10=0.9683 | edge med=0.9972 p10=0.9708 | global_r=0.985
+Epoch 260 | loss=0.2436 | L_g=0.0190 L_l=0.0668 L_b=0.0099 L_e=0.0120 | train  med=0.9891 p10=0.9640 | monitor med=0.9889 p10=0.9665 | edge med=0.9872 p10=0.9567 | global_r=0.982
+Epoch 280 | loss=0.1816 | L_g=0.0219 L_l=0.0070 L_b=0.0128 L_e=0.0123 | train  med=0.9809 p10=0.9546 | monitor med=0.9824 p10=0.9552 | edge med=0.9819 p10=0.9574 | global_r=0.988
+Epoch 300 | loss=0.2379 | L_g=0.0217 L_l=0.0058 L_b=0.0075 L_e=0.0035 | train  med=0.9912 p10=0.9685 | monitor med=0.9934 p10=0.9676 | edge med=0.9917 p10=0.9690 | global_r=0.974
+Epoch 320 | loss=0.2381 | L_g=0.0212 L_l=0.0049 L_b=0.0089 L_e=0.0042 | train  med=1.0167 p10=1.0080 | monitor med=1.0169 p10=1.0068 | edge med=1.0158 p10=1.0052 | global_r=0.983
+  *** Best (monitor p10=1.0068  train p10=1.0080  edge p10=1.0052  gap=+0.0011)
+Epoch 340 | loss=0.1371 | L_g=0.0270 L_l=0.0041 L_b=0.0026 L_e=0.0033 | train  med=0.9882 p10=0.9783 | monitor med=0.9890 p10=0.9778 | edge med=0.9886 p10=0.9789 | global_r=0.983
+Epoch 360 | loss=0.2603 | L_g=0.0221 L_l=0.0017 L_b=0.0027 L_e=0.0022 | train  med=0.9847 p10=0.9770 | monitor med=0.9843 p10=0.9770 | edge med=0.9843 p10=0.9762 | global_r=0.982
+Epoch 380 | loss=0.2047 | L_g=0.0230 L_l=0.0247 L_b=0.0217 L_e=0.0218 | train  med=0.9614 p10=0.9164 | monitor med=0.9610 p10=0.9195 | edge med=0.9605 p10=0.9199 | global_r=0.983
+Epoch 400 | loss=0.1107 | L_g=0.0379 L_l=0.0118 L_b=0.0104 L_e=0.0079 | train  med=1.0076 p10=0.9931 | monitor med=1.0077 p10=0.9932 | edge med=1.0068 p10=0.9941 | global_r=0.983
+Epoch 420 | loss=0.1020 | L_g=0.0226 L_l=0.0034 L_b=0.0033 L_e=0.0039 | train  med=0.9906 p10=0.9759 | monitor med=0.9904 p10=0.9762 | edge med=0.9912 p10=0.9777 | global_r=0.990
+Epoch 440 | loss=0.1064 | L_g=0.0299 L_l=0.0022 L_b=0.0027 L_e=0.0024 | train  med=0.9996 p10=0.9866 | monitor med=0.9989 p10=0.9824 | edge med=0.9987 p10=0.9851 | global_r=0.987
+Epoch 460 | loss=0.1043 | L_g=0.0198 L_l=0.0015 L_b=0.0021 L_e=0.0019 | train  med=0.9939 p10=0.9821 | monitor med=0.9944 p10=0.9827 | edge med=0.9935 p10=0.9832 | global_r=0.980
+Epoch 480 | loss=0.0844 | L_g=0.0266 L_l=0.0023 L_b=0.0023 L_e=0.0015 | train  med=0.9988 p10=0.9893 | monitor med=0.9981 p10=0.9868 | edge med=0.9986 p10=0.9891 | global_r=0.984
+Epoch 500 | loss=0.0643 | L_g=0.0177 L_l=0.0017 L_b=0.0017 L_e=0.0013 | train  med=0.9964 p10=0.9863 | monitor med=0.9972 p10=0.9862 | edge med=0.9966 p10=0.9860 | global_r=0.988
+Epoch 520 | loss=0.0740 | L_g=0.0221 L_l=0.0030 L_b=0.0043 L_e=0.0090 | train  med=0.9922 p10=0.9832 | monitor med=0.9921 p10=0.9810 | edge med=0.9916 p10=0.9789 | global_r=0.987
+Epoch 540 | loss=0.0766 | L_g=0.0191 L_l=0.0048 L_b=0.0024 L_e=0.0018 | train  med=1.0046 p10=0.9866 | monitor med=1.0043 p10=0.9853 | edge med=1.0037 p10=0.9830 | global_r=0.984
+Epoch 560 | loss=0.0549 | L_g=0.0163 L_l=0.0006 L_b=0.0007 L_e=0.0005 | train  med=1.0001 p10=0.9940 | monitor med=1.0001 p10=0.9937 | edge med=0.9999 p10=0.9933 | global_r=0.974
+Epoch 580 | loss=0.0671 | L_g=0.0240 L_l=0.0011 L_b=0.0018 L_e=0.0014 | train  med=1.0035 p10=0.9951 | monitor med=1.0037 p10=0.9949 | edge med=1.0032 p10=0.9924 | global_r=0.980
+Epoch 600 | loss=0.0522 | L_g=0.0210 L_l=0.0020 L_b=0.0017 L_e=0.0019 | train  med=0.9977 p10=0.9892 | monitor med=0.9975 p10=0.9879 | edge med=0.9977 p10=0.9886 | global_r=0.991
+Epoch 620 | loss=0.0539 | L_g=0.0258 L_l=0.0006 L_b=0.0008 L_e=0.0007 | train  med=0.9935 p10=0.9873 | monitor med=0.9932 p10=0.9869 | edge med=0.9933 p10=0.9861 | global_r=0.982
+Epoch 640 | loss=0.0541 | L_g=0.0244 L_l=0.0007 L_b=0.0012 L_e=0.0009 | train  med=1.0055 p10=0.9992 | monitor med=1.0052 p10=1.0000 | edge med=1.0050 p10=1.0001 | global_r=0.983
+Epoch 660 | loss=0.0467 | L_g=0.0173 L_l=0.0013 L_b=0.0004 L_e=0.0005 | train  med=0.9978 p10=0.9933 | monitor med=0.9976 p10=0.9930 | edge med=0.9979 p10=0.9938 | global_r=0.984
+Epoch 680 | loss=0.0478 | L_g=0.0211 L_l=0.0012 L_b=0.0012 L_e=0.0008 | train  med=1.0004 p10=0.9937 | monitor med=1.0005 p10=0.9916 | edge med=1.0000 p10=0.9921 | global_r=0.980
+Epoch 700 | loss=0.0355 | L_g=0.0221 L_l=0.0007 L_b=0.0005 L_e=0.0005 | train  med=0.9944 p10=0.9903 | monitor med=0.9942 p10=0.9898 | edge med=0.9942 p10=0.9903 | global_r=0.980
+Epoch 720 | loss=0.0348 | L_g=0.0217 L_l=0.0003 L_b=0.0005 L_e=0.0003 | train  med=0.9997 p10=0.9933 | monitor med=0.9999 p10=0.9930 | edge med=0.9997 p10=0.9947 | global_r=0.987
+Epoch 740 | loss=0.0359 | L_g=0.0210 L_l=0.0005 L_b=0.0006 L_e=0.0006 | train  med=1.0031 p10=0.9971 | monitor med=1.0033 p10=0.9981 | edge med=1.0036 p10=0.9981 | global_r=0.980
+Epoch 760 | loss=0.0306 | L_g=0.0193 L_l=0.0011 L_b=0.0005 L_e=0.0004 | train  med=0.9952 p10=0.9900 | monitor med=0.9951 p10=0.9902 | edge med=0.9954 p10=0.9905 | global_r=0.983
+Epoch 780 | loss=0.0304 | L_g=0.0249 L_l=0.0004 L_b=0.0004 L_e=0.0002 | train  med=0.9980 p10=0.9946 | monitor med=0.9982 p10=0.9942 | edge med=0.9978 p10=0.9942 | global_r=0.987
+Epoch 800 | loss=0.0309 | L_g=0.0238 L_l=0.0004 L_b=0.0004 L_e=0.0004 | train  med=1.0031 p10=0.9995 | monitor med=1.0030 p10=0.9990 | edge med=1.0032 p10=0.9996 | global_r=0.989
+Epoch 820 | loss=0.0284 | L_g=0.0171 L_l=0.0002 L_b=0.0002 L_e=0.0002 | train  med=0.9973 p10=0.9942 | monitor med=0.9970 p10=0.9936 | edge med=0.9973 p10=0.9942 | global_r=0.986
+Epoch 840 | loss=0.0280 | L_g=0.0185 L_l=0.0002 L_b=0.0002 L_e=0.0002 | train  med=0.9985 p10=0.9952 | monitor med=0.9985 p10=0.9952 | edge med=0.9984 p10=0.9954 | global_r=0.982
+Epoch 860 | loss=0.0285 | L_g=0.0215 L_l=0.0002 L_b=0.0002 L_e=0.0001 | train  med=0.9995 p10=0.9959 | monitor med=0.9998 p10=0.9960 | edge med=0.9996 p10=0.9967 | global_r=0.983
+Epoch 880 | loss=0.0275 | L_g=0.0248 L_l=0.0003 L_b=0.0002 L_e=0.0001 | train  med=0.9994 p10=0.9957 | monitor med=0.9994 p10=0.9959 | edge med=0.9990 p10=0.9957 | global_r=0.978
+Epoch 900 | loss=0.0263 | L_g=0.0209 L_l=0.0002 L_b=0.0001 L_e=0.0002 | train  med=1.0000 p10=0.9969 | monitor med=1.0002 p10=0.9968 | edge med=1.0002 p10=0.9976 | global_r=0.982
+Epoch 920 | loss=0.0277 | L_g=0.0199 L_l=0.0002 L_b=0.0002 L_e=0.0001 | train  med=0.9985 p10=0.9958 | monitor med=0.9984 p10=0.9949 | edge med=0.9983 p10=0.9957 | global_r=0.979
+Epoch 940 | loss=0.0259 | L_g=0.0221 L_l=0.0003 L_b=0.0001 L_e=0.0002 | train  med=0.9997 p10=0.9969 | monitor med=0.9995 p10=0.9962 | edge med=0.9995 p10=0.9963 | global_r=0.987
+Epoch 960 | loss=0.0251 | L_g=0.0208 L_l=0.0002 L_b=0.0002 L_e=0.0002 | train  med=0.9990 p10=0.9958 | monitor med=0.9990 p10=0.9955 | edge med=0.9989 p10=0.9960 | global_r=0.988
+Epoch 980 | loss=0.0255 | L_g=0.0184 L_l=0.0002 L_b=0.0002 L_e=0.0001 | train  med=0.9997 p10=0.9963 | monitor med=0.9997 p10=0.9965 | edge med=0.9996 p10=0.9969 | global_r=0.980
+
+Saved final: /data/gravwav/lopezm/Projects/isobank/runs/eccentric_5d_retrain/seed1/flow_final.pt
+Saved best:  /data/gravwav/lopezm/Projects/isobank/runs/eccentric_5d_retrain/seed1/flow_best.pt
+
+Saved: /data/gravwav/lopezm/Projects/isobank/runs/eccentric_5d_retrain/seed1/flow_best.pt

@@ -104,6 +104,7 @@ Eccentric 5D, run as HTCondor DAGs at Nikhef (each folder's README gives the com
 | [`mbank_comparison/`](mbank_comparison/README.md) | the isobank–mbank comparison of the paper (Fig. 3), as run on Snellius |
 | [`mbank_comparison/tuning/`](mbank_comparison/tuning/README.md) | mbank retrained with changes to its loss and training: bank size against coverage |
 | [`autoencoder_comparison/`](autoencoder_comparison/README.md) | metric-preserving autoencoders (Cabass et al.): training curves and fitting factors |
+| [`retrain_variance/`](retrain_variance/README.md) | isobank retrained with 3 network seeds and re-placed with 2 placement seeds: run-to-run variance |
 
 ## Adding a parameter space
 

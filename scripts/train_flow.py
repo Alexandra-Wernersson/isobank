@@ -34,7 +34,11 @@ def main():
     ap.add_argument('--config', required=True, help='case config, e.g. configs/eccentric_5d.py')
     ap.add_argument('--recalibrate', action='store_true', help='recompute r_target even if it exists')
     ap.add_argument('--epochs', type=int, default=None, help='override the config N_EPOCHS')
+    ap.add_argument('--seed', type=int, default=None,
+                    help='seed of the network initialisation and batch order (default: unseeded)')
     args = ap.parse_args()
+    if args.seed is not None:      # network initialisation and batch order; the data and pairs keep their seeds
+        torch.manual_seed(args.seed); np.random.seed(args.seed)
 
     C = load_config(args.config)
     metric = C.make_metric()

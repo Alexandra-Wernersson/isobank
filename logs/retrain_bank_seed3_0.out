@@ -1,0 +1,24 @@
+Eccentric 5D BNS/NSBH (m1, m2, s1z, s2z, e)
+r_target = 0.15656   radius factor = 1.0   r_place = 0.15656
+stop: coord acceptance < 0.1
+Starting greedy placement  (r_placement=0.15656, batch=50,000)...
+WARNING: metric-volume weights have effective sample size 0.0% of the batch (< 5%).
+         The stopping criterion is unreliable in this space — validate the bank with an explicit coverage test and do not trust convergence alone.
+  Batch    0 | evaluated=41,678  bank=39,920  uncovered_vol=1.0000  (coord=0.9578)  [stop_on=coord]
+  Batch   25 | evaluated=1,082,414  bank=635,430  uncovered_vol=0.9844  (coord=0.4107)  [stop_on=coord]
+  Batch   50 | evaluated=2,123,530  bank=993,659  uncovered_vol=0.9821  (coord=0.2935)  [stop_on=coord]
+  Batch   75 | evaluated=3,165,626  bank=1,267,690  uncovered_vol=0.9770  (coord=0.2402)  [stop_on=coord]
+  Batch  100 | evaluated=4,208,134  bank=1,495,085  uncovered_vol=0.9777  (coord=0.2032)  [stop_on=coord]
+  Batch  125 | evaluated=5,249,462  bank=1,690,973  uncovered_vol=0.9650  (coord=0.1767)  [stop_on=coord]
+  Batch  150 | evaluated=6,291,260  bank=1,864,423  uncovered_vol=0.9661  (coord=0.1565)  [stop_on=coord]
+  Batch  175 | evaluated=7,333,054  bank=2,021,206  uncovered_vol=0.9626  (coord=0.1454)  [stop_on=coord]
+  Batch  200 | evaluated=8,373,804  bank=2,165,684  uncovered_vol=0.9601  (coord=0.1353)  [stop_on=coord]
+  [partial save: 2,165,684 templates -> runs/eccentric_5d_retrain/seed3/bank_partial.npy]
+  Batch  225 | evaluated=9,415,572  bank=2,298,727  uncovered_vol=0.9615  (coord=0.1225)  [stop_on=coord]
+  Batch  250 | evaluated=10,457,107  bank=2,423,620  uncovered_vol=0.9547  (coord=0.1176)  [stop_on=coord]
+  Batch  275 | evaluated=11,498,361  bank=2,540,854  uncovered_vol=0.9547  (coord=0.1111)  [stop_on=coord]
+  Batch  300 | evaluated=12,539,900  bank=2,652,230  uncovered_vol=0.9584  (coord=0.1065)  [stop_on=coord]
+  Uncovered coordinate acceptance 0.0992 < 0.1 — converged, stopping.  (vol=0.9529 coord=0.0992)
+Bank complete: 2,737,500 templates
+
+Placed 2,737,500 templates in 17.3 min -> runs/eccentric_5d_retrain/seed3/bank.npy
