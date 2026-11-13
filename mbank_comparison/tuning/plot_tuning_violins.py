@@ -6,8 +6,8 @@ on top, the distribution of the fitting factor underneath.
         --isobank-ff runs/eccentric_5d/ff_isobank.npy --isobank-size 3009368
 
 --ff-dir holds <variant>.npy, the fitting factors of each variant (WORK/<variant>/ff.npy at Nikhef), on the
-10,000 injections of seed 4002, as isobank's. Top: coverage (FF >= 0.97, +/- 1 sigma); middle: templates; the
-shaded bands are the range of the three runs with the paper's settings. Bottom: violins of FF, cut at FLOOR
+10,000 injections of seed 4002, as isobank's. Top: coverage (FF >= 0.97, +/- 1 sigma, filled, left axis) and
+templates (open, right axis). Bottom: violins of FF, cut at FLOOR
 (the share of injections below it is printed); the dashed line is FF = 0.97. Colour = what was changed.
 Writes results/tuning_violins.pdf (or --out).
 """
@@ -18,7 +18,7 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from matplotlib.patches import Patch
 
-ISO, PAPER, INK, BAND = '#0284c7', '#8b8f98', '#111827', '#e2e8f0'   # isobank's blue, as in every other figure
+ISO, PAPER, INK = '#0284c7', '#8b8f98', '#111827'   # isobank's blue, as in every other figure
 FLOOR = 0.96        # bottom of the FF axis
 GROUPS = [   # (legend entry, colour, [(variant, tick label)])
     ('mbank, paper settings', PAPER, [('paper_a', 'run 1'), ('paper_b', 'run 2'), ('paper_c', 'run 3')]),
@@ -57,22 +57,27 @@ def main():
     xs = np.array(xs)
 
     plt.style.use('seaborn-v0_8-whitegrid')
-    fig, (a_cov, a_n, a_ff) = plt.subplots(3, 1, figsize=(9.0, 6.2), sharex=True,
-                                           gridspec_kw=dict(height_ratios=[1, 1, 3], hspace=0.08))
+    fig, (a_cov, a_ff) = plt.subplots(2, 1, figsize=(9.0, 5.6), sharex=True,
+                                      gridspec_kw=dict(height_ratios=[1.4, 3], hspace=0.08))
+    a_n = a_cov.twinx()   # coverage (filled, left) above, templates (open, right) below: the ranges keep them apart
     cov = np.array([100 * (ff >= .97).mean() for *_, ff in items])
     err = np.array([100 * np.sqrt(c / 100 * (1 - c / 100) / len(ff)) for c, (*_, ff) in zip(cov, items)])
     n = np.array([sizes.get(name, np.nan) / 1e6 for name, *_ in items])
     cols = [col for _, _, col, _ in items]
-    paper = slice(1, 4)
-    for ax, val in ((a_cov, cov), (a_n, n)):
-        ax.axhspan(val[paper].min(), val[paper].max(), color=BAND, lw=0, zorder=0)
     for xi, c, e, ni, col in zip(xs, cov, err, n, cols):
         a_cov.errorbar(xi, c, yerr=e, fmt='o', color=col, ms=6.5, lw=1.4, mec='white', mew=1.0, zorder=3)
-        a_n.plot(xi, ni, 'o', color=col, ms=6.5, mec='white', mew=1.0, zorder=3)
+        a_n.plot(xi, ni, 's', mfc='white', mec=col, ms=5.5, mew=1.6, zorder=3)
     a_cov.annotate(f'{cov[0]:.1f}%', (xs[0], cov[0]), xytext=(9, 0), textcoords='offset points', va='center',
                    fontsize=8.5, color=INK)
-    a_cov.set_ylim(92.5, 99.5); a_cov.set_yticks([93, 95, 97, 99]); a_cov.set_ylabel('Coverage (%)')
-    a_n.set_ylim(2.75, 3.2); a_n.set_yticks([2.8, 3.0, 3.2]); a_n.set_ylabel('Templates\n(millions)')
+    a_cov.set_ylim(88, 99.8); a_cov.set_yticks([90, 94, 98]); a_cov.set_ylabel('Coverage (%)')
+    a_n.set_ylim(2.7, 4.0); a_n.set_yticks([2.8, 3.0, 3.2]); a_n.set_ylabel('Templates (M)', y=0.2)
+    a_n.grid(False); a_n.tick_params(axis='y', labelsize=8.5)
+    for sp in a_n.spines.values():
+        sp.set_visible(False)
+    a_cov.legend(handles=[plt.Line2D([], [], ls='', marker='o', color=INK, mec='white', ms=6.5, label='coverage (left)'),
+                          plt.Line2D([], [], ls='', marker='s', mfc='white', mec=INK, mew=1.6, ms=5.5,
+                                     label='templates (right)')],
+                 loc='lower right', bbox_to_anchor=(1.0, 0.98), ncol=2, fontsize=8, frameon=False, handletextpad=0.3)
 
     below = []
     for (name, _, col, ff), xi in zip(items, xs):
@@ -88,9 +93,9 @@ def main():
     a_ff.set_xticks(xs, [it[1] for it in items], fontsize=8.5)
     a_ff.get_xticklabels()[0].set_fontweight('bold')
     a_ff.set_xlim(xs[0] - 0.6, xs[-1] + 0.6)
-    for ax in (a_cov, a_n, a_ff):
+    for ax in (a_cov, a_ff):
         ax.grid(False, axis='x'); ax.tick_params(axis='y', labelsize=8.5)
-    fig.align_ylabels((a_cov, a_n, a_ff))
+    fig.align_ylabels((a_cov, a_ff))
     handles = [Patch(color=ISO, label='isobank')] + [Patch(color=col, label=lab) for lab, col, _ in GROUPS]
     a_ff.legend(handles=handles, loc='upper center', bbox_to_anchor=(0.5, -0.17), ncol=4, fontsize=8, frameon=False,
                 handlelength=1.2, columnspacing=1.4)
