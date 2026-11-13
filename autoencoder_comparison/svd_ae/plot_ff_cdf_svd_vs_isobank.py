@@ -20,10 +20,10 @@ import matplotlib.pyplot as plt
 THR = 0.97
 CURVES = [   # file in --runs, lattice_table row (label, spacing) or None, colour, line style, label
     ('ff_isobank_first4000.npy', None, '#0284c7', '-', 'isobank'),
-    ('ff_svd_a0.44.npy', ('SVD, BCC on c0..c2', '0.44'), '#d97706', '-', 'SVD grid, no autoencoder'),
-    ('ff_ae3sb20_a0.48.npy', ('SVD + autoencoder, latent 3, 20 sub-banks, BCC', '0.48'), '#059669', (0, (5, 2)),
+    ('ff_svd_a0.44.npy', ('SVD, BCC on c0..c2', '0.44'), 'orchid', '-', 'SVD grid, no autoencoder'),
+    ('ff_ae3sb20_a0.48.npy', ('SVD + autoencoder, latent 3, 20 sub-banks, BCC', '0.48'), 'mediumseagreen', ':',
      'Cabass et al. (2025), 20 sub-banks'),
-    ('ff_ae3sb10_a0.44.npy', ('SVD + autoencoder, latent 3, 10 sub-banks, BCC', '0.44'), '#7c3aed', (0, (5, 2)),
+    ('ff_ae3sb10_a0.44.npy', ('SVD + autoencoder, latent 3, 10 sub-banks, BCC', '0.44'), 'darkgreen', ':',
      'Cabass et al. (2025), 10 sub-banks'),
 ]
 

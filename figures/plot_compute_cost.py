@@ -21,11 +21,11 @@ import matplotlib.pyplot as plt
 INK = '#111827'
 SEARCH = 2e-4   # CPU-seconds per template per second of data
 STEPS = [('preprocessing', '^'), ('training', 's'), ('placement', 'D'), ('total', 'o'), ('total + search of 1 h of data', '*')]
-MODELS = [   # name, colour (as in the FF figures), {step: [CPU-h per run]}, [templates per run]
-    ('isobank', '#0284c7', dict(training=[3.35], placement=[0.35]), [3009368]),
+MODELS = [   # name, colour (as in the FF figures), {step: [CPU-h per run]}, [templates per run], coverage
+    ('isobank', '#0284c7', dict(training=[3.35], placement=[0.35]), [3009368], '98.4%'),
     ('mbank', '#8b8f98', dict(preprocessing=[0.12] * 3, training=[0.19, 0.12, 0.18], placement=[1.23, 0.77, 1.56]),
-     [3091551, 2837943, 3005165]),
-    ('Cabass et al.\n(2025)', '#059669', dict(preprocessing=[95.8], training=[21.2], placement=[7.2]), [2676002]),
+     [3091551, 2837943, 3005165], '93.5–94.8%'),
+    ('Cabass et al. (2025)\n20 sub-banks', 'mediumseagreen', dict(preprocessing=[95.8], training=[21.2], placement=[7.2]), [2676002], '96.6%'),
 ]
 
 
@@ -37,7 +37,7 @@ def main():
     plt.style.use('seaborn-v0_8-whitegrid')
     fig, ax = plt.subplots(figsize=(6.4, 4.0))
     offs = np.linspace(-0.32, 0.32, len(STEPS))
-    for xi, (name, col, steps, n) in enumerate(MODELS):
+    for xi, (name, col, steps, n, _) in enumerate(MODELS):
         steps = dict(steps, total=list(np.sum([steps[s] for s in steps], axis=0)))
         steps[STEPS[-1][0]] = list(np.array(steps['total']) + SEARCH * np.array(n))   # + 3600 s of data, CPU-h
         for (step, marker), dx in zip(STEPS, offs):
@@ -55,14 +55,14 @@ def main():
     ax.set_yscale('log'); ax.set_ylim(0.05, 2000)
     ax.set_yticks([0.1, 1, 10, 100, 1000], ['0.1', '1', '10', '100', '1000'])
     ax.set_ylabel('Wall time on 1 CPU (CPU-hours)')
-    ax.set_xticks(range(len(MODELS)), [m[0] for m in MODELS], fontsize=10)
+    ax.set_xticks(range(len(MODELS)), [f'{m[0]}\ncoverage {m[4]}' for m in MODELS], fontsize=9.5)
     ax.get_xticklabels()[0].set_fontweight('bold')
     ax.set_xlim(-0.55, len(MODELS) - 0.45); ax.grid(False, axis='x')
     full = lambda s, mk: s == 'total' or mk == '*'
     ax.legend(handles=[plt.Line2D([], [], ls='', marker=mk, ms=(14 if mk == '*' else 10) if full(s, mk) else 7.5,
                                   color=INK, mfc=INK if full(s, mk) else 'white', mew=1.8, label=s) for s, mk in STEPS],
-              loc='upper center', bbox_to_anchor=(0.5, -0.16), ncol=5, fontsize=8.5, frameon=False,
-              handletextpad=0.3, columnspacing=1.2)
+              loc='upper left', bbox_to_anchor=(0.01, 0.84), ncol=2, fontsize=7.5, frameon=True, framealpha=0.95,
+              edgecolor='#d1d5db', markerscale=0.75, handletextpad=0.3, columnspacing=1.0, borderpad=0.5)
     plt.savefig(args.out, dpi=200, bbox_inches='tight', facecolor='white')
     print(f'-> {args.out}')
 
