@@ -4,8 +4,8 @@ plot_ablation.py -- the loss ablation and the coefficient sensitivity (eccentric
     python figures/plot_ablation.py --out figures/ablation_5d.pdf
 
 Numbers of Tables tab:ablation_5d and tab:weights_5d: banks of 2.27M templates (+/- 3 %), 4,000 injections, missed
-fraction = FF < 0.97. Dot = mean of the retrainings of each setting, bar = their standard deviation (n - 1; from
-two retrainings only a rough estimate). The band is the mean +/- standard deviation of the full objective, the dashed
+fraction = FF < 0.97. Dot = mean of the retrainings of each setting, bar = their standard deviation sigma_r (n - 1;
+from two retrainings only a rough estimate), which includes each run's injection error (~0.28 points). The band is the mean +/- standard deviation of the full objective, the dashed
 line its mean. Colour: terms removed or coefficients changed; gamma is the tail weight (nominal 3; 0 = no tail weighting).
 """
 import argparse
@@ -63,7 +63,7 @@ def main():
     ax.grid(False, axis='y')
     ax.set_xlabel('Missed injections, FF < 0.97 (%)', fontsize=9)
     ax.set_xlim(2.5, 7.2)
-    handles = [plt.Line2D([], [], ls='-', marker='o', color=INK, ms=5.5, lw=1.4, label=r'$\mu \pm \sigma$')]
+    handles = [plt.Line2D([], [], ls='-', marker='o', color=INK, ms=5.5, lw=1.4, label=r'$\mu \pm \sigma_r$')]
     handles += [plt.Line2D([], [], ls='', marker='o', color=col, ms=5.5, label=lab)
                 for lab, col in [('full objective', ISO)] + [(g[0], g[1]) for g in GROUPS]]
     ax.legend(handles=handles, loc='upper right', ncol=2, fontsize=7, columnspacing=1.0, handletextpad=0.4, frameon=True, framealpha=0.95, edgecolor='#d1d5db')
