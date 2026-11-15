@@ -61,7 +61,7 @@ def main():
     ax2.grid(False)
     handles = [plt.Line2D([], [], ls='', marker='*', ms=12, color=ISO, label='isobank (paper)'),
                plt.Line2D([], [], ls='', marker='o', ms=7, color=DEFAULT,
-                          label=rf'mbank, paper default ($\mu$ = {PAPER[0]:g}, cf = {PAPER[1]:g})')]
+                          label=rf'mbank, default ($\mu$ = {PAPER[0]:g}, cf = {PAPER[1]:g})')]
     handles += [plt.Line2D([], [], ls='', marker='o', ms=7, color=CF_COLOURS[cf], label=f'mbank, cf = {cf:g}')
                 for cf in sorted({r['cf'] for r in rows}) if cf in CF_COLOURS]
     handles += [plt.Line2D([], [], ls='', marker='o', ms=7, color=INK, label='all injections'),
