@@ -14,6 +14,7 @@ import numpy as np
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+import matplotlib.ticker
 
 ISO, INK = '#0284c7', '#111827'
 CF_COLOURS = {0.9: '#8b8f98', 0.99: '#117733', 0.6: '#aa4499'}   # the palette of plot_tuning_violins.py
@@ -32,6 +33,7 @@ def main():
     plt.style.use('seaborn-v0_8-whitegrid')
     fig, ax = plt.subplots(figsize=(6.4, 4.2))
     ax2 = ax.twinx()
+    ax.set_zorder(ax2.get_zorder() + 1); ax.patch.set_visible(False)   # circles above the squares
     for r in rows:
         col = CF_COLOURS.get(r['cf'], INK)
         ax.plot(r['templates'] / 1e6, r['coverage'], 'o', ms=7, color=col, mec='white', mew=0.8, zorder=3)
@@ -44,6 +46,7 @@ def main():
 
     ax.set_xscale('log')
     ax.set_xticks([2, 3, 5, 10, 20], ['2', '3', '5', '10', '20'])
+    ax.xaxis.set_minor_formatter(matplotlib.ticker.NullFormatter())
     ax.set_xlabel('Number of templates (millions)')
     ax.set_ylabel(r'Coverage, FF $\geq$ 0.97 (%)')
     ax2.set_ylabel(r'Coverage for $\mathcal{M}_c < 1.4\,M_\odot$ (%)')
