@@ -16,7 +16,7 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import matplotlib.ticker
 
-ISO, INK, RED = '#0284c7', '#111827', '#dc2626'
+ISO, INK, DEFAULT = '#0284c7', '#111827', 'crimson'
 CF_COLOURS = {0.9: '#8b8f98', 0.99: '#117733', 0.6: '#aa4499'}   # the palette of plot_tuning_violins.py
 PAPER = (0.97, 0.9)   # mbank's default (mu, cf), the paper's bank
 LABEL_OFFSETS = {   # (mm, cf) -> (dx, dy, ha) in points, for labels that would overlap (from iclr_plotting.ipynb)
@@ -40,15 +40,13 @@ def main():
     ax2 = ax.twinx()
     ax.set_zorder(ax2.get_zorder() + 1); ax.patch.set_visible(False)   # circles above the squares
     for r in rows:
-        col = CF_COLOURS.get(r['cf'], INK)
+        paper = (r['mm'], r['cf']) == PAPER   # mbank's default setting, as in the paper, in its own colour
+        col = DEFAULT if paper else CF_COLOURS.get(r['cf'], INK)
         ax.plot(r['templates'] / 1e6, r['coverage'], 'o', ms=7, color=col, mec='white', mew=0.8, zorder=3)
         ax2.plot(r['templates'] / 1e6, r['coverage_lowmc'], 's', ms=6, mfc='white', mec=col, mew=1.6, zorder=3)
         dx, dy, ha = LABEL_OFFSETS.get((r['mm'], r['cf']), (6, -12, 'left'))
-        paper = (r['mm'], r['cf']) == PAPER
-        if paper:   # mbank's default setting, as in the paper: ringed and labelled
-            ax.plot(r['templates'] / 1e6, r['coverage'], 'o', ms=14, mfc='none', mec=RED, mew=1.4, zorder=4)
-        ax.annotate(rf"$\mu$ = {r['mm']:g}" + (' (paper default)' if paper else ''), (r['templates'] / 1e6, r['coverage']), xytext=(dx, dy),
-                    textcoords='offset points', ha=ha, fontsize=7.5, color=RED if paper else INK)
+        ax.annotate(rf"$\mu$ = {r['mm']:g}", (r['templates'] / 1e6, r['coverage']), xytext=(dx, dy),
+                    textcoords='offset points', ha=ha, fontsize=7.5, color=INK)
     ax.plot(n_iso / 1e6, c_iso, '*', ms=15, color=ISO, mec='white', mew=0.8, zorder=4)
     ax2.plot(n_iso / 1e6, l_iso, '*', ms=15, mfc='white', mec=ISO, mew=1.4, zorder=4)
     ax.axhline(c_iso, color=ISO, ls=':', lw=1); ax.axvline(n_iso / 1e6, color=ISO, ls=':', lw=1)
@@ -61,7 +59,9 @@ def main():
     ax.set_ylabel(r'Coverage, FF $\geq$ 0.97 (%)')
     ax2.set_ylabel(r'Coverage for $\mathcal{M}_c < 1.4\,M_\odot$ (%)')
     ax2.grid(False)
-    handles = [plt.Line2D([], [], ls='', marker='*', ms=12, color=ISO, label='isobank (paper)')]
+    handles = [plt.Line2D([], [], ls='', marker='*', ms=12, color=ISO, label='isobank (paper)'),
+               plt.Line2D([], [], ls='', marker='o', ms=7, color=DEFAULT,
+                          label=rf'mbank, paper default ($\mu$ = {PAPER[0]:g}, cf = {PAPER[1]:g})')]
     handles += [plt.Line2D([], [], ls='', marker='o', ms=7, color=CF_COLOURS[cf], label=f'mbank, cf = {cf:g}')
                 for cf in sorted({r['cf'] for r in rows}) if cf in CF_COLOURS]
     handles += [plt.Line2D([], [], ls='', marker='o', ms=7, color=INK, label='all injections'),
