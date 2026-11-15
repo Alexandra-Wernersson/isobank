@@ -4,8 +4,7 @@ plot_ff_cdf_svd_vs_isobank.py -- FF cumulative distributions, isobank vs Cabass 
 mbank_comparison/figure/ff_cdf_isobank_vs_mbank.py, with the plain SVD grid underneath (Alexandra's baseline).
 Like Cabass et al.'s, the SVD grid's templates are waveforms rebuilt from SVD coefficients, not exact waveforms.
 
-    python autoencoder_comparison/svd_ae/plot_ff_cdf_svd_vs_isobank.py --runs autoencoder_comparison/runs/eccentric_5d/svd_ae \
-        --isobank-ff mbank_comparison/ecc5d/cell_ALL_k500_ff.npy --isobank-size 2267558   # the paper's bank
+    python autoencoder_comparison/svd_ae/plot_ff_cdf_svd_vs_isobank.py --runs autoencoder_comparison/runs/eccentric_5d/svd_ae
 
 All curves: the first 4,000 injections of seed 4002 (Alexandra's SVD tests). Each Cabass et al. lattice at the
 spacing whose bank size is closest to isobank's (as svd_ae.py evaluate); both SVD methods are scored with the
@@ -45,8 +44,9 @@ def main():
     ap.add_argument('--runs', required=True)
     ap.add_argument('--table', default='lattice_table_sb20.md')
     ap.add_argument('--out', default=None, help='default: ff_cdf_svd_vs_isobank.pdf in --runs')
-    ap.add_argument('--isobank-ff', default=None, help="isobank's fitting factors instead of --runs' (first 4,000 used)")
-    ap.add_argument('--isobank-size', type=int, default=None, help='its bank size, with --isobank-ff')
+    ap.add_argument('--isobank-ff', default='mbank_comparison/ecc5d/cell_ALL_k500_ff.npy',
+                    help="isobank's fitting factors (first 4,000 used; default: the paper's bank)")
+    ap.add_argument('--isobank-size', type=int, default=2267558, help='its bank size (default: the paper\'s)')
     args = ap.parse_args()
     sizes = bank_sizes(os.path.join(args.runs, args.table))
     if args.isobank_size:
