@@ -71,13 +71,13 @@ def main():
     a_cov.annotate(f'{cov[0]:.1f}%', (xs[0], cov[0]), xytext=(9, 0), textcoords='offset points', va='center',
                    fontsize=8.5, color=INK)
     a_cov.set_ylim(92, 100); a_cov.set_yticks([92, 96, 100]); a_cov.set_ylabel('Coverage (%)')
-    a_n.set_ylim(2.0, 3.6); a_n.set_yticks([2.0, 2.8, 3.6]); a_n.set_ylabel('Templates (M)')
+    a_n.set_ylim(2.0, 3.6); a_n.set_yticks([2.0, 2.8, 3.6]); a_n.set_ylabel('Number of\ntemplates (M)')
     a_n.grid(False); a_n.tick_params(axis='y', labelsize=8.5)
     for sp in a_n.spines.values():
         sp.set_visible(False)
     a_cov.legend(handles=[plt.Line2D([], [], ls='', marker='o', color=INK, mec='white', ms=6.5, label='coverage'),
                           plt.Line2D([], [], ls='', marker='s', mfc='white', mec=INK, mew=1.6, ms=5.5,
-                                     label='templates')],
+                                     label='number of templates')],
                  loc='upper right', ncol=2, borderaxespad=0.3, fontsize=8, frameon=False, handletextpad=0.3)
 
     below = []
