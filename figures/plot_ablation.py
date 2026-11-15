@@ -4,9 +4,9 @@ plot_ablation.py -- the loss ablation and the coefficient sensitivity (eccentric
     python figures/plot_ablation.py --out figures/ablation_5d.pdf
 
 Numbers of Tables tab:ablation_5d and tab:weights_5d: banks of 2.27M templates (+/- 3 %), 4,000 injections, missed
-fraction = FF < 0.97. Dot = mean of the retrainings of each setting, bar = their standard deviation (n - 1; from
-two retrainings only a rough estimate). The band is the mean +/- standard deviation of the full objective, the dashed
-line its mean. Colour: terms removed or coefficients changed.
+fraction = FF < 0.97. Dot = mean of the retrainings of each setting, bar = their standard deviation sigma (n - 1;
+from two retrainings only a rough estimate), which includes each run's injection error (~0.28 points). The band is the mean +/- standard deviation of the full objective, the dashed
+line its mean. Colour: terms removed or coefficients changed; gamma is the tail weight (nominal 3; 0 = no tail weighting).
 """
 import argparse
 import numpy as np
@@ -22,7 +22,6 @@ GROUPS = [   # (legend entry, colour, [(label, miss rates per retraining)])
         (r'without $\mathcal{L}_{\rm loc}$', [5.15, 4.60]),
         (r'without $\mathcal{L}_{\rm bnd}$', [5.33, 3.73, 4.25, 4.40]),
         (r'without $\mathcal{L}_{\rm edge}$', [4.90, 5.45]),
-        (r'without adaptive $\lambda_i$', [3.98, 5.63, 3.53, 3.90]),
         (r'$\mathcal{L}_{\rm loc}$ and $\mathcal{L}_{\rm edge}$ only', [3.35, 4.85]),
         (r'$\mathcal{L}_{\rm glob}$ only', [6.85, 6.83]),
     ]),
@@ -33,8 +32,9 @@ GROUPS = [   # (legend entry, colour, [(label, miss rates per retraining)])
         (r'$\beta_{bnd}\times2$', [4.23, 3.60]),
         (r'$\beta_{edge}\times0.5$', [4.13, 4.48]),
         (r'$\beta_{edge}\times2$', [3.70, 3.28]),
-        ('tail weight 1', [3.28, 3.53]),
-        ('tail weight 10', [5.43, 5.15]),
+        (r'$\gamma=0$', [3.98, 5.63, 3.53, 3.90]),
+        (r'$\gamma=1$', [3.28, 3.53]),
+        (r'$\gamma=10$', [5.43, 5.15]),
     ]),
 ]
 
@@ -51,22 +51,22 @@ def main():
             y -= 1.; rows.append((label, col, v, y))
 
     plt.style.use('seaborn-v0_8-whitegrid')
-    fig, ax = plt.subplots(figsize=(6.0, 5.4))
+    fig, ax = plt.subplots(figsize=(4.3, 4.3))   # 0.6 of the column width in the paper
     m_full, s_full = np.mean(FULL), np.std(FULL, ddof=1)
     ax.axvspan(m_full - s_full, m_full + s_full, color=BAND, lw=0, zorder=0)
     ax.axvline(m_full, color=ISO, ls='--', lw=1, zorder=1)
     for label, col, v, yi in rows:
-        ax.errorbar(np.mean(v), yi, xerr=np.std(v, ddof=1), fmt='o', ms=7, color=col, mec='white', mew=0.8,
-                    lw=1.6, capsize=3, zorder=4)
+        ax.errorbar(np.mean(v), yi, xerr=np.std(v, ddof=1), fmt='o', ms=5.5, color=col, mec='white', mew=0.7,
+                    lw=1.4, capsize=2, zorder=4)
     ax.set_yticks([r[3] for r in rows], [r[0] for r in rows], fontsize=9)
-    ax.set_ylim(rows[-1][3] - 0.7, 0.7)
+    ax.set_ylim(rows[-1][3] - 0.6, 0.6); ax.tick_params(axis='x', labelsize=9)
     ax.grid(False, axis='y')
-    ax.set_xlabel('Missed injections, FF < 0.97 (%)')
+    ax.set_xlabel('Missed injections, FF < 0.97 (%)', fontsize=9.5)
     ax.set_xlim(2.5, 7.2)
-    handles = [plt.Line2D([], [], ls='-', marker='o', color=INK, ms=7, lw=1.6, label=r'$\mu \pm \sigma$')]
-    handles += [plt.Line2D([], [], ls='', marker='o', color=col, ms=7, label=lab)
+    handles = [plt.Line2D([], [], ls='-', marker='o', color=INK, ms=5.5, lw=1.4, label=r'$\mu \pm \sigma$')]
+    handles += [plt.Line2D([], [], ls='', marker='o', color=col, ms=5.5, label=lab)
                 for lab, col in [('full objective', ISO)] + [(g[0], g[1]) for g in GROUPS]]
-    ax.legend(handles=handles, loc='lower right', fontsize=8, frameon=True, framealpha=0.95, edgecolor='#d1d5db')
+    ax.legend(handles=handles, loc='center right', bbox_to_anchor=(1.0, 0.42), ncol=1, fontsize=7.5, handletextpad=0.4, frameon=True, framealpha=0.95, edgecolor='#d1d5db')
     plt.savefig(args.out, dpi=200, bbox_inches='tight', facecolor='white')
     print(f'-> {args.out}')
 

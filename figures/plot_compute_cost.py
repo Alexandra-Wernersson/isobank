@@ -5,7 +5,8 @@ data with it; eccentric 5D at Nikhef.
     python figures/plot_compute_cost.py --out figures/compute_cost.pdf
 
 The construction numbers are RemoteWallClockTime x RequestCpus from condor_history of the Nikhef DAGs (summed over
-jobs). isobank's train_isobank node computes the radius and the training pairs before training, so its
+jobs). Templates and coverage: isobank's paper bank (2.27M); its construction times are the Nikhef retrain's (3.01M), as
+the paper's were not timed. isobank's train_isobank node computes the radius and the training pairs before training, so its
 preprocessing is part of training. mbank: the three runs with the paper's settings (mean, bar = min-max). Cabass
 et al.: 20 sub-banks, latent 3; 'placement' is counting the lattice cells (count20), and preprocessing includes
 the waveforms, the SVD and the bank-size regressor. Scoring against the injections (5.7 CPU-h, the same for every
@@ -25,7 +26,7 @@ N_FFT, T_KEPT, FLOPS = 2 ** 20, 128., 2e9
 SEARCH = 5 * N_FFT * np.log2(N_FFT) / T_KEPT / FLOPS   # CPU-s per template per s of data = CPU-h per template per h
 STEPS = [('preprocessing', '^'), ('training', 's'), ('placement', 'D'), ('construction', 'o'), ('search', '*')]
 MODELS = [   # name, colour (as in the FF figures), {step: [CPU-h per run]}, [templates per run], coverage
-    ('isobank', '#0284c7', dict(training=[3.35], placement=[0.35]), [3009368], '98.4%'),
+    ('isobank', '#0284c7', dict(training=[3.35], placement=[0.35]), [2267558], '96.6%'),   # the paper's bank
     ('mbank', '#8b8f98', dict(preprocessing=[0.12] * 3, training=[0.19, 0.12, 0.18], placement=[1.23, 0.77, 1.56]),
      [3091551, 2837943, 3005165], '93.5–94.8%'),
     ('Cabass et al. (2025)\n20 sub-banks', 'mediumseagreen', dict(preprocessing=[95.8], training=[21.2],
