@@ -60,9 +60,9 @@ def main():
     handles = [plt.Line2D([], [], ls='', marker='*', ms=12, color=ISO, label='isobank (paper)')]
     handles += [plt.Line2D([], [], ls='', marker='o', ms=7, color=CF_COLOURS[cf], label=f'mbank, cf = {cf:g}')
                 for cf in sorted({r['cf'] for r in rows}) if cf in CF_COLOURS]
-    handles += [plt.Line2D([], [], ls='', marker='o', ms=7, color=INK, label='all injections (left)'),
+    handles += [plt.Line2D([], [], ls='', marker='o', ms=7, color=INK, label='all injections'),
                 plt.Line2D([], [], ls='', marker='s', ms=6, mfc='white', mec=INK, mew=1.6,
-                           label=r'$\mathcal{M}_c < 1.4\,M_\odot$ (right)')]
+                           label=r'$\mathcal{M}_c < 1.4\,M_\odot$')]
     ax.legend(handles=handles, loc='lower right', fontsize=7.5, frameon=True, framealpha=0.95, edgecolor='#d1d5db')
     plt.savefig(args.out, dpi=200, bbox_inches='tight', facecolor='white')
     print(f'-> {args.out}')
