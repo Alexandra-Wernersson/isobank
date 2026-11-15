@@ -16,7 +16,7 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import matplotlib.ticker
 
-ISO, INK = '#0284c7', '#111827'
+ISO, INK, RED = '#0284c7', '#111827', '#dc2626'
 CF_COLOURS = {0.9: '#8b8f98', 0.99: '#117733', 0.6: '#aa4499'}   # the palette of plot_tuning_violins.py
 PAPER = (0.97, 0.9)   # mbank's default (mu, cf), the paper's bank
 LABEL_OFFSETS = {   # (mm, cf) -> (dx, dy, ha) in points, for labels that would overlap (from iclr_plotting.ipynb)
@@ -46,9 +46,9 @@ def main():
         dx, dy, ha = LABEL_OFFSETS.get((r['mm'], r['cf']), (6, -12, 'left'))
         paper = (r['mm'], r['cf']) == PAPER
         if paper:   # mbank's default setting, as in the paper: ringed and labelled
-            ax.plot(r['templates'] / 1e6, r['coverage'], 'o', ms=14, mfc='none', mec=INK, mew=1.2, zorder=4)
+            ax.plot(r['templates'] / 1e6, r['coverage'], 'o', ms=14, mfc='none', mec=RED, mew=1.4, zorder=4)
         ax.annotate(rf"$\mu$ = {r['mm']:g}" + (' (paper default)' if paper else ''), (r['templates'] / 1e6, r['coverage']), xytext=(dx, dy),
-                    textcoords='offset points', ha=ha, fontsize=7.5, color=INK)
+                    textcoords='offset points', ha=ha, fontsize=7.5, color=RED if paper else INK)
     ax.plot(n_iso / 1e6, c_iso, '*', ms=15, color=ISO, mec='white', mew=0.8, zorder=4)
     ax2.plot(n_iso / 1e6, l_iso, '*', ms=15, mfc='white', mec=ISO, mew=1.4, zorder=4)
     ax.axhline(c_iso, color=ISO, ls=':', lw=1); ax.axvline(n_iso / 1e6, color=ISO, ls=':', lw=1)
