@@ -90,7 +90,8 @@ def main():
     a_ff.axhline(0.97, color='#dc2626', ls=':', lw=1.6, zorder=4)   # as the FF cumulative plots
     a_ff.set_ylim(FLOOR, 1.0005); a_ff.set_yticks([0.96, 0.97, 0.98, 0.99, 1.0])
     a_ff.set_ylabel('Fitting factor')
-    a_ff.set_xticks(xs, [it[1] for it in items], fontsize=8.5)
+    a_ff.set_xticks(xs, [it[1].replace('\n', ' ') for it in items], fontsize=8.5, rotation=40, ha='right',
+                    rotation_mode='anchor')
     a_ff.get_xticklabels()[0].set_fontweight('bold')
     a_ff.set_xlim(xs[0] - 0.6, xs[-1] + 0.6)
     for ax in (a_cov, a_ff):
