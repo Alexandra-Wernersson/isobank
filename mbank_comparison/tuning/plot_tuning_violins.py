@@ -20,14 +20,15 @@ from matplotlib.patches import Patch
 
 ISO, PAPER, INK = '#0284c7', '#8b8f98', '#111827'   # isobank's blue, as in every other figure
 FLOOR = 0.96        # bottom of the FF axis
-GROUPS = [   # (legend entry, colour, [(variant, tick label)])
-    ('mbank, paper settings', PAPER, [('paper_a', 'run 1'), ('paper_b', 'run 2'), ('paper_c', 'run 3')]),
-    ('loss weighting (paper: none)', '#cc6677', [('weighted_0.5', 'exp.\n0.5'), ('weighted_1', 'exp.\n1')]),
-    ('start of C (paper: 0.9 quantile)', '#ddcc77', [('quantile_0.5', '0.5'), ('quantile_0.99', '0.99')]),
-    ('box margin (paper: 0.01)', '#117733', [('padding_0.001', '0.001'), ('padding_0.05', '0.05')]),
-    ('optimiser (paper: lr 5e-3, batch 5k)', '#aa4499', [('lr_0.0005', 'lr\n5e-4'), ('batch_1000', 'batch\n1k')]),
-    ('training points (paper: 15k)', '#999933', [('data_50k', '50k\npoints')]),
-    ('importance-sampling placement', '#882255', [('is_wmax_10', 'W\n= 10'), ('is_no_clip', 'no\nclip')]),
+GROUPS = [   # (legend entry, colour, [(variant, tick label: the changed value)]); defaults in the caption
+    ('mbank, default', PAPER, [('paper_a', 'run 1'), ('paper_b', 'run 2'), ('paper_c', 'run 3')]),
+    (r'loss weighting, exponent $p$', '#cc6677', [('weighted_0.5', '$p$ =\n0.5'), ('weighted_1', '$p$ =\n1')]),
+    (r'start of $C$, quantile $q$', '#ddcc77', [('quantile_0.5', '$q$ =\n0.5'), ('quantile_0.99', '$q$ =\n0.99')]),
+    (r'box margin $m$', '#117733', [('padding_0.001', '$m$ =\n0.001'), ('padding_0.05', '$m$ =\n0.05')]),
+    ('learning rate, batch size', '#aa4499', [('lr_0.0005', 'lr =\n5e-4'), ('batch_1000', 'batch\n= 1k')]),
+    (r'training points $N$', '#999933', [('data_50k', '$N$ =\n50k')]),
+    (r'importance sampling, clip $W_{\max}$', '#882255',
+     [('is_wmax_10', r'$W_{\max}$' + '\n= 10'), ('is_no_clip', r'$W_{\max}$' + '\n' + r'= $\infty$')]),
 ]
 
 
