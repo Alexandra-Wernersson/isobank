@@ -43,7 +43,7 @@ def main():
         ax.plot(r['templates'] / 1e6, r['coverage'], 'o', ms=7, color=col, mec='white', mew=0.8, zorder=3)
         ax2.plot(r['templates'] / 1e6, r['coverage_lowmc'], 's', ms=6, mfc='white', mec=col, mew=1.6, zorder=3)
         dx, dy, ha = LABEL_OFFSETS.get((r['mm'], r['cf']), (6, -12, 'left'))
-        ax.annotate(f"mm {r['mm']:g}", (r['templates'] / 1e6, r['coverage']), xytext=(dx, dy),
+        ax.annotate(rf"$\mu$ = {r['mm']:g}", (r['templates'] / 1e6, r['coverage']), xytext=(dx, dy),
                     textcoords='offset points', ha=ha, fontsize=7.5, color=INK)
     ax.plot(n_iso / 1e6, c_iso, '*', ms=15, color=ISO, mec='white', mew=0.8, zorder=4)
     ax2.plot(n_iso / 1e6, l_iso, '*', ms=15, mfc='white', mec=ISO, mew=1.4, zorder=4)
