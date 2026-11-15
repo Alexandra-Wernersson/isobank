@@ -18,6 +18,7 @@ import matplotlib.ticker
 
 ISO, INK = '#0284c7', '#111827'
 CF_COLOURS = {0.9: '#8b8f98', 0.99: '#117733', 0.6: '#aa4499'}   # the palette of plot_tuning_violins.py
+PAPER = (0.97, 0.9)   # mbank's default (mu, cf), the paper's bank
 LABEL_OFFSETS = {   # (mm, cf) -> (dx, dy, ha) in points, for labels that would overlap (from iclr_plotting.ipynb)
     (0.979, 0.9): (-8, 6, 'right'), (0.98, 0.9): (6, -4, 'left'), (0.977, 0.9): (-6, -12, 'right'),
     (0.978, 0.9): (6, -12, 'left'), (0.98775, 0.6): (6, 6, 'left'), (0.97, 0.99): (-8, -12, 'right'),
@@ -43,7 +44,10 @@ def main():
         ax.plot(r['templates'] / 1e6, r['coverage'], 'o', ms=7, color=col, mec='white', mew=0.8, zorder=3)
         ax2.plot(r['templates'] / 1e6, r['coverage_lowmc'], 's', ms=6, mfc='white', mec=col, mew=1.6, zorder=3)
         dx, dy, ha = LABEL_OFFSETS.get((r['mm'], r['cf']), (6, -12, 'left'))
-        ax.annotate(rf"$\mu$ = {r['mm']:g}", (r['templates'] / 1e6, r['coverage']), xytext=(dx, dy),
+        paper = (r['mm'], r['cf']) == PAPER
+        if paper:   # mbank's default setting, as in the paper: ringed and labelled
+            ax.plot(r['templates'] / 1e6, r['coverage'], 'o', ms=14, mfc='none', mec=INK, mew=1.2, zorder=4)
+        ax.annotate(rf"$\mu$ = {r['mm']:g}" + (' (paper default)' if paper else ''), (r['templates'] / 1e6, r['coverage']), xytext=(dx, dy),
                     textcoords='offset points', ha=ha, fontsize=7.5, color=INK)
     ax.plot(n_iso / 1e6, c_iso, '*', ms=15, color=ISO, mec='white', mew=0.8, zorder=4)
     ax2.plot(n_iso / 1e6, l_iso, '*', ms=15, mfc='white', mec=ISO, mew=1.4, zorder=4)
