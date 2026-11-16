@@ -59,7 +59,7 @@ def main():
         ff = np.load(path)[:4000]; n = sizes[key]
         s = np.sort(ff); y = 100 * np.arange(1, len(s) + 1) / len(s)
         cov = 100 * (ff >= THR).mean(); se = 100 * np.sqrt((cov / 100) * (1 - cov / 100) / len(ff))
-        ax.semilogy(s, y, color=col, ls=ls, lw=2.0, label=f'{label} ({n / 1e6:.2f}M) — {cov:.2f}%',
+        ax.semilogy(s, y, color=col, ls=ls, lw=2.0, label=f'{label} ({n / 1e6:.2f}M) — {cov:.1f}%',
                     solid_capstyle='round', dash_capstyle='round')
         rows.append((label, n, cov, se, np.percentile(ff, 1), ff.min(), len(ff)))
     ax.axvline(THR, color='#dc2626', ls=':', lw=1.6, zorder=5)

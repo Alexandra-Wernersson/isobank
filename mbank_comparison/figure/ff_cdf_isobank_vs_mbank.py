@@ -44,7 +44,7 @@ for path, col, ls, n, pipe, space in CURVES:
     s = np.sort(ff); y = 100*np.arange(1, len(s)+1)/len(s)
     cov = 100*(ff >= THR).mean(); se = 100*np.sqrt((cov/100)*(1-cov/100)/len(ff))
     ax.semilogy(s, y, color=col, ls=ls, lw=2.0, zorder=4 if col == C_ECC else 3,   # eccentric (blue) drawn above aligned (orange)
-                label=f'{pipe} · {space} ({n:,}) — {cov:.2f}%',
+                label=f'{pipe} · {space} ({n:,}) — {cov:.1f}%',
                 solid_capstyle='round', dash_capstyle='round')
     rows.append((pipe, space, n, cov, se, np.percentile(ff, 10), ff.min(), len(ff)))
 ax.axvline(THR, color='#dc2626', ls=':', lw=1.6, zorder=5)   # FF = 0.97 threshold, red

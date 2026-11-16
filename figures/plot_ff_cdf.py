@@ -41,7 +41,7 @@ def main():
         cov = 100 * (ff >= args.threshold).mean()
         ax.semilogy(s, y, color=PALETTE[i % len(PALETTE)], lw=2.0,
                     ls=(0, (5, 2)) if i in dashed else '-',
-                    label=f'{label} — {cov:.2f}%')
+                    label=f'{label} — {cov:.1f}%')
         print(f"{label}: N={len(ff):,}  coverage {cov:.2f}%  worst FF {ff.min():.4f}")
     ax.axvline(args.threshold, color='#dc2626', ls=':', lw=1.6)
     ax.set_xlabel('Fitting factor', fontsize=11)
