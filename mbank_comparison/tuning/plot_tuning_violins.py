@@ -71,7 +71,7 @@ def main():
                        mec='white', mew=0.8 if star else 1.0, zorder=3)
         a_n.plot(xi, ni, '*' if star else 's', mfc='white', mec=col, ms=11 if star else 5.5, mew=1.4 if star else 1.6,
                  zorder=3)
-    a_cov.annotate(f'{cov[0]:.1f}%', (xs[0], cov[0]), xytext=(11, 0), textcoords='offset points', va='center',
+    a_cov.annotate(f'{cov[0]:.2f}%', (xs[0], cov[0]), xytext=(11, 0), textcoords='offset points', va='center',
                    fontsize=8.5, color=INK)
     a_cov.set_ylim(92, 100); a_cov.set_yticks([92, 96, 100]); a_cov.set_ylabel('Coverage (%)')
     a_n.set_ylim(2.0, 3.6); a_n.set_yticks([2.0, 2.8, 3.6]); a_n.set_ylabel('Number of\ntemplates (M)')

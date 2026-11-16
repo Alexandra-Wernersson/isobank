@@ -26,11 +26,11 @@ N_FFT, T_KEPT, FLOPS = 2 ** 20, 128., 2e9
 SEARCH = 5 * N_FFT * np.log2(N_FFT) / T_KEPT / FLOPS   # CPU-s per template per s of data = CPU-h per template per h
 STEPS = [('preprocessing', '^'), ('training', 's'), ('placement', 'D'), ('construction', 'o'), ('search', '*')]
 MODELS = [   # name, colour (as in the FF figures), {step: [CPU-h per run]}, [templates per run], coverage
-    ('isobank', '#0284c7', dict(training=[3.35], placement=[0.35]), [2267558], '96.6%'),   # the paper's bank
+    ('isobank', '#0284c7', dict(training=[3.35], placement=[0.35]), [2267558], '96.64%'),   # the paper's bank
     ('mbank', '#8b8f98', dict(preprocessing=[0.12] * 3, training=[0.19, 0.12, 0.18], placement=[1.23, 0.77, 1.56]),
-     [3091551, 2837943, 3005165], '93.5–94.8%'),
+     [3091551, 2837943, 3005165], '93.51–94.78%'),
     ('Cabass et al. (2025)\n20 sub-banks', 'mediumseagreen', dict(preprocessing=[95.8], training=[21.2],
-                                                                  placement=[7.2]), [3414718], '97.2%'),   # spacing 0.44
+                                                                  placement=[7.2]), [3414718], '97.17%'),   # spacing 0.44
 ]
 
 
