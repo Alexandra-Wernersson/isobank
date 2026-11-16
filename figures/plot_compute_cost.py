@@ -52,18 +52,17 @@ def main():
             v = np.array(steps[step]); m = v.mean()
             ax.errorbar(xi + dx, m, yerr=[[m - v.min()], [v.max() - m]] if len(v) > 1 else None, fmt=marker,
                         ms=(14 if marker == '*' else 10) if full(step) else 7.5, color=col,
-                        mfc=col if full(step) else 'white', mew=1.8, lw=1.4, capsize=0, zorder=3)
+                        mfc=col if full(step) else 'white', mew=1.1, lw=1.4, capsize=0, zorder=3)
             lab = f'{m:.2f}' if m < 1 else f'{m:.1f}' if m < 10 else f'{m:.0f}'
             ax.annotate(lab, (xi + dx, v.max()), xytext=(0, 7), textcoords='offset points', ha='center',
-                        fontsize=7.5, color=INK, fontweight='bold' if full(step) else 'normal')
+                        fontsize=7.5, color=INK)
     ax.set_yscale('log'); ax.set_ylim(0.05, 4000)
     ax.set_yticks([0.1, 1, 10, 100, 1000], ['0.1', '1', '10', '100', '1000'])
     ax.set_ylabel('Wall time (CPU h)')
     ax.set_xticks(range(len(MODELS)), [f'{m[0]}\ncoverage {m[4]}' for m in MODELS], fontsize=9.5)
-    ax.get_xticklabels()[0].set_fontweight('bold')
     ax.set_xlim(-0.55, len(MODELS) - 0.45); ax.grid(False, axis='x')
     ax.legend(handles=[plt.Line2D([], [], ls='', marker=mk, ms=(14 if mk == '*' else 10) if full(s) else 7.5,
-                                  color=INK, mfc=INK if full(s) else 'white', mew=1.8, label=s) for s, mk in STEPS],
+                                  color=INK, mfc=INK if full(s) else 'white', mew=1.1, label=s) for s, mk in STEPS],
               loc='lower right', ncol=2, fontsize=7, frameon=True, framealpha=0.95, edgecolor='#d1d5db',
               markerscale=0.65, handletextpad=0.3, columnspacing=0.9, borderpad=0.4, labelspacing=0.35)
     plt.savefig(args.out, dpi=200, bbox_inches='tight', facecolor='white')
