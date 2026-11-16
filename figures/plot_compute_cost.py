@@ -7,7 +7,7 @@ data with it; eccentric 5D at Nikhef.
 The construction numbers are RemoteWallClockTime x RequestCpus from condor_history of the Nikhef DAGs (summed over
 jobs). Templates and coverage: isobank's paper bank (2.27M); its construction times are the Nikhef retrain's (3.01M), as
 the paper's were not timed. isobank's train_isobank node computes the radius and the training pairs before training, so its
-preprocessing is part of training. mbank: the three runs with the paper's settings (mean, bar = min-max). Cabass
+preprocessing is part of training. mbank: the mean of the three runs with the paper's settings. Cabass
 et al.: 20 sub-banks, latent 3; 'placement' is counting the lattice cells (count20), and preprocessing includes
 the waveforms, the SVD and the bank-size regressor. Scoring against the injections (5.7 CPU-h, the same for every
 method) is left out.
@@ -50,11 +50,11 @@ def main():
             if step not in steps:
                 continue
             v = np.array(steps[step]); m = v.mean()
-            ax.errorbar(xi + dx, m, yerr=[[m - v.min()], [v.max() - m]] if len(v) > 1 else None, fmt=marker,
+            ax.errorbar(xi + dx, m, fmt=marker,
                         ms=(14 if marker == '*' else 10) if full(step) else 7.5, color=col,
                         mfc=col if full(step) else 'white', mew=1.1, lw=1.4, capsize=0, zorder=3)
             lab = f'{m:.2f}' if m < 1 else f'{m:.1f}' if m < 10 else f'{m:.0f}'
-            ax.annotate(lab, (xi + dx, v.max()), xytext=(0, 7), textcoords='offset points', ha='center',
+            ax.annotate(lab, (xi + dx, m), xytext=(0, 7), textcoords='offset points', ha='center',
                         fontsize=7.5, color=INK)
     ax.set_yscale('log'); ax.set_ylim(0.05, 4000)
     ax.set_yticks([0.1, 1, 10, 100, 1000], ['0.1', '1', '10', '100', '1000'])

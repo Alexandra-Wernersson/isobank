@@ -248,8 +248,7 @@ story = [
           'Banks: the paper\'s isobank bank (2.27M), mbank\'s three paper-setting runs (2.84–3.09M) and Cabass et al. '
           '(20 sub-banks, 3.41M). isobank\'s construction times are those of its retraining at Nikhef, as the paper\'s were not '
           'timed. isobank computes its training pairs inside the training job, so its '
-          'preprocessing is part of training. mbank: mean of the three runs with the paper\'s settings (bar: '
-          'min-max). Cabass et al.: preprocessing is the waveforms, the SVD and the bank-size regressor; placement '
+          'preprocessing is part of training. mbank: mean of the three runs with the paper\'s settings. Cabass et al.: preprocessing is the waveforms, the SVD and the bank-size regressor; placement '
           'is counting the lattice cells. Constructing any of these banks costs less than searching a single hour '
           'of data. isobank\'s bank is the smallest, so it is the cheapest to search (929 CPU-hours, against 1,220 for '
           'mbank and 1,399 for Cabass et al.), and it covers the most.',
