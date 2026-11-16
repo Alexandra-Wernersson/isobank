@@ -6,8 +6,8 @@ Like Cabass et al.'s, the SVD grid's templates are waveforms rebuilt from SVD co
 
     python autoencoder_comparison/svd_ae/plot_ff_cdf_svd_vs_isobank.py --runs autoencoder_comparison/runs/eccentric_5d/svd_ae
 
-All curves: the first 4,000 injections of seed 4002 (Alexandra's SVD tests). Each Cabass et al. lattice at the
-spacing whose bank size is closest to isobank's (as svd_ae.py evaluate); both SVD methods are scored with the
+All curves: the first 4,000 injections of seed 4002 (Alexandra's SVD tests). Every lattice at spacing 0.44, the
+BCC spacing whose covering radius gives a worst-case match of 0.97; both SVD methods are scored with the
 phase overlap of
 svd_grid_refined.py, without an extra time/phase search; isobank uses the true match.
 Reads the ff_*.npy files and lattice_table_sb20.md of --runs; writes ff_cdf_svd_vs_isobank.pdf there.
@@ -21,7 +21,7 @@ THR = 0.97
 CURVES = [   # file in --runs, lattice_table row (label, spacing) or None, colour, line style, label
     ('ff_isobank_first4000.npy', None, '#0284c7', '-', 'isobank'),
     ('ff_svd_a0.44.npy', ('SVD, BCC on c0..c2', '0.44'), 'orchid', '-', 'SVD grid, no autoencoder'),
-    ('ff_ae3sb20_a0.48.npy', ('SVD + autoencoder, latent 3, 20 sub-banks, BCC', '0.48'), 'mediumseagreen', ':',
+    ('ff_ae3sb20_a0.44.npy', ('SVD + autoencoder, latent 3, 20 sub-banks, BCC', '0.44'), 'mediumseagreen', ':',
      'Cabass et al. (2025), 20 sub-banks'),
     ('ff_ae3sb10_a0.44.npy', ('SVD + autoencoder, latent 3, 10 sub-banks, BCC', '0.44'), 'darkgreen', ':',
      'Cabass et al. (2025), 10 sub-banks'),

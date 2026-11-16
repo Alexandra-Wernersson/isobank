@@ -30,7 +30,7 @@ MODELS = [   # name, colour (as in the FF figures), {step: [CPU-h per run]}, [te
     ('mbank', '#8b8f98', dict(preprocessing=[0.12] * 3, training=[0.19, 0.12, 0.18], placement=[1.23, 0.77, 1.56]),
      [3091551, 2837943, 3005165], '93.5–94.8%'),
     ('Cabass et al. (2025)\n20 sub-banks', 'mediumseagreen', dict(preprocessing=[95.8], training=[21.2],
-                                                                  placement=[7.2]), [2676002], '96.6%'),
+                                                                  placement=[7.2]), [3414718], '97.2%'),   # spacing 0.44
 ]
 
 
