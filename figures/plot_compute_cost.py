@@ -55,11 +55,13 @@ def main():
                         mfc=col if full(step) else 'white', mew=1.1, lw=1.4, capsize=0, zorder=3)
             lab = f'{m:.2f}' if m < 1 else f'{m:.1f}' if m < 10 else f'{m:.0f}'
             ax.annotate(lab, (xi + dx, m), xytext=(0, 7), textcoords='offset points', ha='center',
-                        fontsize=7.5, color=INK)
+                        fontsize=7.5, color=INK,
+                        fontweight='bold' if name == 'isobank' and step == 'search' else 'normal')
     ax.set_yscale('log'); ax.set_ylim(0.05, 4000)
     ax.set_yticks([0.1, 1, 10, 100, 1000], ['0.1', '1', '10', '100', '1000'])
     ax.set_ylabel('Wall time (CPU h)')
-    ax.set_xticks(range(len(MODELS)), [f'{m[0]}\ncoverage {m[4]}' for m in MODELS], fontsize=9.5)
+    ax.set_xticks(range(len(MODELS)), [(r'$\bf{isobank}$' if m[0] == 'isobank' else m[0]) + f'\ncoverage {m[4]}'
+                                       for m in MODELS], fontsize=9.5)
     ax.set_xlim(-0.55, len(MODELS) - 0.45); ax.grid(False, axis='x')
     ax.legend(handles=[plt.Line2D([], [], ls='', marker=mk, ms=(14 if mk == '*' else 10) if full(s) else 7.5,
                                   color=INK, mfc=INK if full(s) else 'white', mew=1.1, label=s) for s, mk in STEPS],
