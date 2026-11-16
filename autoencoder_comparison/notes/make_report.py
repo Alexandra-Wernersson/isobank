@@ -63,7 +63,7 @@ story = [
            'the scatter of three repeats with the paper\'s settings. The paper\'s isobank bank covers 96.6 % with '
            '2.27M templates, 23 % fewer. Tuning does not close the gap.'),
     bullet(f'{B("Compute.")} isobank takes 3.7 CPU-hours to construct its bank, mbank 1 to 2, Cabass et al. '
-           'about 125: all less than searching one hour of data (about 1,200 CPU-hours for 3M templates, in PyCBC\'s '
+           'about 125: all less than searching one hour of data (about 1,300 CPU-hours for 3M templates, in PyCBC\'s '
            'convention). The search cost grows with the number of templates; the paper\'s isobank bank has 23 % fewer '
            'than mbank\'s, at higher coverage.'),
 
@@ -250,8 +250,8 @@ story = [
           'timed. isobank computes its training pairs inside the training job, so its '
           'preprocessing is part of training. mbank: mean of the three runs with the paper\'s settings. Cabass et al.: preprocessing is the waveforms, the SVD and the bank-size regressor; placement '
           'is counting the lattice cells. Constructing any of these banks costs less than searching a single hour '
-          'of data. isobank\'s bank is the smallest, so it is the cheapest to search (929 CPU-hours, against 1,220 for '
-          'mbank and 1,399 for Cabass et al.), and it covers the most.',
+          'of data. isobank\'s bank is the smallest, so it is the cheapest to search (1,021 CPU-hours, against 1,341 for '
+          'mbank and 1,537 for Cabass et al.), and it covers the most.',
           small),
         table([['method', 'step', 'CPUs', 'wall time', 'CPU-hours'],
                ['isobank', 'train the flow (radius, pairs, training)', '1', '3.35 h', '3.4'],
@@ -273,8 +273,8 @@ story = [
       'because it evaluates no metric at all. The difference is a few CPU-hours, once, against a search cost that '
       'grows with the number of templates for every second of data.'),
     P(B("In the paper's banks") + ', isobank has 2,267,558 templates against mbank\'s 2,953,739, and covers more '
-      '(96.6 % against 94.2 %). With the cost below, searching one hour of data takes about 930 CPU-hours with '
-      'isobank\'s bank and 1,210 with mbank\'s: 23 % less, for higher coverage.'),
+      '(96.6 % against 94.2 %). With the cost below, searching one hour of data takes about 1,020 CPU-hours with '
+      'isobank\'s bank and 1,330 with mbank\'s: 23 % less, for higher coverage.'),
     KeepTogether([
         P(B("Search cost, in PyCBC's convention.") + ' PyCBC filters each template against the data in the '
           'frequency domain, in blocks of 256 s sampled at 4096 Hz, with one inverse complex FFT per template and '
@@ -284,13 +284,14 @@ story = [
                ['samples per block, N', '2<super>20</super>', '256 s at 4096 Hz (Usman et al. 2016)'],
                ['cost per template and block', '1.0 x 10<super>8</super> flops',
                 'one inverse complex FFT, 5 N log<sub>2</sub> N'],
-               ['cost per template and second of data', '4.1 x 10<super>-4</super> CPU-seconds',
-                '128 s of each block kept (pycbc_inspiral padding), 2 x 10<super>9</super> flops per second per core'],
+               ['cost per template and second of data', '4.5 x 10<super>-4</super> CPU-seconds',
+                '128 s of each block kept (pycbc_inspiral padding), 1.8 x 10<super>9</super> flops per second, measured on '
+                'one Nikhef core (AMD EPYC 7551P)'],
                ['templates saved by isobank', '0.69M', 'the paper\'s banks: 2.27M against 2.95M, at higher coverage'],
-               ['search time saved', '~280 CPU-seconds per second of data', '0.69M x 4.1 x 10<super>-4</super>'],
+               ['search time saved', '~310 CPU-seconds per second of data', '0.69M x 4.5 x 10<super>-4</super>'],
                ['extra cost to construct isobank\'s bank', '~8 x 10<super>3</super> CPU-seconds',
                 '2.2 CPU-hours more than mbank (table above)'],
-               ['<b>break-even</b>', '<b>~30 s of data</b>', '8 x 10<super>3</super> / 280']],
+               ['<b>break-even</b>', '<b>~26 s of data</b>', '8 x 10<super>3</super> / 310']],
               [4.6 * cm, 4.4 * cm, 7.5 * cm])]),
     Spacer(1, 4),
     P('The estimate is robust: even if it is off by a factor of 100, isobank\'s extra training is repaid after under an '

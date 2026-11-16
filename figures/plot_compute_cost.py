@@ -13,7 +13,8 @@ the waveforms, the SVD and the bank-size regressor. Scoring against the injectio
 method) is left out.
 'search' is matched-filtering one hour of data with the bank (these Nikhef banks, not the paper's), in PyCBC's convention (Usman et al.
 2016, arXiv:1508.02357, Sec. 3.3-3.4): 256 s blocks at 4096 Hz (N = 2^20), one inverse complex FFT of 5 N log2 N
-flop per template and block, 128 s of each block kept (pycbc_inspiral's start/end padding), at FLOPS per core.
+flop per template and block, 128 s of each block kept (pycbc_inspiral's start/end padding), at FLOPS per core,
+measured with figures/fft_benchmark.py on a Nikhef worker (AMD EPYC 7551P, scipy, single precision).
 """
 import argparse
 import numpy as np
@@ -22,7 +23,7 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 INK = '#111827'
-N_FFT, T_KEPT, FLOPS = 2 ** 20, 128., 2e9
+N_FFT, T_KEPT, FLOPS = 2 ** 20, 128., 1.82e9   # FLOPS: one Nikhef core, complex64 2^20 IFFT (fft_benchmark.py)
 SEARCH = 5 * N_FFT * np.log2(N_FFT) / T_KEPT / FLOPS   # CPU-s per template per s of data = CPU-h per template per h
 STEPS = [('preprocessing', '^'), ('training', 's'), ('placement', 'D'), ('construction', 'o'), ('search', '*')]
 MODELS = [   # name, colour (as in the FF figures), {step: [CPU-h per run]}, [templates per run], coverage
